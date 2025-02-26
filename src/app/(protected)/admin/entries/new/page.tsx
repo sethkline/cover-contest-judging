@@ -33,24 +33,24 @@ export default function NewEntryPage() {
       const { data, error } = await supabase
         .from("age_categories")
         .select("id, name, min_age, max_age");
-  
+
       if (data) {
         setAgeCategories(data);
       }
     };
     fetchAgeCategories();
   }, []);
-  
+
   // Add this function to get the correct age category ID
   const getAgeCategoryId = (age) => {
     const numAge = parseInt(age);
-    const category = ageCategories.find(cat => 
-      numAge >= cat.min_age && 
-      (cat.max_age === null || numAge <= cat.max_age)
+    const category = ageCategories.find(
+      (cat) =>
+        numAge >= cat.min_age &&
+        (cat.max_age === null || numAge <= cat.max_age),
     );
     return category?.id;
   };
-  
 
   type Contest = {
     id: string;
@@ -60,7 +60,6 @@ export default function NewEntryPage() {
   };
 
   const [contests, setContests] = useState<Contest[]>([]);
-
 
   useEffect(() => {
     const fetchContests = async () => {

@@ -7,6 +7,7 @@ This web application is a comprehensive contest judging system designed to strea
 ## 🌟 Key Features
 
 ### Admin Capabilities
+
 - Invite and manage judges
 - Create and manage contests
 - Add contest entries
@@ -14,6 +15,7 @@ This web application is a comprehensive contest judging system designed to strea
 - Categorize entries by age groups
 
 ### Judge Interface
+
 - View and score contest entries
 - Navigate through entries efficiently
 - Rate entries based on multiple criteria
@@ -22,6 +24,7 @@ This web application is a comprehensive contest judging system designed to strea
 ## 🛠 Tech Stack
 
 ### Frontend
+
 - Next.js 13
 - React
 - TypeScript
@@ -29,11 +32,13 @@ This web application is a comprehensive contest judging system designed to strea
 - Shadcn/UI Components
 
 ### Backend
+
 - Supabase (Authentication & Database)
 - PostgreSQL
 - Row Level Security (RLS)
 
 ### Authentication
+
 - Supabase Auth
 - Magic Link Authentication
 - Role-based Access Control
@@ -41,12 +46,14 @@ This web application is a comprehensive contest judging system designed to strea
 ## 📦 Database Schema
 
 ### Key Tables
+
 - **Contests**: Stores contest information
 - **Entries**: Tracks individual contest submissions
 - **Judges**: Manages judge accounts and statuses
 - **Scores**: Records judge evaluations
 
 ## 🔐 Security Features
+
 - Role-based authentication
 - Row Level Security in Supabase
 - Secure judge invitations
@@ -64,10 +71,10 @@ This web application is a comprehensive contest judging system designed to strea
 
 ![Judge Dashboard](/screenshots/judge-dashboard.png)
 
-
 ## 🔍 Getting Started
 
 ### Prerequisites
+
 - Node.js (v18+)
 - Supabase Account
 - npm or yarn
@@ -75,17 +82,20 @@ This web application is a comprehensive contest judging system designed to strea
 ### Installation
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/yourusername/contest-judging-platform.git
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Set up Supabase environment variables
 4. Run the development server
+
 ```bash
 npm run dev
 ```

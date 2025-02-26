@@ -4,11 +4,14 @@
  * @param {string} path - The file path within the bucket
  * @returns {string} The complete public URL
  */
-export function getSupabasePublicUrl(bucket: string, path: string): string | null {
+export function getSupabasePublicUrl(
+  bucket: string,
+  path: string,
+): string | null {
   if (!path) return null;
 
   // Check if the path is already a full URL
-  if (path.startsWith('http')) {
+  if (path.startsWith("http")) {
     return path;
   }
 

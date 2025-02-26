@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import CategoryCard from './CategoryCard';
+import CategoryCard from "./CategoryCard";
 
 interface Category {
   categoryId: string;
@@ -23,13 +23,14 @@ export default function ContestCard({
   contestName,
   contestType,
   categories,
-  onStartJudging
+  onStartJudging,
 }: ContestCardProps) {
   return (
     <Card className="mb-6">
       <CardHeader>
         <CardTitle>
-          {contestName} ({contestType === "cover" ? "Cover" : "Bookmark"} Contest)
+          {contestName} ({contestType === "cover" ? "Cover" : "Bookmark"}{" "}
+          Contest)
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -42,7 +43,9 @@ export default function ContestCard({
               judged={category.judged}
               total={category.total}
               percentage={category.percentage}
-              onStartJudging={(categoryId) => onStartJudging(contestId, categoryId)}
+              onStartJudging={(categoryId) =>
+                onStartJudging(contestId, categoryId)
+              }
             />
           ))}
         </div>

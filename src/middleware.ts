@@ -29,7 +29,7 @@ export async function middleware(req: NextRequest) {
   if (session && req.nextUrl.pathname.startsWith("/admin")) {
     // Check user_metadata for role instead of app_metadata
     const isAdmin = session.user.user_metadata?.role === "admin";
-    
+
     if (!isAdmin) {
       // If they're a judge, redirect to judge dashboard
       try {
@@ -55,5 +55,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/judge/:path*', '/callback']
+  matcher: ["/admin/:path*", "/judge/:path*", "/callback"],
 };

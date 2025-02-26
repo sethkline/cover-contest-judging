@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon } from "lucide-react";
 
 interface StatisticCardProps {
   icon: LucideIcon;
@@ -10,12 +10,12 @@ interface StatisticCardProps {
   value: number | string;
 }
 
-export default function StatisticCard({ 
-  icon: Icon, 
-  iconColor, 
-  iconBgColor, 
-  label, 
-  value 
+export default function StatisticCard({
+  icon: Icon,
+  iconColor,
+  iconBgColor,
+  label,
+  value,
 }: StatisticCardProps) {
   return (
     <Card>

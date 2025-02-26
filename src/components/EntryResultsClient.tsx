@@ -1,26 +1,29 @@
 // src/components/EntryResultsClient.tsx
-'use client';
+"use client";
 
-import { useState } from 'react';
-import EntryViewerModal from './EntryViewerModal';
+import { useState } from "react";
+import EntryViewerModal from "./EntryViewerModal";
 
 export default function EntryResultsClient({ entriesByCategory }) {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   const openEntryModal = (entry) => {
     setSelectedEntry(entry);
     setIsModalOpen(true);
   };
-  
+
   const closeEntryModal = () => {
     setIsModalOpen(false);
   };
-  
+
   return (
     <div className="space-y-8">
       {Object.keys(entriesByCategory).map((category) => (
-        <div key={category} className="bg-white rounded-lg shadow overflow-hidden">
+        <div
+          key={category}
+          className="bg-white rounded-lg shadow overflow-hidden"
+        >
           <div className="p-6 border-b bg-gray-50">
             <h2 className="text-xl font-bold">Age Category: {category}</h2>
           </div>
@@ -63,7 +66,10 @@ export default function EntryResultsClient({ entriesByCategory }) {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {entriesByCategory[category].map((entry, index) => (
-                  <tr key={entry.id} className={index < 3 ? 'bg-yellow-50' : ''}>
+                  <tr
+                    key={entry.id}
+                    className={index < 3 ? "bg-yellow-50" : ""}
+                  >
                     <td className="px-4 py-4 whitespace-nowrap">
                       {index === 0 ? (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
@@ -81,20 +87,32 @@ export default function EntryResultsClient({ entriesByCategory }) {
                         <span className="text-gray-700">{index + 1}</span>
                       )}
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{entry.entry_number}</td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {entry.entry_number}
+                    </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {entry.participant_name}
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{entry.participant_age}</td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{entry.scores.creativity}</td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{entry.scores.execution}</td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{entry.scores.impact}</td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {entry.participant_age}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {entry.scores.creativity}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {entry.scores.execution}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {entry.scores.impact}
+                    </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {entry.scores.total}
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{entry.judgeCount}</td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {entry.judgeCount}
+                    </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-center">
-                      <button 
+                      <button
                         onClick={() => openEntryModal(entry)}
                         className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                       >
@@ -108,11 +126,11 @@ export default function EntryResultsClient({ entriesByCategory }) {
           </div>
         </div>
       ))}
-      
-      <EntryViewerModal 
-        isOpen={isModalOpen} 
-        entry={selectedEntry} 
-        onClose={closeEntryModal} 
+
+      <EntryViewerModal
+        isOpen={isModalOpen}
+        entry={selectedEntry}
+        onClose={closeEntryModal}
       />
     </div>
   );

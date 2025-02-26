@@ -32,11 +32,11 @@ export default function LoginForm() {
       console.log("User authenticated:", user.id);
 
       console.log("User metadata:", user);
-      
+
       // Check if user is an admin based on metadata
       const isAdmin = user.user_metadata?.role === "admin";
       console.log("Is admin?", isAdmin);
-      
+
       if (isAdmin) {
         // Admin user - redirect to admin dashboard
         console.log("Redirecting to admin dashboard");
@@ -44,7 +44,7 @@ export default function LoginForm() {
         router.push("/admin");
         return;
       }
-      
+
       // Step 3: Not an admin, so check if they're a judge
       console.log("Checking if user is a judge");
       const { data: judgeData, error: judgeError } = await supabase
@@ -52,19 +52,21 @@ export default function LoginForm() {
         .select("*")
         .eq("id", user.id)
         .single();
-      
+
       if (judgeError) {
         console.error("Judge query error:", judgeError);
         if (judgeError.code === "PGRST116") {
-          throw new Error("You don't have access to this system. Please contact an administrator.");
+          throw new Error(
+            "You don't have access to this system. Please contact an administrator.",
+          );
         }
         throw judgeError;
       }
-      
+
       // Valid judge found
       console.log("Judge found:", judgeData);
       router.refresh();
-      
+
       // Check if first login (status is pending)
       if (judgeData.status === "pending") {
         console.log("Redirecting to welcome page");
@@ -73,7 +75,6 @@ export default function LoginForm() {
         console.log("Redirecting to judge dashboard");
         router.push("/judge/dashboard");
       }
-      
     } catch (error) {
       console.error("Login error:", error);
       setError(error instanceof Error ? error.message : "An error occurred");
@@ -85,7 +86,9 @@ export default function LoginForm() {
   return (
     <>
       {error && (
-        <div className="bg-red-50 text-red-600 p-4 rounded-md my-4">{error}</div>
+        <div className="bg-red-50 text-red-600 p-4 rounded-md my-4">
+          {error}
+        </div>
       )}
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-6">

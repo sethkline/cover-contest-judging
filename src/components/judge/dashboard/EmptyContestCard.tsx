@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Clock } from 'lucide-react';
+import { Clock } from "lucide-react";
 
 export default function EmptyContestsCard() {
   return (

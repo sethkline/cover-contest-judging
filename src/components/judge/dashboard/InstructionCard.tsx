@@ -1,14 +1,16 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Award } from 'lucide-react';
+import { Award } from "lucide-react";
 
 interface InstructionCardProps {
   onViewInstructions: () => void;
 }
 
-export default function InstructionCard({ onViewInstructions }: InstructionCardProps) {
+export default function InstructionCard({
+  onViewInstructions,
+}: InstructionCardProps) {
   return (
     <Card className="bg-blue-50 border-blue-200">
       <CardContent className="p-6">

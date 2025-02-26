@@ -1,18 +1,25 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { ZoomIn, ZoomOut, ChevronLeft, ChevronRight, Save, Info } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { withJudgeAuth } from '@/lib/auth';
-import { getSupabasePublicUrl } from '@/lib/utils/storage';
+import React, { useState, useEffect } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  ZoomIn,
+  ZoomOut,
+  ChevronLeft,
+  ChevronRight,
+  Save,
+  Info,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { withJudgeAuth } from "@/lib/auth";
+import { getSupabasePublicUrl } from "@/lib/utils/storage";
 
 const JudgeEntriesPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const contestId = searchParams.get('contest');
-  const categoryId = searchParams.get('category');
+  const contestId = searchParams.get("contest");
+  const categoryId = searchParams.get("category");
 
   const supabase = createClientComponentClient();
 
@@ -29,35 +36,37 @@ const JudgeEntriesPage = () => {
   const [scores, setScores] = useState({
     creativity: 5,
     execution: 5,
-    impact: 5
+    impact: 5,
   });
 
   // Handle empty or null categoryId
   useEffect(() => {
     if (!contestId) {
-      router.push('/judge/dashboard');
+      router.push("/judge/dashboard");
       return;
     }
 
     async function fetchDefaultCategory() {
       try {
         // If category is null/undefined, fetch the first available category
-        if (!categoryId || categoryId === 'null') {
+        if (!categoryId || categoryId === "null") {
           const { data: categories, error } = await supabase
-            .from('age_categories')
-            .select('*')
-            .order('min_age', { ascending: true })
+            .from("age_categories")
+            .select("*")
+            .order("min_age", { ascending: true })
             .limit(1);
 
           if (error) throw error;
 
           if (categories && categories.length > 0) {
             // Redirect to the same page but with the category parameter
-            router.replace(`/judge/entries?contest=${contestId}&category=${categories[0].id}`);
+            router.replace(
+              `/judge/entries?contest=${contestId}&category=${categories[0].id}`,
+            );
           }
         }
       } catch (error) {
-        console.error('Error fetching default category:', error);
+        console.error("Error fetching default category:", error);
       }
     }
 
@@ -66,7 +75,7 @@ const JudgeEntriesPage = () => {
 
   // Fetch contest, category, and entries data
   useEffect(() => {
-    if (!contestId || !categoryId || categoryId === 'null') return;
+    if (!contestId || !categoryId || categoryId === "null") return;
 
     async function fetchData() {
       try {
@@ -74,42 +83,42 @@ const JudgeEntriesPage = () => {
 
         // Get current user
         const {
-          data: { user }
+          data: { user },
         } = await supabase.auth.getUser();
 
         // Fetch contest info
         const { data: contestData, error: contestError } = await supabase
-          .from('contests')
-          .select('*')
-          .eq('id', contestId)
+          .from("contests")
+          .select("*")
+          .eq("id", contestId)
           .single();
 
         if (contestError) throw contestError;
 
         // Fetch category info
         const { data: categoryData, error: categoryError } = await supabase
-          .from('age_categories')
-          .select('*')
-          .eq('id', categoryId)
+          .from("age_categories")
+          .select("*")
+          .eq("id", categoryId)
           .single();
 
         if (categoryError) throw categoryError;
 
         // Fetch entries in this contest and category
         const { data: entriesData, error: entriesError } = await supabase
-          .from('entries')
-          .select('*')
-          .eq('contest_id', contestId)
-          .eq('age_category_id', categoryId)
-          .order('entry_number', { ascending: true });
+          .from("entries")
+          .select("*")
+          .eq("contest_id", contestId)
+          .eq("age_category_id", categoryId)
+          .order("entry_number", { ascending: true });
 
         if (entriesError) throw entriesError;
 
         // Get all entries that have already been scored by this judge
         const { data: scoresData, error: scoresError } = await supabase
-          .from('scores')
-          .select('entry_id, creativity_score, execution_score, impact_score')
-          .eq('judge_id', user.id);
+          .from("scores")
+          .select("entry_id, creativity_score, execution_score, impact_score")
+          .eq("judge_id", user.id);
 
         if (scoresError) throw scoresError;
 
@@ -118,7 +127,7 @@ const JudgeEntriesPage = () => {
           map[score.entry_id] = {
             creativity: score.creativity_score,
             execution: score.execution_score,
-            impact: score.impact_score
+            impact: score.impact_score,
           };
           return map;
         }, {});
@@ -146,11 +155,11 @@ const JudgeEntriesPage = () => {
           setScores({
             creativity: 5,
             execution: 5,
-            impact: 5
+            impact: 5,
           });
         }
       } catch (error) {
-        console.error('Error fetching judging data:', error);
+        console.error("Error fetching judging data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -162,17 +171,17 @@ const JudgeEntriesPage = () => {
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (e.key === 'ArrowLeft') {
+      if (e.key === "ArrowLeft") {
         navigateToPreviousEntry();
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === "ArrowRight") {
         navigateToNextEntry();
-      } else if (e.key === 'Escape') {
+      } else if (e.key === "Escape") {
         setIsZoomed(false);
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [currentEntryIndex, entries.length]);
 
   // Simulate image loading
@@ -199,25 +208,25 @@ const JudgeEntriesPage = () => {
       checkExistingScores(entries[currentEntryIndex + 1]?.id);
     } else {
       // Handle end of entries
-      router.push('/judge/dashboard');
+      router.push("/judge/dashboard");
     }
   };
 
   const checkExistingScores = async (entryId) => {
     try {
       const {
-        data: { user }
+        data: { user },
       } = await supabase.auth.getUser();
 
       const { data, error } = await supabase
-        .from('scores')
-        .select('creativity_score, execution_score, impact_score')
-        .eq('entry_id', entryId)
-        .eq('judge_id', user.id)
+        .from("scores")
+        .select("creativity_score, execution_score, impact_score")
+        .eq("entry_id", entryId)
+        .eq("judge_id", user.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error checking scores:', error);
+      if (error && error.code !== "PGRST116") {
+        console.error("Error checking scores:", error);
         return;
       }
 
@@ -226,25 +235,25 @@ const JudgeEntriesPage = () => {
         setScores({
           creativity: data.creativity_score,
           execution: data.execution_score,
-          impact: data.impact_score
+          impact: data.impact_score,
         });
       } else {
         // Reset scores for this new entry
         setScores({
           creativity: 5,
           execution: 5,
-          impact: 5
+          impact: 5,
         });
       }
     } catch (error) {
-      console.error('Error checking existing scores:', error);
+      console.error("Error checking existing scores:", error);
     }
   };
 
   const handleScoreChange = (criterion, value) => {
     setScores((prev) => ({
       ...prev,
-      [criterion]: Number(value)
+      [criterion]: Number(value),
     }));
   };
 
@@ -257,15 +266,15 @@ const JudgeEntriesPage = () => {
 
       const currentEntry = entries[currentEntryIndex];
       const {
-        data: { user }
+        data: { user },
       } = await supabase.auth.getUser();
 
       // Check if this entry has already been scored
       const { data: existingScore, error: checkError } = await supabase
-        .from('scores')
-        .select('id')
-        .eq('entry_id', currentEntry.id)
-        .eq('judge_id', user.id)
+        .from("scores")
+        .select("id")
+        .eq("entry_id", currentEntry.id)
+        .eq("judge_id", user.id)
         .single();
 
       let saveError = null;
@@ -273,23 +282,23 @@ const JudgeEntriesPage = () => {
       if (existingScore) {
         // Update existing score
         const { error } = await supabase
-          .from('scores')
+          .from("scores")
           .update({
             creativity_score: scores.creativity,
             execution_score: scores.execution,
-            impact_score: scores.impact
+            impact_score: scores.impact,
           })
-          .eq('id', existingScore.id);
+          .eq("id", existingScore.id);
 
         saveError = error;
       } else {
         // Insert new score
-        const { error } = await supabase.from('scores').insert({
+        const { error } = await supabase.from("scores").insert({
           entry_id: currentEntry.id,
           judge_id: user.id,
           creativity_score: scores.creativity,
           execution_score: scores.execution,
-          impact_score: scores.impact
+          impact_score: scores.impact,
         });
 
         saveError = error;
@@ -297,13 +306,13 @@ const JudgeEntriesPage = () => {
 
       if (saveError) {
         setSaveStatus({
-          type: 'error',
-          message: 'Failed to save scores. Please try again.'
+          type: "error",
+          message: "Failed to save scores. Please try again.",
         });
       } else {
         setSaveStatus({
-          type: 'success',
-          message: 'Scores saved successfully!'
+          type: "success",
+          message: "Scores saved successfully!",
         });
 
         // Automatically move to the next entry after a short delay
@@ -313,10 +322,10 @@ const JudgeEntriesPage = () => {
         }, 1500);
       }
     } catch (error) {
-      console.error('Error submitting scores:', error);
+      console.error("Error submitting scores:", error);
       setSaveStatus({
-        type: 'error',
-        message: 'An unexpected error occurred. Please try again.'
+        type: "error",
+        message: "An unexpected error occurred. Please try again.",
       });
     } finally {
       setIsSaving(false);
@@ -338,9 +347,11 @@ const JudgeEntriesPage = () => {
           <CardContent className="p-8 text-center">
             <div className="w-12 h-12 mx-auto mb-4 text-yellow-500">⚠️</div>
             <h2 className="text-xl font-bold">No Entries Available</h2>
-            <p className="mb-4">There are no entries in this category that need judging.</p>
+            <p className="mb-4">
+              There are no entries in this category that need judging.
+            </p>
             <button
-              onClick={() => router.push('/judge/dashboard')}
+              onClick={() => router.push("/judge/dashboard")}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
               Return to Dashboard
@@ -358,7 +369,7 @@ const JudgeEntriesPage = () => {
       {/* Contest Type Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-2">
-          {contestInfo?.name || 'Contest'} - {categoryInfo?.name || 'Category'}
+          {contestInfo?.name || "Contest"} - {categoryInfo?.name || "Category"}
         </h1>
       </div>
 
@@ -370,7 +381,9 @@ const JudgeEntriesPage = () => {
               <button
                 onClick={navigateToPreviousEntry}
                 className={`p-2 rounded-full ${
-                  currentEntryIndex > 0 ? 'hover:bg-gray-100 text-gray-700' : 'text-gray-300 cursor-not-allowed'
+                  currentEntryIndex > 0
+                    ? "hover:bg-gray-100 text-gray-700"
+                    : "text-gray-300 cursor-not-allowed"
                 }`}
                 disabled={currentEntryIndex === 0}
                 title="Previous Entry (Left Arrow)"
@@ -382,8 +395,8 @@ const JudgeEntriesPage = () => {
                 onClick={navigateToNextEntry}
                 className={`p-2 rounded-full ${
                   currentEntryIndex < entries.length - 1
-                    ? 'hover:bg-gray-100 text-gray-700'
-                    : 'text-gray-300 cursor-not-allowed'
+                    ? "hover:bg-gray-100 text-gray-700"
+                    : "text-gray-300 cursor-not-allowed"
                 }`}
                 disabled={currentEntryIndex === entries.length - 1}
                 title="Next Entry (Right Arrow)"
@@ -393,13 +406,22 @@ const JudgeEntriesPage = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Age: {currentEntry?.participant_age}</span>
+              <span className="text-sm text-gray-500">
+                Age: {currentEntry?.participant_age}
+              </span>
               {currentEntry?.artist_statement && (
-                <div className="relative group" title="This entry has an artist statement">
+                <div
+                  className="relative group"
+                  title="This entry has an artist statement"
+                >
                   <Info size={16} className="text-blue-500 cursor-help" />
                   <div className="absolute right-0 mt-2 p-3 bg-white border rounded-md shadow-lg w-64 hidden group-hover:block z-10">
-                    <p className="text-sm font-medium mb-1">Artist Statement:</p>
-                    <p className="text-sm text-gray-600">{currentEntry.artist_statement}</p>
+                    <p className="text-sm font-medium mb-1">
+                      Artist Statement:
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {currentEntry.artist_statement}
+                    </p>
                   </div>
                 </div>
               )}
@@ -411,7 +433,9 @@ const JudgeEntriesPage = () => {
             {/* Image Container */}
             <div
               className={`relative transition-transform duration-200 ${
-                isZoomed ? 'cursor-zoom-out scale-150 origin-top' : 'cursor-zoom-in'
+                isZoomed
+                  ? "cursor-zoom-out scale-150 origin-top"
+                  : "cursor-zoom-in"
               }`}
               onClick={() => setIsZoomed(!isZoomed)}
             >
@@ -425,14 +449,20 @@ const JudgeEntriesPage = () => {
               <img
                 src={
                   showBackImage && currentEntry?.back_image_path
-                    ? getSupabasePublicUrl('contest-images', currentEntry.back_image_path)
+                    ? getSupabasePublicUrl(
+                        "contest-images",
+                        currentEntry.back_image_path,
+                      )
                     : currentEntry?.front_image_path
-                      ? getSupabasePublicUrl('contest-images', currentEntry.front_image_path)
-                      : '/api/placeholder/400/613'
+                      ? getSupabasePublicUrl(
+                          "contest-images",
+                          currentEntry.front_image_path,
+                        )
+                      : "/api/placeholder/400/613"
                 }
                 alt={`Contest Entry ${currentEntry?.entry_number}`}
-                className={`w-full rounded-lg shadow-lg mb-4 ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-                style={{ aspectRatio: '400/613' }}
+                className={`w-full rounded-lg shadow-lg mb-4 ${isLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
+                style={{ aspectRatio: "400/613" }}
                 loading="lazy"
               />
 
@@ -443,7 +473,7 @@ const JudgeEntriesPage = () => {
                   e.stopPropagation();
                   setIsZoomed(!isZoomed);
                 }}
-                title={isZoomed ? 'Zoom Out (Esc)' : 'Zoom In'}
+                title={isZoomed ? "Zoom Out (Esc)" : "Zoom In"}
               >
                 {isZoomed ? <ZoomOut size={20} /> : <ZoomIn size={20} />}
               </button>
@@ -458,14 +488,14 @@ const JudgeEntriesPage = () => {
                 }}
                 className="absolute top-2 left-2 bg-white/90 px-3 py-1 rounded-full shadow-md hover:bg-white"
               >
-                {showBackImage ? 'Show Front' : 'Show Back'}
+                {showBackImage ? "Show Front" : "Show Back"}
               </button>
             )}
           </div>
 
           {/* Scoring Section - Only visible when not zoomed */}
           <div
-            className={`space-y-4 mt-6 transition-opacity duration-200 ${isZoomed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+            className={`space-y-4 mt-6 transition-opacity duration-200 ${isZoomed ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           >
             <div className="space-y-2">
               <label className="block font-medium">Creativity (0-10)</label>
@@ -475,7 +505,9 @@ const JudgeEntriesPage = () => {
                 max="10"
                 value={scores.creativity}
                 className="w-full"
-                onChange={(e) => handleScoreChange('creativity', e.target.value)}
+                onChange={(e) =>
+                  handleScoreChange("creativity", e.target.value)
+                }
               />
               <div className="flex justify-between text-sm text-gray-600">
                 <span>0</span>
@@ -492,7 +524,7 @@ const JudgeEntriesPage = () => {
                 max="10"
                 value={scores.execution}
                 className="w-full"
-                onChange={(e) => handleScoreChange('execution', e.target.value)}
+                onChange={(e) => handleScoreChange("execution", e.target.value)}
               />
               <div className="flex justify-between text-sm text-gray-600">
                 <span>0</span>
@@ -509,7 +541,7 @@ const JudgeEntriesPage = () => {
                 max="10"
                 value={scores.impact}
                 className="w-full"
-                onChange={(e) => handleScoreChange('impact', e.target.value)}
+                onChange={(e) => handleScoreChange("impact", e.target.value)}
               />
               <div className="flex justify-between text-sm text-gray-600">
                 <span>0</span>
@@ -521,7 +553,9 @@ const JudgeEntriesPage = () => {
             {saveStatus && (
               <div
                 className={`p-3 rounded-md text-sm ${
-                  saveStatus.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+                  saveStatus.type === "success"
+                    ? "bg-green-50 text-green-800"
+                    : "bg-red-50 text-red-800"
                 }`}
               >
                 {saveStatus.message}
@@ -533,7 +567,7 @@ const JudgeEntriesPage = () => {
                 onClick={submitScores}
                 disabled={isSaving}
                 className={`w-full flex justify-center items-center gap-2 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors ${
-                  isSaving ? 'opacity-70 cursor-not-allowed' : ''
+                  isSaving ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >
                 {isSaving ? (
@@ -558,7 +592,9 @@ const JudgeEntriesPage = () => {
         <div>
           Entry {currentEntryIndex + 1} of {entries.length} in current category
         </div>
-        <div className="text-sm mt-2">Use arrow keys to navigate • Click image or press Esc to zoom</div>
+        <div className="text-sm mt-2">
+          Use arrow keys to navigate • Click image or press Esc to zoom
+        </div>
       </div>
     </div>
   );

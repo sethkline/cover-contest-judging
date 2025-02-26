@@ -1,8 +1,7 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import AppWrapper from './AppWrapper';
-
+import AppWrapper from "./AppWrapper";
 
 export const metadata: Metadata = {
   title: "Contest Judging System",
@@ -17,9 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AppWrapper>
-          {children}
-        </AppWrapper>
+        <AppWrapper>{children}</AppWrapper>
       </body>
     </html>
   );

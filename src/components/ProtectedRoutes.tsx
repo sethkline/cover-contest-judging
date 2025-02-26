@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/authContext';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/authContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -16,9 +16,9 @@ export function AdminRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push('/login');
-      } else if (userRole !== 'admin') {
-        router.push('/unauthorized');
+        router.push("/login");
+      } else if (userRole !== "admin") {
+        router.push("/unauthorized");
       }
     }
   }, [user, userRole, loading, router]);
@@ -34,7 +34,7 @@ export function AdminRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  if (!user || userRole !== 'admin') {
+  if (!user || userRole !== "admin") {
     return null;
   }
 
@@ -50,11 +50,14 @@ export function JudgeRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push('/login');
-      } else if (userRole !== 'judge') {
-        router.push('/unauthorized');
-      } else if (judgeStatus === 'pending' && !pathname.includes('/judge/welcome')) {
-        router.push('/judge/welcome');
+        router.push("/login");
+      } else if (userRole !== "judge") {
+        router.push("/unauthorized");
+      } else if (
+        judgeStatus === "pending" &&
+        !pathname.includes("/judge/welcome")
+      ) {
+        router.push("/judge/welcome");
       }
     }
   }, [user, userRole, judgeStatus, loading, router, pathname]);
@@ -70,12 +73,12 @@ export function JudgeRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  if (!user || userRole !== 'judge') {
+  if (!user || userRole !== "judge") {
     return null;
   }
 
   // Special case for welcome page
-  if (judgeStatus === 'pending' && !pathname.includes('/judge/welcome')) {
+  if (judgeStatus === "pending" && !pathname.includes("/judge/welcome")) {
     return null;
   }
 
@@ -90,12 +93,12 @@ export function JudgeWelcomeRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push('/login');
-      } else if (userRole !== 'judge') {
-        router.push('/unauthorized');
-      } else if (judgeStatus === 'active') {
+        router.push("/login");
+      } else if (userRole !== "judge") {
+        router.push("/unauthorized");
+      } else if (judgeStatus === "active") {
         // Already active, redirect to dashboard
-        router.push('/judge/dashboard');
+        router.push("/judge/dashboard");
       }
     }
   }, [user, userRole, judgeStatus, loading, router]);
@@ -111,7 +114,7 @@ export function JudgeWelcomeRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  if (!user || userRole !== 'judge' || judgeStatus === 'active') {
+  if (!user || userRole !== "judge" || judgeStatus === "active") {
     return null;
   }
 
