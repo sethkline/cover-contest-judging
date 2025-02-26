@@ -1,24 +1,26 @@
 // src/app/(protected)/admin/entries/page.tsx
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import Link from 'next/link'
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import Link from "next/link";
 
 export default async function EntriesPage() {
-  const supabase = createServerComponentClient({ cookies })
-  
+  const supabase = createServerComponentClient({ cookies });
+
   const { data: entries, error } = await supabase
-    .from('entries')
-    .select(`
+    .from("entries")
+    .select(
+      `
       *,
       age_categories (name)
-    `)
-    .order('created_at', { ascending: false })
+    `,
+    )
+    .order("created_at", { ascending: false });
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Contest Entries</h1>
-        <Link 
+        <Link
           href="/admin/entries/new"
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
@@ -64,7 +66,7 @@ export default async function EntriesPage() {
                     {new Date(entry.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Link 
+                    <Link
                       href={`/admin/entries/${entry.id}`}
                       className="text-blue-600 hover:text-blue-900"
                     >
@@ -78,5 +80,5 @@ export default async function EntriesPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,37 +1,37 @@
 // src/app/(auth)/reset-password/page.tsx
-'use client'
+"use client";
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useState } from 'react'
-import Link from 'next/link'
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useState } from "react";
+import Link from "next/link";
 
 export default function ResetPasswordPage() {
-  const supabase = createClientComponentClient()
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
+  const supabase = createClientComponentClient();
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    setSuccess(false)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/update-password`,
-      })
+      });
 
-      if (error) throw error
+      if (error) throw error;
 
-      setSuccess(true)
+      setSuccess(true);
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -53,7 +53,7 @@ export default function ResetPasswordPage() {
           <div className="bg-green-50 text-green-600 p-4 rounded-md">
             Check your email for the password reset link
           </div>
-          <Link 
+          <Link
             href="/login"
             className="block text-center text-blue-600 hover:text-blue-800"
           >
@@ -63,7 +63,10 @@ export default function ResetPasswordPage() {
       ) : (
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email address
             </label>
             <input
@@ -80,15 +83,15 @@ export default function ResetPasswordPage() {
             type="submit"
             disabled={loading}
             className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
+              loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {loading ? 'Sending...' : 'Send reset link'}
+            {loading ? "Sending..." : "Send reset link"}
           </button>
 
           <div className="text-center">
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               className="text-sm text-blue-600 hover:text-blue-800"
             >
               Back to login
@@ -97,5 +100,5 @@ export default function ResetPasswordPage() {
         </form>
       )}
     </>
-  )
+  );
 }

@@ -1,28 +1,28 @@
 // src/app/api/entries/route.ts
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const supabase = createRouteHandlerClient({ cookies })
-  
+  const supabase = createRouteHandlerClient({ cookies });
+
   try {
-    const formData = await request.formData()
-    const frontImage = formData.get('frontImage') as File
-    const name = formData.get('name') as string
-    const age = formData.get('age') as string
+    const formData = await request.formData();
+    const frontImage = formData.get("frontImage") as File;
+    const name = formData.get("name") as string;
+    const age = formData.get("age") as string;
 
     // Upload image directly to Supabase storage
-    const fileName = `${Date.now()}_front.jpg`
+    const fileName = `${Date.now()}_front.jpg`;
     const { data: imageData, error: imageError } = await supabase.storage
-      .from('contest-images')
-      .upload(fileName, frontImage)
+      .from("contest-images")
+      .upload(fileName, frontImage);
 
-    if (imageError) throw imageError
+    if (imageError) throw imageError;
 
     // Create entry in database
     const { data: entry, error: entryError } = await supabase
-      .from('entries')
+      .from("entries")
       .insert({
         front_image_path: fileName,
         participant_name: name,
@@ -30,12 +30,12 @@ export async function POST(request: Request) {
         // ... other entry data
       })
       .select()
-      .single()
+      .single();
 
-    if (entryError) throw entryError
+    if (entryError) throw entryError;
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
