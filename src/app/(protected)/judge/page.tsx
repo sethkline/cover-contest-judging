@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, use } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Award, Clock, Clipboard, Layers, ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/router";
 import { supabase } from "@/lib/supabase";
