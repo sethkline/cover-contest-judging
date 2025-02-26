@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Contest Judging Platform
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This web application is a comprehensive contest judging system designed to streamline the process of managing art or design contests across different age categories. Built with modern web technologies, the platform provides robust functionality for administrators and judges.
 
+## 🌟 Key Features
+
+### Admin Capabilities
+- Invite and manage judges
+- Create and manage contests
+- Add contest entries
+- Track judging progress
+- Categorize entries by age groups
+
+### Judge Interface
+- View and score contest entries
+- Navigate through entries efficiently
+- Rate entries based on multiple criteria
+- Track personal judging progress
+
+## 🛠 Tech Stack
+
+### Frontend
+- Next.js 13
+- React
+- TypeScript
+- Tailwind CSS
+- Shadcn/UI Components
+
+### Backend
+- Supabase (Authentication & Database)
+- PostgreSQL
+- Row Level Security (RLS)
+
+### Authentication
+- Supabase Auth
+- Magic Link Authentication
+- Role-based Access Control
+
+## 📦 Database Schema
+
+### Key Tables
+- **Contests**: Stores contest information
+- **Entries**: Tracks individual contest submissions
+- **Judges**: Manages judge accounts and statuses
+- **Scores**: Records judge evaluations
+
+## 🔐 Security Features
+- Role-based authentication
+- Row Level Security in Supabase
+- Secure judge invitations
+- Protected admin routes
+
+## 🚀 Key Technical Achievements
+
+- Implemented dynamic progress tracking for judges
+- Created type-safe React components
+- Developed responsive admin and judge interfaces
+- Utilized Supabase's advanced authentication features
+- Implemented efficient data fetching and state management
+
+## 🖼️ Screenshots
+
+![Judge Dashboard](/screenshots/judge-dashboard.png)
+
+
+## 🔍 Getting Started
+
+### Prerequisites
+- Node.js (v18+)
+- Supabase Account
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/contest-judging-platform.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up Supabase environment variables
+4. Run the development server
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🤝 Contributing
 
-## Learn More
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-To learn more about Next.js, take a look at the following resources:
+## 📄 License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
