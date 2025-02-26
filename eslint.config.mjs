@@ -16,14 +16,14 @@ const compat = new FlatCompat({
 export default [
   // Spread existing Next.js and TypeScript configs
   ...compat.extends("next/core-web-vitals"),
-  
+
   {
     plugins: {
       react: eslintPluginReact,
       "react-hooks": eslintPluginReactHooks,
       "@typescript-eslint": typescriptEslint,
     },
-    
+
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -32,34 +32,32 @@ export default [
         },
       },
     },
-    
+
     rules: {
       // Custom rules
-      'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_'
-      }],
-      'react/no-unescaped-entities': 'off',
-      '@next/next/no-img-element': 'off',
-      
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "react/no-unescaped-entities": "off",
+      "@next/next/no-img-element": "off",
+
       // Additional helpful rules
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
-      'react/prop-types': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-    }
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+      "react/prop-types": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
+    },
   },
-  
+
   // Ignore specific directories
   {
-    ignores: [
-      '.next/',
-      'node_modules/',
-      'dist/',
-      'build/'
-    ]
-  }
+    ignores: [".next/", "node_modules/", "dist/", "build/"],
+  },
 ];

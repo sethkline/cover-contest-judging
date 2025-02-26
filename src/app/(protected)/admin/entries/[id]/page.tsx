@@ -40,10 +40,10 @@ export default async function EntryDetailPage({
     : null;
 
   return (
-    <EntryDetailView 
-      entry={entry} 
-      frontImageUrl={frontImageUrl.publicUrl} 
-      backImageUrl={backImageUrl} 
+    <EntryDetailView
+      entry={entry}
+      frontImageUrl={frontImageUrl.publicUrl}
+      backImageUrl={backImageUrl}
     />
   );
 }

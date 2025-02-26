@@ -1,7 +1,7 @@
 export type Contest = {
   id: string;
   name: string;
-  type: 'cover' | 'bookmark';
+  type: "cover" | "bookmark";
   is_active: boolean;
   created_at: string;
 };

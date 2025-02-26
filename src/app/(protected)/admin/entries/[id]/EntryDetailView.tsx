@@ -9,10 +9,10 @@ type EntryDetailViewProps = {
   backImageUrl: string | null;
 };
 
-export default function EntryDetailView({ 
-  entry, 
-  frontImageUrl, 
-  backImageUrl 
+export default function EntryDetailView({
+  entry,
+  frontImageUrl,
+  backImageUrl,
 }: EntryDetailViewProps) {
   return (
     <div className="space-y-6">
