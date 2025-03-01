@@ -1,7 +1,10 @@
 "use client";
 
-import JudgeDashboard from "@/components/judge/dashboard/JudgeDashboard";
+import {JudgeDashboardFeature} from "@/features/judging/dashboard";
+import { withJudgeAuth } from "@/lib/auth";
 
-export default function DashboardPage() {
-  return <JudgeDashboard />;
-}
+const JudgeDashboardPage = () => {
+  return <JudgeDashboardFeature />;
+};
+
+export default withJudgeAuth(JudgeDashboardPage);

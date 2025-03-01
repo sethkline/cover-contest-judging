@@ -1,7 +1,7 @@
-"use client";
-
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
+import { ProgressBar } from "@/components/ui/progress-loading";
+import { BaseButton } from "@/components/ui/BaseButton";
 
 interface CategoryCardProps {
   categoryId: string;
@@ -12,48 +12,42 @@ interface CategoryCardProps {
   onStartJudging: (categoryId: string) => void;
 }
 
-export default function CategoryCard({
+export const CategoryCard: React.FC<CategoryCardProps> = ({
   categoryId,
   categoryName,
   judged,
   total,
   percentage,
   onStartJudging,
-}: CategoryCardProps) {
+}) => {
   return (
     <div className="border rounded-lg p-4">
       <div className="flex flex-wrap justify-between items-center mb-4">
         <h3 className="text-lg font-medium">Age Category: {categoryName}</h3>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-neutral-500">
           {judged} of {total} entries judged ({percentage}%)
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-        <div
-          className="bg-blue-600 h-2.5 rounded-full"
-          style={{ width: `${percentage}%` }}
-        ></div>
-      </div>
+      <ProgressBar
+        value={percentage}
+        variant={percentage === 100 ? "success" : "primary"}
+        showValue={false}
+        className="mb-4"
+      />
 
-      <button
+      <BaseButton
         onClick={() => onStartJudging(categoryId)}
-        className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-          judged === 0
-            ? "bg-blue-600 text-white hover:bg-blue-700"
-            : judged < total
-              ? "bg-blue-600 text-white hover:bg-blue-700"
-              : "bg-green-600 text-white hover:bg-green-700"
-        }`}
+        variant={judged < total ? "default" : "success"}
+        rightIcon={<ArrowUpRight size={16} />}
       >
         {judged === 0
           ? "Start Judging"
           : judged < total
-            ? "Continue Judging"
-            : "Review Entries"}
-        <ArrowUpRight size={16} />
-      </button>
+          ? "Continue Judging"
+          : "Review Entries"}
+      </BaseButton>
     </div>
   );
-}
+};

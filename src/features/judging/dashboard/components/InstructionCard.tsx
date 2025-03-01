@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Award } from "lucide-react";
@@ -8,27 +6,27 @@ interface InstructionCardProps {
   onViewInstructions: () => void;
 }
 
-export default function InstructionCard({
+export const InstructionCard: React.FC<InstructionCardProps> = ({
   onViewInstructions,
-}: InstructionCardProps) {
+}) => {
   return (
-    <Card className="bg-blue-50 border-blue-200">
+    <Card className="bg-info-50 border-info-200">
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
-          <div className="bg-blue-100 p-2 rounded-full">
-            <Award className="text-blue-600" />
+          <div className="bg-info-100 p-2 rounded-full">
+            <Award className="text-info-600" size={20} />
           </div>
           <div>
-            <h3 className="font-medium text-blue-800 mb-1">
+            <h3 className="font-medium text-info-800 mb-1">
               Need a refresher on judging?
             </h3>
-            <p className="text-blue-700 text-sm mb-2">
+            <p className="text-info-700 text-sm mb-2">
               You can always revisit the instructions on how to effectively
               evaluate entries.
             </p>
             <button
               onClick={onViewInstructions}
-              className="text-sm text-blue-700 hover:text-blue-900 font-medium underline"
+              className="text-sm text-info-700 hover:text-info-900 font-medium underline"
             >
               View Judging Instructions
             </button>
@@ -37,4 +35,4 @@ export default function InstructionCard({
       </CardContent>
     </Card>
   );
-}
+};

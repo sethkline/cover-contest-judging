@@ -1,16 +1,18 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { Award, Clipboard, Layers } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { withJudgeAuth } from "@/lib/auth";
+import { Spinner } from "@/components/ui/progress-loading";
 
 // Import the components
-import StatisticCard from "@/components/judge/dashboard/StatisticCard";
-import ContestCard from "@/components/judge/dashboard//ContestCard";
-import EmptyContestCard from "@/components/judge/dashboard/EmptyContestCard";
-import InstructionCard from "@/components/judge/dashboard/InstructionCard";
+import { StatisticCard } from "./components/StatisticCard";
+import { ContestCard } from "./components/ContestCard";
+import { EmptyContestCard } from "./components/EmptyContestCard";
+import { InstructionCard } from "./components/InstructionCard";
 
-const JudgeDashboard = () => {
+export const JudgeDashboardFeature = () => {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const [activeContests, setActiveContests] = useState([]);
@@ -175,7 +177,7 @@ const JudgeDashboard = () => {
   };
 
   const viewInstructions = () => {
-    router.push("/judge/welcome");
+    router.push("/judge/instructions");
   };
 
   // Calculate stats
@@ -196,7 +198,10 @@ const JudgeDashboard = () => {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto p-4 flex justify-center items-center min-h-screen">
-        <div>Loading dashboard...</div>
+        <div className="text-center">
+          <Spinner size="lg" variant="primary" />
+          <p className="mt-4 text-neutral-600">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -204,29 +209,29 @@ const JudgeDashboard = () => {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-4">Judge Dashboard</h1>
+        <h1 className="text-2xl font-bold text-primary-600 mb-4">Judge Dashboard</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <StatisticCard
             icon={Award}
-            iconColor="text-blue-600"
-            iconBgColor="bg-blue-100"
+            iconColor="text-rev-red-600"
+            iconBgColor="bg-rev-red-200"
             label="Active Contests"
             value={activeContests.length}
           />
 
           <StatisticCard
             icon={Clipboard}
-            iconColor="text-green-600"
-            iconBgColor="bg-green-100"
+            iconColor="text-rev-purple"
+            iconBgColor="bg-rev-grape"
             label="Entries Judged"
             value={totalJudged}
           />
 
           <StatisticCard
             icon={Layers}
-            iconColor="text-purple-600"
-            iconBgColor="bg-purple-100"
+            iconColor="text-rev-brown"
+            iconBgColor="bg-rev-tan"
             label="Total Entries"
             value={totalEntries}
           />
@@ -252,5 +257,3 @@ const JudgeDashboard = () => {
     </div>
   );
 };
-
-export default withJudgeAuth(JudgeDashboard);

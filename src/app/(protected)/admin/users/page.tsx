@@ -1,4 +1,3 @@
-// src/app/(protected)/admin/users/page.tsx
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";

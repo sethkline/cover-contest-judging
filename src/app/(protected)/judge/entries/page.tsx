@@ -1,7 +1,10 @@
 "use client";
 
-import JudgeEntriesPage from "@/components/judge/JudgeEntriesPage";
+import { JudgeEntriesFeature } from "@/features/judging/entries";
+import { withJudgeAuth } from "@/lib/auth";
 
-export default function EntriesPage() {
-  return <JudgeEntriesPage />;
-}
+const JudgeEntriesPage = () => {
+  return <JudgeEntriesFeature />;
+};
+
+export default withJudgeAuth(JudgeEntriesPage);

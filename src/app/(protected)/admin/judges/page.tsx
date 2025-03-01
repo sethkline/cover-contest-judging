@@ -2,11 +2,19 @@
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
-import { Mail, Loader2 } from "lucide-react";
+import { Mail, Loader2, RefreshCw, Activity, Trash2 } from "lucide-react";
+import { BaseButton } from '@/components/ui/BaseButton';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { Alert } from '@/components/ui/Alert';
+import { Badge } from '@/components/ui/Badge';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/Table';
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/authContext"; // Update path as needed
 
 export default function JudgesPage() {
   const supabase = createClientComponentClient();
+  const { userRole, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,27 +25,25 @@ export default function JudgesPage() {
 
   const router = useRouter();
 
+  // Check if user is authorized
   useEffect(() => {
-    fetchJudges();
-  }, []);
+    if (!authLoading && userRole !== "admin") {
+      router.push("/unauthorized");
+    }
+  }, [authLoading, userRole, router]);
+
+  useEffect(() => {
+    if (!authLoading && userRole === "admin") {
+      fetchJudges();
+    }
+  }, [authLoading, userRole]);
 
   const fetchJudges = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // First get the current user to verify admin status
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-      if (userError) throw userError;
-
-      if (user?.user_metadata?.role !== "admin") {
-        throw new Error("Not authorized");
-      }
-
-      // Then fetch judges
+      // Then fetch judges - no need to check admin status again
       const { data, error } = await supabase
         .from("judges")
         .select("*")
@@ -58,7 +64,7 @@ export default function JudgesPage() {
   const fetchJudgeProgress = async () => {
     try {
       // Get all entries count
-      const { data: entriesCount, error: entriesError } = await supabase
+      const { count: entriesCount, error: entriesError } = await supabase
         .from("entries")
         .select("*", { count: "exact", head: true });
 
@@ -68,7 +74,7 @@ export default function JudgesPage() {
       const judgeProgressData = {};
 
       for (const judge of judges) {
-        const { data: scores, error: scoresError } = await supabase
+        const { count: scoresCount, error: scoresError } = await supabase
           .from("scores")
           .select("*", { count: "exact", head: true })
           .eq("judge_id", judge.id);
@@ -76,8 +82,8 @@ export default function JudgesPage() {
         if (scoresError) throw scoresError;
 
         // Calculate completion percentage
-        const totalEntries = entriesCount.count || 0;
-        const judgedEntries = scores.count || 0;
+        const totalEntries = entriesCount || 0;
+        const judgedEntries = scoresCount || 0;
         const completionPercentage =
           totalEntries > 0
             ? Math.round((judgedEntries / totalEntries) * 100)
@@ -151,6 +157,7 @@ export default function JudgesPage() {
       setInviting(false);
     }
   };
+  
   const resendInvite = async (judgeEmail: string) => {
     try {
       setError(null);
@@ -219,220 +226,192 @@ export default function JudgesPage() {
     }
   };
 
-  return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Judges</h1>
-
-      {/* Invite Form */}
-      <div className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Invite New Judge</h2>
-        <form onSubmit={inviteJudge} className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <div className="flex-grow">
-              <label htmlFor="judge-email" className="sr-only">
-                Judge Email
-              </label>
-              <input
-                id="judge-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter judge's email address"
-                className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={inviting}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={inviting || !email}
-              className="inline-flex items-center px-4 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {inviting ? (
-                <>
-                  <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <Mail className="-ml-1 mr-2 h-4 w-4" />
-                  Send Invite
-                </>
-              )}
-            </button>
-          </div>
-
-          {error && (
-            <div className="rounded-md bg-red-50 p-4 mt-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg
-                    className="h-5 w-5 text-red-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-red-700">{error}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {success && (
-            <div className="rounded-md bg-green-50 p-4 mt-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg
-                    className="h-5 w-5 text-green-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-green-700">{success}</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </form>
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
+        <span className="ml-2 text-lg">Checking authorization...</span>
       </div>
+    );
+  }
+
+  // Don't render anything if not authorized
+  if (userRole !== "admin") {
+    return null;
+  }
+
+  return (
+    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Judges Management</h1>
+      
+      {/* Invite Form Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Invite New Judge</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={inviteJudge} className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex-grow">
+                <Input
+                  id="judge-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter judge's email address"
+                  disabled={inviting}
+                  className="w-full"
+                />
+              </div>
+              <BaseButton
+                type="submit"
+                disabled={inviting || !email}
+                className="w-full sm:w-auto"
+              >
+                {inviting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Send Invite
+                  </>
+                )}
+              </BaseButton>
+            </div>
+
+            {error && (
+              <Alert variant="error" title="Error">
+                {error}
+              </Alert>
+            )}
+
+            {success && (
+              <Alert variant="success" title="Success">
+                {success}
+              </Alert>
+            )}
+          </form>
+        </CardContent>
+      </Card>
 
       {/* Judges Table */}
-      {loading ? (
-        <div className="text-center py-4">Loading...</div>
-      ) : (
-        <div className="bg-white shadow rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Joined
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Completion
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {judges.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-6 py-4 text-center text-gray-500"
-                  >
-                    No judges found
-                  </td>
-                </tr>
-              ) : (
-                judges.map((judge) => {
-                  const progress = judgeProgress[judge.id] || {
-                    judgedEntries: 0,
-                    totalEntries: 0,
-                    completionPercentage: 0,
-                  };
+      <Card>
+        <CardHeader>
+          <CardTitle>Judges</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Joined</TableHead>
+                  <TableHead>Completion</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {judges.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                      No judges found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  judges.map((judge) => {
+                    const progress = judgeProgress[judge.id] || {
+                      judgedEntries: 0,
+                      totalEntries: 0,
+                      completionPercentage: 0,
+                    };
 
-                  return (
-                    <tr key={judge.id}>
-                      <td className="px-6 py-4">{judge.email}</td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                            judge.status === "active"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {judge.status === "active" ? (
-                            <>
-                              <span className="h-2 w-2 mr-1.5 rounded-full bg-green-600"></span>
-                              Active
-                            </>
-                          ) : (
-                            <>
-                              <span className="h-2 w-2 mr-1.5 rounded-full bg-yellow-600"></span>
-                              Pending
-                            </>
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {new Date(judge.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4">
-                        {judge.status === "active" ? (
-                          <div className="flex items-center space-x-2">
-                            <div className="w-full bg-gray-200 rounded-full h-2 flex-grow">
-                              <div
-                                className="bg-blue-600 h-2 rounded-full"
-                                style={{
-                                  width: `${progress.completionPercentage}%`,
-                                }}
-                              ></div>
-                            </div>
-                            <span className="text-xs text-gray-600">
-                              {progress.completionPercentage}%
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-gray-400 text-sm">
-                            Not started
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end">
-                          {judge.status === "pending" ? (
-                            <button
-                              onClick={() => resendInvite(judge.email)}
-                              className="text-blue-600 hover:text-blue-800 mr-4"
-                            >
-                              Resend
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => viewJudgeProgress(judge.id)}
-                              className="text-blue-600 hover:text-blue-800 mr-4"
-                            >
-                              Progress
-                            </button>
-                          )}
-                          <button
-                            onClick={() => deleteJudge(judge.id, judge.email)}
-                            className="text-red-600 hover:text-red-800"
+                    return (
+                      <TableRow key={judge.id}>
+                        <TableCell>{judge.email}</TableCell>
+                        <TableCell>
+                          <Badge 
+                            className={
+                              judge.status === "active" 
+                                ? "bg-success-50 text-success-700 dark:bg-success-900/20 dark:text-success-300" 
+                                : "bg-warning-50 text-warning-700 dark:bg-warning-900/20 dark:text-warning-300"
+                            }
                           >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+                            {judge.status === "active" ? "Active" : "Pending"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-neutral-500">
+                          {new Date(judge.created_at).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          {judge.status === "active" ? (
+                            <div className="flex items-center space-x-2">
+                              <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 flex-grow">
+                                <div
+                                  className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full"
+                                  style={{
+                                    width: `${progress.completionPercentage}%`,
+                                  }}
+                                ></div>
+                              </div>
+                              <span className="text-xs text-neutral-600 dark:text-neutral-400 min-w-[40px] text-right">
+                                {progress.completionPercentage}%
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-neutral-400 text-sm">
+                              Not started
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            {judge.status === "pending" ? (
+                              <BaseButton
+                                onClick={() => resendInvite(judge.email)}
+                                variant="outline"
+                                size="sm"
+                              >
+                                <RefreshCw className="h-4 w-4 mr-1" />
+                                Resend
+                              </BaseButton>
+                            ) : (
+                              <BaseButton
+                                onClick={() => viewJudgeProgress(judge.id)}
+                                variant="outline"
+                                size="sm"
+                              >
+                                <Activity className="h-4 w-4 mr-1" />
+                                Progress
+                              </BaseButton>
+                            )}
+                            <BaseButton
+                              onClick={() => deleteJudge(judge.id, judge.email)}
+                              variant="destructive"
+                              size="sm"
+                            >
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Delete
+                            </BaseButton>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

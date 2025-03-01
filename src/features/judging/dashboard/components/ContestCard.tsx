@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import CategoryCard from "./CategoryCard";
+import { CategoryCard } from "./CategoryCard";
 
 interface Category {
   categoryId: string;
@@ -18,13 +18,13 @@ interface ContestCardProps {
   onStartJudging: (contestId: string, categoryId: string) => void;
 }
 
-export default function ContestCard({
+export const ContestCard: React.FC<ContestCardProps> = ({
   contestId,
   contestName,
   contestType,
   categories,
   onStartJudging,
-}: ContestCardProps) {
+}) => {
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -52,4 +52,4 @@ export default function ContestCard({
       </CardContent>
     </Card>
   );
-}
+};

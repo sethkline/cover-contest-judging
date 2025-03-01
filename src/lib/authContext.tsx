@@ -65,17 +65,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Set the base user
         setUser(user);
 
-        // Check if user is an admin
-        const isAdmin = user.app_metadata?.role === "admin";
-
-        if (isAdmin) {
+        // CRITICAL CHANGE: First check if user is in admin_users table
+        const { data: adminData } = await supabase
+          .from('admin_users')
+          .select('id')
+          .eq('id', user.id)
+          .maybeSingle();
+          
+        if (adminData) {
+          console.log("User found in admin_users table");
           setUserRole("admin");
           setJudgeStatus(null);
           setLoading(false);
-          return;
+          return; // Important! Stop execution here
+        }
+          
+        // Fallback: Check metadata for admin role
+        const isAdmin = user.app_metadata?.role === "admin";
+
+        if (isAdmin) {
+          console.log("User has admin role in metadata");
+          setUserRole("admin");
+          setJudgeStatus(null);
+          setLoading(false);
+          return; // Important! Stop execution here
         }
 
-        // If not admin, check if they're a judge
+        // If we get here, user is not an admin, check if they're a judge
+        console.log("Checking if user is a judge");
         try {
           const { data: judgeData, error } = await supabase
             .from("judges")
@@ -86,6 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (error) {
             if (error.code === "PGRST116") {
               // No judge record found
+              console.log("User not found in judges table");
               setUserRole("unknown");
               setJudgeStatus(null);
             } else {
@@ -95,6 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           } else if (judgeData) {
             // Valid judge found
+            console.log("User found in judges table with status:", judgeData.status);
             setUserRole("judge");
             setJudgeStatus(judgeData.status);
           }
@@ -132,6 +151,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Sign in function
   const signIn = async (email: string, password: string) => {
     try {
+      setLoading(true);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -139,10 +159,64 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) return { error };
 
-      return { error: null };
+      // Determine role and redirect
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) return { error: new Error("User not found after login") };
+      
+      // Check if admin in database
+      const { data: adminData } = await supabase
+        .from('admin_users')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+        
+      if (adminData) {
+        // Admin user, redirect to admin dashboard
+        console.log("Admin user, redirecting to admin dashboard");
+        router.push("/admin");
+        return { error: null };
+      }
+      
+      // Fallback to metadata check
+      const isAdmin = user.app_metadata?.role === "admin";
+      
+      if (isAdmin) {
+        // Admin user from metadata, redirect to admin dashboard
+        console.log("Admin user from metadata, redirecting to admin dashboard");
+        router.push("/admin");
+        return { error: null };
+      }
+      
+      // Check if judge
+      try {
+        const { data: judgeData, error: judgeError } = await supabase
+          .from("judges")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+          
+        if (judgeError) {
+          // Not a judge
+          return { error: new Error("You don't have access to this system. Please contact an administrator.") };
+        }
+        
+        // Judge user, check status
+        if (judgeData.status === "pending") {
+          router.push("/judge/welcome");
+        } else {
+          router.push("/judge/dashboard");
+        }
+        
+        return { error: null };
+      } catch (error) {
+        return { error };
+      }
     } catch (error) {
       console.error("Error signing in:", error);
       return { error };
+    } finally {
+      setLoading(false);
     }
   };
 

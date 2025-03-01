@@ -1,24 +1,61 @@
-// src/app/(protected)/admin/layout.tsx
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+"use client";
+
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import SignOutButton from "@/components/SignOutButton";
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerComponentClient({ cookies });
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect("/login");
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState("");
+  
+  useEffect(() => {
+    const checkAdminAccess = async () => {
+      const supabase = createClientComponentClient();
+      
+      // Check if the user is logged in
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        router.push("/login");
+        return;
+      }
+      
+      // Check if user is in admin_users table
+      const { data: adminData } = await supabase
+        .from('admin_users')
+        .select('id')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      
+      if (!adminData) {
+        // Not an admin user
+        router.push("/unauthorized");
+        return;
+      }
+      
+      // User is authenticated as admin
+      setUserEmail(session.user.email);
+      setLoading(false);
+    };
+    
+    checkAdminAccess();
+  }, [router]);
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg">Loading...</p>
+      </div>
+    );
   }
-
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-sm">
@@ -51,7 +88,7 @@ export default async function AdminLayout({
               </Link>
             </div>
             <div className="flex items-center">
-              <span className="text-gray-500 mr-4">{session.user.email}</span>
+              <span className="text-gray-500 mr-4">{userEmail}</span>
               <SignOutButton />
             </div>
           </div>

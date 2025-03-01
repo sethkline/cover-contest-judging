@@ -55,7 +55,8 @@ export function JudgeRoute({ children }: ProtectedRouteProps) {
         router.push("/unauthorized");
       } else if (
         judgeStatus === "pending" &&
-        !pathname.includes("/judge/welcome")
+        !pathname.includes("/judge/welcome") &&
+        !pathname.includes("/judge/instructions")
       ) {
         router.push("/judge/welcome");
       }
@@ -77,8 +78,12 @@ export function JudgeRoute({ children }: ProtectedRouteProps) {
     return null;
   }
 
-  // Special case for welcome page
-  if (judgeStatus === "pending" && !pathname.includes("/judge/welcome")) {
+  // Special case for welcome page, but allow instructions page
+  if (
+    judgeStatus === "pending" && 
+    !pathname.includes("/judge/welcome") && 
+    !pathname.includes("/judge/instructions")
+  ) {
     return null;
   }
 
@@ -115,6 +120,39 @@ export function JudgeWelcomeRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!user || userRole !== "judge" || judgeStatus === "active") {
+    return null;
+  }
+
+  return <>{children}</>;
+}
+
+// Instructions Page - Accessible to both pending and active judges
+export function JudgeInstructionsRoute({ children }: ProtectedRouteProps) {
+  const { user, userRole, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.push("/login");
+      } else if (userRole !== "judge") {
+        router.push("/unauthorized");
+      }
+    }
+  }, [user, userRole, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || userRole !== "judge") {
     return null;
   }
 
