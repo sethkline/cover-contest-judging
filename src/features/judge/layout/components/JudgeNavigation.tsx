@@ -18,7 +18,7 @@ export const JudgeNavigation: React.FC<JudgeNavigationProps> = ({
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="font-bold text-xl text-primary-600">
+              <span className="font-bold text-xl mr-2 text-primary-600">
                 Contest Judge Portal
               </span>
             </div>
