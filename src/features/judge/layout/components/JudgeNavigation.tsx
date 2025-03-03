@@ -71,7 +71,7 @@ const NavLink: React.FC<NavLinkProps> = ({ href, isActive, icon, label }) => {
           : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"
       }`}
     >
-      {icon}
+      <span className="mr-1">{icon}</span>
       {label}
     </Link>
   );
