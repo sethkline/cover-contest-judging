@@ -73,7 +73,7 @@
 //                 </Link>
 //               )}
 //             </div>
-            
+
 //             {/* Desktop Nav */}
 //             <nav className="hidden md:ml-6 md:flex md:space-x-4 items-center">
 //               {navItems.map((item) => (
@@ -111,7 +111,7 @@
 //                     <ChevronDown size={16} className="ml-1 text-neutral-500" />
 //                   </button>
 //                 </div>
-                
+
 //                 {/* User Dropdown */}
 //                 {userMenuOpen && (
 //                   <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-neutral-800 ring-1 ring-black ring-opacity-5 z-10">
@@ -153,13 +153,13 @@
 //             {/* Login / Register (if not logged in) */}
 //             {!userName && (
 //               <div className="hidden md:flex items-center space-x-2">
-//                 <Link 
+//                 <Link
 //                   href="/login"
 //                   className="px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
 //                 >
 //                   Log in
 //                 </Link>
-//                 <Link 
+//                 <Link
 //                   href="/register"
 //                   className="px-3 py-2 rounded-md text-sm font-medium bg-primary-600 text-white hover:bg-primary-700"
 //                 >
@@ -227,24 +227,22 @@
 //     </header>
 //   );
 // }
-import React from 'react';
+import React from "react";
 
 interface HeaderProps {
   title?: string;
   logoOnly?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ 
+export const Header: React.FC<HeaderProps> = ({
   title = "Révérence Studios",
-  logoOnly = false
+  logoOnly = false,
 }) => {
   return (
     <header className="bg-white shadow-sm">
       <div className="max-w-4xl mx-auto px-4 py-4 flex justify-center">
-        <h1 className="text-2xl font-serif italic text-primary-600">
-          {title}
-        </h1>
-        
+        <h1 className="text-2xl font-serif italic text-primary-600">{title}</h1>
+
         {!logoOnly && (
           <div className="ml-auto">
             {/* Additional header content can go here */}

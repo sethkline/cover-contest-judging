@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { ZoomIn, ZoomOut, ChevronLeft, ChevronRight } from 'lucide-react';
-import { ScoringForm } from './ScoringForm';
-import { BaseButton } from '@/components/ui/BaseButton';
+import React, { useState } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { ZoomIn, ZoomOut, ChevronLeft, ChevronRight } from "lucide-react";
+import { ScoringForm } from "./ScoringForm";
+import { BaseButton } from "@/components/ui/BaseButton";
 
 interface EntryDetailsProps {
   entry?: {
@@ -24,7 +24,7 @@ export const EntryDetails: React.FC<EntryDetailsProps> = ({
   entry,
   onBack,
   onNext,
-  onPrevious
+  onPrevious,
 }) => {
   const [showBackImage, setShowBackImage] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -54,7 +54,7 @@ export const EntryDetails: React.FC<EntryDetailsProps> = ({
   }, [entry, showBackImage]);
 
   const handleScoreSave = (scores: any) => {
-    console.log('Scores saved:', scores);
+    console.log("Scores saved:", scores);
     setShowScoringForm(false);
     if (onNext) {
       onNext();
@@ -68,7 +68,7 @@ export const EntryDetails: React.FC<EntryDetailsProps> = ({
           <CardTitle className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               {onPrevious && (
-                <button 
+                <button
                   onClick={onPrevious}
                   className="p-2 hover:bg-neutral-100 rounded-full"
                   title="Previous Entry (Left Arrow)"
@@ -78,7 +78,7 @@ export const EntryDetails: React.FC<EntryDetailsProps> = ({
               )}
               <span>Entry #{entry.entryNumber}</span>
               {onNext && (
-                <button 
+                <button
                   onClick={onNext}
                   className="p-2 hover:bg-neutral-100 rounded-full"
                   title="Next Entry (Right Arrow)"
@@ -100,9 +100,11 @@ export const EntryDetails: React.FC<EntryDetailsProps> = ({
         <CardContent>
           <div className="relative">
             {/* Image Container */}
-            <div 
+            <div
               className={`relative transition-transform duration-200 ${
-                isZoomed ? 'cursor-zoom-out scale-150 origin-top' : 'cursor-zoom-in'
+                isZoomed
+                  ? "cursor-zoom-out scale-150 origin-top"
+                  : "cursor-zoom-in"
               }`}
               onClick={() => setIsZoomed(!isZoomed)}
             >
@@ -111,11 +113,15 @@ export const EntryDetails: React.FC<EntryDetailsProps> = ({
                   <div className="text-neutral-400">Loading...</div>
                 </div>
               )}
-              <img 
-                src={showBackImage && entry.backImageUrl ? entry.backImageUrl : entry.frontImageUrl}
+              <img
+                src={
+                  showBackImage && entry.backImageUrl
+                    ? entry.backImageUrl
+                    : entry.frontImageUrl
+                }
                 alt={`Contest Entry ${entry.entryNumber}`}
-                className={`w-full rounded-lg shadow-lg mb-4 ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-                style={{ aspectRatio: '400/613' }}
+                className={`w-full rounded-lg shadow-lg mb-4 ${isLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
+                style={{ aspectRatio: "400/613" }}
                 loading="lazy"
               />
               {/* Zoom indicator */}
@@ -125,7 +131,7 @@ export const EntryDetails: React.FC<EntryDetailsProps> = ({
                   e.stopPropagation();
                   setIsZoomed(!isZoomed);
                 }}
-                title={isZoomed ? 'Zoom Out (Esc)' : 'Zoom In'}
+                title={isZoomed ? "Zoom Out (Esc)" : "Zoom In"}
               >
                 {isZoomed ? <ZoomOut size={20} /> : <ZoomIn size={20} />}
               </button>
@@ -140,7 +146,7 @@ export const EntryDetails: React.FC<EntryDetailsProps> = ({
                 }}
                 className="absolute top-2 left-2 bg-white/90 px-3 py-1 rounded-full shadow-md hover:bg-white"
               >
-                {showBackImage ? 'Show Front' : 'Show Back'}
+                {showBackImage ? "Show Front" : "Show Back"}
               </button>
             )}
           </div>
@@ -154,17 +160,14 @@ export const EntryDetails: React.FC<EntryDetailsProps> = ({
           )}
 
           {/* Action buttons - only shown when not zoomed */}
-          <div className={`mt-6 flex justify-between transition-opacity duration-200 ${isZoomed ? 'opacity-0' : 'opacity-100'}`}>
-            <BaseButton
-              variant="outline"
-              onClick={onBack}
-            >
+          <div
+            className={`mt-6 flex justify-between transition-opacity duration-200 ${isZoomed ? "opacity-0" : "opacity-100"}`}
+          >
+            <BaseButton variant="outline" onClick={onBack}>
               Back to Entries
             </BaseButton>
-            
-            <BaseButton
-              onClick={() => setShowScoringForm(true)}
-            >
+
+            <BaseButton onClick={() => setShowScoringForm(true)}>
               Score This Entry
             </BaseButton>
           </div>

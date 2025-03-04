@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import React from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 
 interface ContestThemeProps {
   year?: string;
@@ -16,8 +16,8 @@ export const ContestTheme: React.FC<ContestThemeProps> = ({
   verseReference = "Ephesians 2:8-9",
   description = [
     "This year's recital celebrates how God's grace echoes throughout our lives, transforming our stories and movements. Students' designs should reflect themes of grace, faith, and transformation.",
-    "Judges will evaluate entries on creativity, execution, and how well they capture the spiritual meaning behind this year's theme."
-  ]
+    "Judges will evaluate entries on creativity, execution, and how well they capture the spiritual meaning behind this year's theme.",
+  ],
 }) => {
   return (
     <Card elevation="raised" className="mb-8">
@@ -28,17 +28,18 @@ export const ContestTheme: React.FC<ContestThemeProps> = ({
         <h3 className="text-2xl font-medium text-primary-600 mb-3 text-center">
           "{title}"
         </h3>
-        
+
         <div className="mb-6 text-center italic">
-          <p className="text-neutral-700">
-            "{verse}"
-          </p>
+          <p className="text-neutral-700">"{verse}"</p>
           <p className="text-neutral-600 mt-1">- {verseReference}</p>
         </div>
-        
+
         <div className="text-neutral-700">
           {description.map((paragraph, index) => (
-            <p key={index} className={index < description.length - 1 ? "mb-4" : ""}>
+            <p
+              key={index}
+              className={index < description.length - 1 ? "mb-4" : ""}
+            >
               {paragraph}
             </p>
           ))}

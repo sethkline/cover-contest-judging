@@ -1,28 +1,28 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Input } from '../components/ui/Input';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Input } from "../components/ui/Input";
 
 const meta: Meta<typeof Input> = {
-  title: 'Components/Input',
+  title: "Components/Input",
   component: Input,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['default', 'error', 'success'],
+      control: "select",
+      options: ["default", "error", "success"],
     },
     size: {
-      control: 'select',
-      options: ['default', 'sm', 'lg'],
+      control: "select",
+      options: ["default", "sm", "lg"],
     },
     disabled: {
-      control: 'boolean',
+      control: "boolean",
     },
     type: {
-      control: 'select',
-      options: ['text', 'password', 'email', 'number'],
+      control: "select",
+      options: ["text", "password", "email", "number"],
     },
   },
 };
@@ -32,58 +32,58 @@ type Story = StoryObj<typeof Input>;
 
 export const Default: Story = {
   args: {
-    placeholder: 'Enter text',
-    type: 'text',
+    placeholder: "Enter text",
+    type: "text",
   },
 };
 
 export const Error: Story = {
   args: {
-    placeholder: 'Enter text',
-    type: 'text',
-    variant: 'error',
+    placeholder: "Enter text",
+    type: "text",
+    variant: "error",
   },
 };
 
 export const Success: Story = {
   args: {
-    placeholder: 'Enter text',
-    type: 'text',
-    variant: 'success',
+    placeholder: "Enter text",
+    type: "text",
+    variant: "success",
   },
 };
 
 export const Small: Story = {
   args: {
-    placeholder: 'Small input',
-    size: 'sm',
+    placeholder: "Small input",
+    size: "sm",
   },
 };
 
 export const Large: Story = {
   args: {
-    placeholder: 'Large input',
-    size: 'lg',
+    placeholder: "Large input",
+    size: "lg",
   },
 };
 
 export const Password: Story = {
   args: {
-    placeholder: 'Enter password',
-    type: 'password',
+    placeholder: "Enter password",
+    type: "password",
   },
 };
 
 export const Disabled: Story = {
   args: {
-    placeholder: 'Disabled input',
+    placeholder: "Disabled input",
     disabled: true,
   },
 };
 
 export const WithLeftIcon: Story = {
   args: {
-    placeholder: 'Search',
+    placeholder: "Search",
     leftIcon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +105,7 @@ export const WithLeftIcon: Story = {
 
 export const WithRightIcon: Story = {
   args: {
-    placeholder: 'Enter email',
+    placeholder: "Enter email",
     rightIcon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

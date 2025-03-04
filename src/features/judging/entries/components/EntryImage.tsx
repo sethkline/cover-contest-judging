@@ -18,16 +18,14 @@ export const EntryImage: React.FC<EntryImageProps> = ({
   showBackImage,
   onZoomToggle,
   onViewToggle,
-  getImageUrl
+  getImageUrl,
 }) => {
   return (
     <div className="relative">
       {/* Image Container */}
       <div
         className={`relative transition-transform duration-200 ${
-          isZoomed
-            ? "cursor-zoom-out scale-150 origin-top"
-            : "cursor-zoom-in"
+          isZoomed ? "cursor-zoom-out scale-150 origin-top" : "cursor-zoom-in"
         }`}
         onClick={onZoomToggle}
       >

@@ -1,6 +1,6 @@
 "use client";
 
-import {JudgeDashboardFeature} from "@/features/judging/dashboard";
+import { JudgeDashboardFeature } from "@/features/judging/dashboard";
 import { withJudgeAuth } from "@/lib/auth";
 
 const JudgeDashboardPage = () => {

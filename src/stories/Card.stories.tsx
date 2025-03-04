@@ -1,26 +1,26 @@
 // src/stories/Card.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent, 
-  CardFooter 
-} from '../components/ui/Card';
-import { BaseButton } from '../components/ui/BaseButton';
+import type { Meta, StoryObj } from "@storybook/react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "../components/ui/Card";
+import { BaseButton } from "../components/ui/BaseButton";
 
 const meta: Meta<typeof Card> = {
-  title: 'Components/Card',
+  title: "Components/Card",
   component: Card,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     elevation: {
-      control: 'select',
-      options: ['flat', 'raised', 'outlined'],
+      control: "select",
+      options: ["flat", "raised", "outlined"],
     },
   },
 };
@@ -30,7 +30,7 @@ type Story = StoryObj<typeof Card>;
 
 export const Default: Story = {
   args: {
-    elevation: 'raised',
+    elevation: "raised",
     children: (
       <>
         <CardHeader>
@@ -45,7 +45,7 @@ export const Default: Story = {
         </CardFooter>
       </>
     ),
-    className: 'w-80',
+    className: "w-80",
   },
   parameters: {
     docs: {
@@ -71,7 +71,7 @@ export const Default: Story = {
 
 export const Flat: Story = {
   args: {
-    elevation: 'flat',
+    elevation: "flat",
     children: (
       <>
         <CardHeader>
@@ -82,13 +82,13 @@ export const Flat: Story = {
         </CardContent>
       </>
     ),
-    className: 'w-80',
+    className: "w-80",
   },
 };
 
 export const Outlined: Story = {
   args: {
-    elevation: 'outlined',
+    elevation: "outlined",
     children: (
       <>
         <CardHeader>
@@ -99,7 +99,7 @@ export const Outlined: Story = {
         </CardContent>
       </>
     ),
-    className: 'w-80',
+    className: "w-80",
   },
 };
 
@@ -128,7 +128,9 @@ export const EntryCard: Story = {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <BaseButton variant="outline" size="sm">Previous</BaseButton>
+        <BaseButton variant="outline" size="sm">
+          Previous
+        </BaseButton>
         <BaseButton size="sm">Next</BaseButton>
       </CardFooter>
     </Card>

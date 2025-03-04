@@ -22,9 +22,7 @@ export const NoEntriesCard: React.FC<NoEntriesCardProps> = ({
         <p className="mb-4">
           There are no entries in this category that need judging.
         </p>
-        <BaseButton 
-          onClick={onReturnToDashboard}
-        >
+        <BaseButton onClick={onReturnToDashboard}>
           Return to Dashboard
         </BaseButton>
       </CardContent>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface FooterProps {
   company?: string;
@@ -6,14 +6,16 @@ interface FooterProps {
   year?: number;
 }
 
-export const Footer: React.FC<FooterProps> = ({ 
+export const Footer: React.FC<FooterProps> = ({
   company = "Reverence Studios",
   address = "5240 Simpson Ferry Rd., Mechanicsburg, PA 17050",
-  year = new Date().getFullYear()
+  year = new Date().getFullYear(),
 }) => {
   return (
     <footer className="text-center text-neutral-500 text-sm mt-12">
-      <p>© {year} {company}</p>
+      <p>
+        © {year} {company}
+      </p>
       <p>{address}</p>
     </footer>
   );

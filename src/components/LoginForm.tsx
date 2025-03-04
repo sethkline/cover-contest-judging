@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/lib/authContext"; 
+import { useAuth } from "@/lib/authContext";
 
 export default function LoginForm() {
   const { signIn } = useAuth();
@@ -26,7 +26,7 @@ export default function LoginForm() {
   //     .select('id')
   //     .eq('id', userId)
   //     .maybeSingle();
-    
+
   //   return !!data;
   // };
 
@@ -37,7 +37,7 @@ export default function LoginForm() {
   //       .select("*")
   //       .eq("id", userId)
   //       .single();
-        
+
   //     if (error) throw error;
   //     return data;
   //   } catch (error) {
@@ -48,19 +48,18 @@ export default function LoginForm() {
   //   }
   // };
 
-  // Main form submission handler  
+  // Main form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       // Use the signIn method from AuthContext
       const { error } = await signIn(email, password);
-      
+
       if (error) throw error;
       // No need to handle redirects - AuthContext's signIn handles that
-      
     } catch (error) {
       console.error("Login error:", error);
       setError(error instanceof Error ? error.message : "An error occurred");

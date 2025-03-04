@@ -53,7 +53,7 @@ export const ScoringForm: React.FC<ScoringFormProps> = ({
       />
 
       {saveStatus && (
-        <Alert 
+        <Alert
           variant={saveStatus.type === "success" ? "success" : "error"}
           onClose={() => {}}
         >

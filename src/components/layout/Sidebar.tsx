@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import React, { useState } from "react";
+import Link from "next/link";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 // Simple utility function to merge classNames
 const cn = (...classes: string[]) => {
@@ -24,12 +24,12 @@ export interface SidebarProps {
   footer?: React.ReactNode;
 }
 
-export function SidebarItem({ 
-  href, 
-  label, 
-  icon, 
-  active = false, 
-  children 
+export function SidebarItem({
+  href,
+  label,
+  icon,
+  active = false,
+  children,
 }: SidebarItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = children && children.length > 0;
@@ -40,8 +40,8 @@ export function SidebarItem({
         href={href}
         className={cn(
           "flex items-center px-4 py-3 text-sm rounded-md my-1",
-          active 
-            ? "text-white bg-primary-600" 
+          active
+            ? "text-white bg-primary-600"
             : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800",
           hasChildren ? "justify-between" : "",
         )}
@@ -58,11 +58,7 @@ export function SidebarItem({
         </div>
         {hasChildren && (
           <span>
-            {isOpen ? (
-              <ChevronDown size={16} />
-            ) : (
-              <ChevronRight size={16} />
-            )}
+            {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
           </span>
         )}
       </Link>
@@ -76,8 +72,8 @@ export function SidebarItem({
               href={child.href}
               className={cn(
                 "flex items-center px-4 py-2 text-sm rounded-md my-1",
-                child.active 
-                  ? "text-white bg-primary-600" 
+                child.active
+                  ? "text-white bg-primary-600"
                   : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800",
               )}
             >
@@ -91,21 +87,21 @@ export function SidebarItem({
   );
 }
 
-export function Sidebar({ 
-  items, 
-  collapsed = false, 
-  onCollapse, 
+export function Sidebar({
+  items,
+  collapsed = false,
+  onCollapse,
   className,
   header,
-  footer
+  footer,
 }: SidebarProps) {
   return (
-    <div 
+    <div
       className={cn(
         "flex flex-col h-full bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800",
         collapsed ? "w-16" : "w-64",
         "transition-all duration-300",
-        className
+        className,
       )}
     >
       {/* Header/Logo */}
@@ -117,15 +113,11 @@ export function Sidebar({
 
       {/* Collapse button */}
       {onCollapse && (
-        <button 
+        <button
           className="p-2 m-2 text-neutral-500 hover:text-neutral-900 dark:hover:text-white self-end"
           onClick={() => onCollapse(!collapsed)}
         >
-          {collapsed ? (
-            <ChevronRight size={20} />
-          ) : (
-            <ChevronLeft size={20} />
-          )}
+          {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
       )}
 

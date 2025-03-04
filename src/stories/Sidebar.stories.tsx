@@ -1,29 +1,29 @@
 // src/stories/Sidebar.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import { Sidebar } from '../components/layout/Sidebar';
-import { 
-  Home, 
-  Users, 
-  Settings, 
-  FileText, 
-  Award, 
-  Activity, 
+import type { Meta, StoryObj } from "@storybook/react";
+import { Sidebar } from "../components/layout/Sidebar";
+import {
+  Home,
+  Users,
+  Settings,
+  FileText,
+  Award,
+  Activity,
   BookOpen,
-  BarChart
-} from 'lucide-react';
+  BarChart,
+} from "lucide-react";
 
 const meta: Meta<typeof Sidebar> = {
-  title: 'Layout/Sidebar',
+  title: "Layout/Sidebar",
   component: Sidebar,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     collapsed: {
-      control: 'boolean',
+      control: "boolean",
     },
-    onCollapse: { action: 'toggled collapse' },
+    onCollapse: { action: "toggled collapse" },
   },
   decorators: [
     (Story) => (
@@ -39,78 +39,78 @@ type Story = StoryObj<typeof Sidebar>;
 
 const adminItems = [
   {
-    href: '/admin/dashboard',
-    label: 'Dashboard',
+    href: "/admin/dashboard",
+    label: "Dashboard",
     icon: <Home size={20} />,
     active: true,
   },
   {
-    href: '/admin/contests',
-    label: 'Contests',
+    href: "/admin/contests",
+    label: "Contests",
     icon: <Award size={20} />,
     children: [
       {
-        href: '/admin/contests/cover',
-        label: 'Cover Contest',
+        href: "/admin/contests/cover",
+        label: "Cover Contest",
       },
       {
-        href: '/admin/contests/bookmark',
-        label: 'Bookmark Contest',
+        href: "/admin/contests/bookmark",
+        label: "Bookmark Contest",
       },
     ],
   },
   {
-    href: '/admin/entries',
-    label: 'Entries',
+    href: "/admin/entries",
+    label: "Entries",
     icon: <FileText size={20} />,
   },
   {
-    href: '/admin/judges',
-    label: 'Judges',
+    href: "/admin/judges",
+    label: "Judges",
     icon: <Users size={20} />,
   },
   {
-    href: '/admin/reports',
-    label: 'Reports',
+    href: "/admin/reports",
+    label: "Reports",
     icon: <BarChart size={20} />,
     children: [
       {
-        href: '/admin/reports/participation',
-        label: 'Participation',
+        href: "/admin/reports/participation",
+        label: "Participation",
       },
       {
-        href: '/admin/reports/scores',
-        label: 'Scoring Analysis',
+        href: "/admin/reports/scores",
+        label: "Scoring Analysis",
       },
     ],
   },
   {
-    href: '/admin/settings',
-    label: 'Settings',
+    href: "/admin/settings",
+    label: "Settings",
     icon: <Settings size={20} />,
   },
 ];
 
 const judgeItems = [
   {
-    href: '/judge/dashboard',
-    label: 'Dashboard',
+    href: "/judge/dashboard",
+    label: "Dashboard",
     icon: <Home size={20} />,
     active: true,
   },
   {
-    href: '/judge/entries',
-    label: 'Entries to Judge',
+    href: "/judge/entries",
+    label: "Entries to Judge",
     icon: <BookOpen size={20} />,
   },
   {
-    href: '/judge/completed',
-    label: 'Completed Entries',
+    href: "/judge/completed",
+    label: "Completed Entries",
     icon: <Activity size={20} />,
   },
   {
-    href: '/judge/profile',
-    label: 'Profile',
+    href: "/judge/profile",
+    label: "Profile",
     icon: <Users size={20} />,
   },
 ];
@@ -122,7 +122,9 @@ export const AdminSidebar: Story = {
     header: (
       <div className="flex items-center">
         <Award size={24} className="text-primary-600 mr-2" />
-        <span className="font-bold text-neutral-900 dark:text-white">Admin Panel</span>
+        <span className="font-bold text-neutral-900 dark:text-white">
+          Admin Panel
+        </span>
       </div>
     ),
     footer: (
@@ -140,7 +142,9 @@ export const JudgeSidebar: Story = {
     header: (
       <div className="flex items-center">
         <BookOpen size={24} className="text-primary-600 mr-2" />
-        <span className="font-bold text-neutral-900 dark:text-white">Judge Portal</span>
+        <span className="font-bold text-neutral-900 dark:text-white">
+          Judge Portal
+        </span>
       </div>
     ),
   },

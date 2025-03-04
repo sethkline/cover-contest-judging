@@ -3,12 +3,19 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
 import { Mail, Loader2, RefreshCw, Activity, Trash2 } from "lucide-react";
-import { BaseButton } from '@/components/ui/BaseButton';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { Alert } from '@/components/ui/Alert';
-import { Badge } from '@/components/ui/Badge';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/Table';
+import { BaseButton } from "@/components/ui/BaseButton";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Alert } from "@/components/ui/Alert";
+import { Badge } from "@/components/ui/Badge";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/Table";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/authContext"; // Update path as needed
 
@@ -157,7 +164,7 @@ export default function JudgesPage() {
       setInviting(false);
     }
   };
-  
+
   const resendInvite = async (judgeEmail: string) => {
     try {
       setError(null);
@@ -243,8 +250,10 @@ export default function JudgesPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Judges Management</h1>
-      
+      <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+        Judges Management
+      </h1>
+
       {/* Invite Form Card */}
       <Card>
         <CardHeader>
@@ -322,7 +331,10 @@ export default function JudgesPage() {
               <TableBody>
                 {judges.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                    <TableCell
+                      colSpan={5}
+                      className="text-center py-8 text-gray-500"
+                    >
                       No judges found
                     </TableCell>
                   </TableRow>
@@ -338,10 +350,10 @@ export default function JudgesPage() {
                       <TableRow key={judge.id}>
                         <TableCell>{judge.email}</TableCell>
                         <TableCell>
-                          <Badge 
+                          <Badge
                             className={
-                              judge.status === "active" 
-                                ? "bg-success-50 text-success-700 dark:bg-success-900/20 dark:text-success-300" 
+                              judge.status === "active"
+                                ? "bg-success-50 text-success-700 dark:bg-success-900/20 dark:text-success-300"
                                 : "bg-warning-50 text-warning-700 dark:bg-warning-900/20 dark:text-warning-300"
                             }
                           >

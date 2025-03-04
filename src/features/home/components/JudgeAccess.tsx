@@ -1,6 +1,6 @@
-import React from 'react';
-import Link from 'next/link';
-import { BaseButton } from '@/components/ui/BaseButton';
+import React from "react";
+import Link from "next/link";
+import { BaseButton } from "@/components/ui/BaseButton";
 
 interface JudgeAccessProps {
   buttonText?: string;
@@ -11,7 +11,7 @@ interface JudgeAccessProps {
 export const JudgeAccess: React.FC<JudgeAccessProps> = ({
   buttonText = "Judge Login",
   subText = "Access for judges and administrators only",
-  loginPath = "/login"
+  loginPath = "/login",
 }) => {
   return (
     <div className="text-center">
@@ -20,9 +20,7 @@ export const JudgeAccess: React.FC<JudgeAccessProps> = ({
           {buttonText}
         </BaseButton>
       </Link>
-      <p className="text-sm text-neutral-500 mt-3">
-        {subText}
-      </p>
+      <p className="text-sm text-neutral-500 mt-3">{subText}</p>
     </div>
   );
 };

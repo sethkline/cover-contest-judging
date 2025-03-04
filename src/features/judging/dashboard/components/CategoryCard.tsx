@@ -45,8 +45,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
         {judged === 0
           ? "Start Judging"
           : judged < total
-          ? "Continue Judging"
-          : "Review Entries"}
+            ? "Continue Judging"
+            : "Review Entries"}
       </BaseButton>
     </div>
   );

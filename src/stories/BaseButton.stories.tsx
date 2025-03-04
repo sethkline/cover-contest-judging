@@ -1,28 +1,38 @@
 // src/stories/BaseButton.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import { BaseButton } from '../components/ui/BaseButton';
+import type { Meta, StoryObj } from "@storybook/react";
+import { BaseButton } from "../components/ui/BaseButton";
 
 const meta: Meta<typeof BaseButton> = {
-  title: 'Components/BaseButton',
+  title: "Components/BaseButton",
   component: BaseButton,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'success', 'warning', 'info'],
+      control: "select",
+      options: [
+        "default",
+        "destructive",
+        "outline",
+        "secondary",
+        "ghost",
+        "link",
+        "success",
+        "warning",
+        "info",
+      ],
     },
     size: {
-      control: 'select',
-      options: ['default', 'sm', 'lg', 'icon'],
+      control: "select",
+      options: ["default", "sm", "lg", "icon"],
     },
     isLoading: {
-      control: 'boolean',
+      control: "boolean",
     },
     disabled: {
-      control: 'boolean',
+      control: "boolean",
     },
   },
 };
@@ -32,99 +42,99 @@ type Story = StoryObj<typeof BaseButton>;
 
 export const Default: Story = {
   args: {
-    children: 'Button',
-    variant: 'default',
-    size: 'default',
+    children: "Button",
+    variant: "default",
+    size: "default",
   },
 };
 
 export const Secondary: Story = {
   args: {
-    children: 'Secondary Button',
-    variant: 'secondary',
+    children: "Secondary Button",
+    variant: "secondary",
   },
 };
 
 export const Destructive: Story = {
   args: {
-    children: 'Delete',
-    variant: 'destructive',
+    children: "Delete",
+    variant: "destructive",
   },
 };
 
 export const Success: Story = {
   args: {
-    children: 'Submit',
-    variant: 'success',
+    children: "Submit",
+    variant: "success",
   },
 };
 
 export const Warning: Story = {
   args: {
-    children: 'Warning',
-    variant: 'warning',
+    children: "Warning",
+    variant: "warning",
   },
 };
 
 export const Info: Story = {
   args: {
-    children: 'Info',
-    variant: 'info',
+    children: "Info",
+    variant: "info",
   },
 };
 
 export const Outline: Story = {
   args: {
-    children: 'Outline',
-    variant: 'outline',
+    children: "Outline",
+    variant: "outline",
   },
 };
 
 export const Ghost: Story = {
   args: {
-    children: 'Ghost',
-    variant: 'ghost',
+    children: "Ghost",
+    variant: "ghost",
   },
 };
 
 export const Link: Story = {
   args: {
-    children: 'Link Button',
-    variant: 'link',
+    children: "Link Button",
+    variant: "link",
   },
 };
 
 export const Small: Story = {
   args: {
-    children: 'Small Button',
-    size: 'sm',
+    children: "Small Button",
+    size: "sm",
   },
 };
 
 export const Large: Story = {
   args: {
-    children: 'Large Button',
-    size: 'lg',
+    children: "Large Button",
+    size: "lg",
   },
 };
 
 export const Loading: Story = {
   args: {
-    children: 'Loading',
+    children: "Loading",
     isLoading: true,
   },
 };
 
 export const Disabled: Story = {
   args: {
-    children: 'Disabled',
+    children: "Disabled",
     disabled: true,
   },
 };
 
 export const WithLeftIcon: Story = {
   args: {
-    children: 'With Left Icon',
+    children: "With Left Icon",
     leftIcon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +156,7 @@ export const WithLeftIcon: Story = {
 
 export const WithRightIcon: Story = {
   args: {
-    children: 'With Right Icon',
+    children: "With Right Icon",
     rightIcon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

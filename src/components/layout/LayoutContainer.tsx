@@ -1,7 +1,7 @@
 // src/components/layout/layout-container.tsx
-import React, { useState } from 'react';
-import { Header, HeaderProps } from './Header';
-import { Sidebar, SidebarProps } from './Sidebar';
+import React, { useState } from "react";
+import { Header, HeaderProps } from "./Header";
+import { Sidebar, SidebarProps } from "./Sidebar";
 
 // Simple utility function to merge classNames
 const cn = (...classes: string[]) => {
@@ -23,31 +23,31 @@ export function LayoutContainer({
   headerProps,
   sidebarProps,
   className,
-  contentClassName
+  contentClassName,
 }: LayoutContainerProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
+
   return (
     <div className={cn("min-h-screen flex flex-col", className)}>
       {/* Header */}
       <Header {...headerProps} />
-      
+
       {/* Main content with optional sidebar */}
       <div className="flex flex-grow">
         {/* Sidebar (optional) */}
         {hasSidebar && sidebarProps && (
-          <Sidebar 
-            {...sidebarProps} 
+          <Sidebar
+            {...sidebarProps}
             collapsed={sidebarCollapsed}
             onCollapse={setSidebarCollapsed}
           />
         )}
-        
+
         {/* Main content */}
-        <main 
+        <main
           className={cn(
             "flex-grow p-4 sm:p-6 lg:p-8 bg-neutral-50 dark:bg-neutral-900",
-            contentClassName
+            contentClassName,
           )}
         >
           {children}

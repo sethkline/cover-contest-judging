@@ -1,6 +1,6 @@
 // src/components/ui/alert.tsx
-import React from 'react';
-import { X, AlertCircle, CheckCircle, Info, AlertTriangle } from 'lucide-react';
+import React from "react";
+import { X, AlertCircle, CheckCircle, Info, AlertTriangle } from "lucide-react";
 
 // Simple utility function to merge classNames
 const cn = (...classes: string[]) => {
@@ -8,7 +8,7 @@ const cn = (...classes: string[]) => {
 };
 
 export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'info' | 'success' | 'warning' | 'error';
+  variant?: "info" | "success" | "warning" | "error";
   title?: string;
   children: React.ReactNode;
   icon?: React.ReactNode;
@@ -18,7 +18,7 @@ export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function Alert({
   className = "",
-  variant = 'info',
+  variant = "info",
   title,
   children,
   icon,
@@ -29,20 +29,30 @@ export function Alert({
   // Variant styles
   const variantStyles = {
     info: {
-      container: 'bg-info-50 text-info-900 border-info-200 dark:bg-info-900/20 dark:text-info-300 dark:border-info-800',
+      container:
+        "bg-info-50 text-info-900 border-info-200 dark:bg-info-900/20 dark:text-info-300 dark:border-info-800",
       icon: <Info className="h-5 w-5 text-info-500 dark:text-info-400" />,
     },
     success: {
-      container: 'bg-success-50 text-success-900 border-success-200 dark:bg-success-900/20 dark:text-success-300 dark:border-success-800',
-      icon: <CheckCircle className="h-5 w-5 text-success-500 dark:text-success-400" />,
+      container:
+        "bg-success-50 text-success-900 border-success-200 dark:bg-success-900/20 dark:text-success-300 dark:border-success-800",
+      icon: (
+        <CheckCircle className="h-5 w-5 text-success-500 dark:text-success-400" />
+      ),
     },
     warning: {
-      container: 'bg-warning-50 text-warning-900 border-warning-200 dark:bg-warning-900/20 dark:text-warning-300 dark:border-warning-800',
-      icon: <AlertTriangle className="h-5 w-5 text-warning-500 dark:text-warning-400" />,
+      container:
+        "bg-warning-50 text-warning-900 border-warning-200 dark:bg-warning-900/20 dark:text-warning-300 dark:border-warning-800",
+      icon: (
+        <AlertTriangle className="h-5 w-5 text-warning-500 dark:text-warning-400" />
+      ),
     },
     error: {
-      container: 'bg-error-50 text-error-900 border-error-200 dark:bg-error-900/20 dark:text-error-300 dark:border-error-800',
-      icon: <AlertCircle className="h-5 w-5 text-error-500 dark:text-error-400" />,
+      container:
+        "bg-error-50 text-error-900 border-error-200 dark:bg-error-900/20 dark:text-error-300 dark:border-error-800",
+      icon: (
+        <AlertCircle className="h-5 w-5 text-error-500 dark:text-error-400" />
+      ),
     },
   };
 
@@ -53,7 +63,7 @@ export function Alert({
       className={cn(
         "relative rounded-md border p-4",
         variantStyle.container,
-        className
+        className,
       )}
       role="alert"
       {...props}
@@ -65,17 +75,13 @@ export function Alert({
         ) : (
           <div className="flex-shrink-0">{variantStyle.icon}</div>
         )}
-        
+
         {/* Content */}
         <div className="ml-3 flex-1">
-          {title && (
-            <h3 className="text-sm font-medium">{title}</h3>
-          )}
-          <div className={cn("text-sm", title && "mt-1")}>
-            {children}
-          </div>
+          {title && <h3 className="text-sm font-medium">{title}</h3>}
+          <div className={cn("text-sm", title && "mt-1")}>{children}</div>
         </div>
-        
+
         {/* Close button */}
         {onClose && !hideCloseButton && (
           <button

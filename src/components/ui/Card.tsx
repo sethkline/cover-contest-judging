@@ -7,25 +7,26 @@ const cn = (...classes: string[]) => {
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  elevation?: 'flat' | 'raised' | 'outlined';
+  elevation?: "flat" | "raised" | "outlined";
 }
 
-export function Card({ 
-  className = "", 
-  children, 
-  elevation = 'raised',
-  ...props 
+export function Card({
+  className = "",
+  children,
+  elevation = "raised",
+  ...props
 }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-lg", 
+        "rounded-lg",
         "bg-white dark:bg-neutral-800",
         {
-          "border border-neutral-200 dark:border-neutral-700": elevation === "outlined",
+          "border border-neutral-200 dark:border-neutral-700":
+            elevation === "outlined",
           "shadow-md": elevation === "raised",
         },
-        className
+        className,
       )}
       {...props}
     >
@@ -44,19 +45,14 @@ export function CardHeader({
   ...props
 }: CardHeaderProps) {
   return (
-    <div 
-      className={cn(
-        "p-6 pb-0 space-y-1", 
-        className
-      )} 
-      {...props}
-    >
+    <div className={cn("p-6 pb-0 space-y-1", className)} {...props}>
       {children}
     </div>
   );
 }
 
-export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+export interface CardTitleProps
+  extends React.HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;
 }
 
@@ -69,8 +65,8 @@ export function CardTitle({
     <h3
       className={cn(
         "text-xl font-semibold leading-none tracking-tight",
-        "text-neutral-900 dark:text-white", 
-        className
+        "text-neutral-900 dark:text-white",
+        className,
       )}
       {...props}
     >
@@ -79,7 +75,8 @@ export function CardTitle({
   );
 }
 
-export interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+export interface CardDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
 }
 
@@ -92,7 +89,7 @@ export function CardDescription({
     <p
       className={cn(
         "text-sm text-neutral-500 dark:text-neutral-400",
-        className
+        className,
       )}
       {...props}
     >
@@ -127,11 +124,14 @@ export function CardFooter({
   ...props
 }: CardFooterProps) {
   return (
-    <div className={cn(
-      "p-6 pt-0",
-      "border-t border-neutral-200 dark:border-neutral-700 mt-4",
-      className
-    )} {...props}>
+    <div
+      className={cn(
+        "p-6 pt-0",
+        "border-t border-neutral-200 dark:border-neutral-700 mt-4",
+        className,
+      )}
+      {...props}
+    >
       {children}
     </div>
   );

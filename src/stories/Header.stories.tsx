@@ -1,19 +1,19 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Header } from '../components/layout/Header';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Header } from "../components/layout/Header";
 
 const meta: Meta<typeof Header> = {
-  title: 'Layout/Header',
+  title: "Layout/Header",
   component: Header,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     userRole: {
-      control: 'select',
-      options: ['admin', 'judge', 'guest'],
+      control: "select",
+      options: ["admin", "judge", "guest"],
     },
-    onLogout: { action: 'logged out' },
+    onLogout: { action: "logged out" },
   },
   decorators: [
     (Story) => (
@@ -29,27 +29,27 @@ type Story = StoryObj<typeof Header>;
 
 export const Guest: Story = {
   args: {
-    userRole: 'guest',
+    userRole: "guest",
   },
 };
 
 export const LoggedInJudge: Story = {
   args: {
-    userRole: 'judge',
-    userName: 'Jane Smith',
+    userRole: "judge",
+    userName: "Jane Smith",
   },
 };
 
 export const LoggedInAdmin: Story = {
   args: {
-    userRole: 'admin',
-    userName: 'Admin User',
+    userRole: "admin",
+    userName: "Admin User",
   },
 };
 
 export const WithCustomLogo: Story = {
   args: {
-    userRole: 'guest',
+    userRole: "guest",
     logo: (
       <div className="flex items-center">
         <svg
@@ -75,8 +75,8 @@ export const WithCustomLogo: Story = {
 
 export const WithCustomChildren: Story = {
   args: {
-    userRole: 'admin',
-    userName: 'Admin User',
+    userRole: "admin",
+    userName: "Admin User",
     children: (
       <div className="px-3 py-2 rounded-md text-sm font-medium bg-secondary-600 text-white ml-2">
         New Contest

@@ -80,8 +80,8 @@ export function JudgeRoute({ children }: ProtectedRouteProps) {
 
   // Special case for welcome page, but allow instructions page
   if (
-    judgeStatus === "pending" && 
-    !pathname.includes("/judge/welcome") && 
+    judgeStatus === "pending" &&
+    !pathname.includes("/judge/welcome") &&
     !pathname.includes("/judge/instructions")
   ) {
     return null;

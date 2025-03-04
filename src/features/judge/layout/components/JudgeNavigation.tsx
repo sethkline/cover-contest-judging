@@ -23,14 +23,14 @@ export const JudgeNavigation: React.FC<JudgeNavigationProps> = ({
               </span>
             </div>
             <div className="ml-6 flex space-x-4">
-              <NavLink 
-                href="/judge/dashboard" 
+              <NavLink
+                href="/judge/dashboard"
                 isActive={pathname === "/judge/dashboard"}
                 icon={<Home className="mr-1.5 h-4 w-4" />}
                 label="Dashboard"
               />
-              <NavLink 
-                href="/judge/instructions" 
+              <NavLink
+                href="/judge/instructions"
                 isActive={pathname === "/judge/instructions"}
                 icon={<BookOpen className="mr-1.5 h-4 w-4" />}
                 label="Instructions"

@@ -15,7 +15,7 @@ export const EntryHeader: React.FC<EntryHeaderProps> = ({
   currentIndex,
   totalEntries,
   onPrevious,
-  onNext
+  onNext,
 }) => {
   return (
     <CardTitle className="flex justify-between items-center">
@@ -58,9 +58,7 @@ export const EntryHeader: React.FC<EntryHeaderProps> = ({
           >
             <Info size={16} className="text-primary-500 cursor-help" />
             <div className="absolute right-0 mt-2 p-3 bg-white border rounded-md shadow-lg w-64 hidden group-hover:block z-10">
-              <p className="text-sm font-medium mb-1">
-                Artist Statement:
-              </p>
+              <p className="text-sm font-medium mb-1">Artist Statement:</p>
               <p className="text-sm text-neutral-600">
                 {entry.artist_statement}
               </p>

@@ -3,39 +3,41 @@
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
-import { 
-  Award, 
-  Users, 
-  FileSpreadsheet, 
-  PlusCircle, 
-  Mail, 
+import {
+  Award,
+  Users,
+  FileSpreadsheet,
+  PlusCircle,
+  Mail,
   BarChart3,
   Settings,
   Calendar,
   List,
-  UserPlus
+  UserPlus,
 } from "lucide-react";
-import {StatisticCard} from "@/features/judging/dashboard";
+import { StatisticCard } from "@/features/judging/dashboard";
 import { useEffect, useState } from "react";
 
 // Create a custom Card component using your design system
-const Card = ({ 
-  children, 
-  className = "" 
-}: { 
-  children: React.ReactNode; 
+const Card = ({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
   className?: string;
 }) => (
-  <div className={`bg-white dark:bg-neutral-800 rounded-lg shadow-md overflow-hidden ${className}`}>
+  <div
+    className={`bg-white dark:bg-neutral-800 rounded-lg shadow-md overflow-hidden ${className}`}
+  >
     {children}
   </div>
 );
 
-const CardHeader = ({ 
-  title, 
-  bgColor = "bg-primary-600" 
-}: { 
-  title: string; 
+const CardHeader = ({
+  title,
+  bgColor = "bg-primary-600",
+}: {
+  title: string;
   bgColor?: string;
 }) => (
   <div className={`${bgColor} text-white p-3`}>
@@ -47,40 +49,44 @@ const CardContent = ({ children }: { children: React.ReactNode }) => (
   <div className="p-4">{children}</div>
 );
 
-const ActionButton = ({ 
-  href, 
-  icon: Icon, 
-  label, 
-  variant = "filled", 
+const ActionButton = ({
+  href,
+  icon: Icon,
+  label,
+  variant = "filled",
   color = "primary",
-  className = ""
-}: { 
-  href: string; 
+  className = "",
+}: {
+  href: string;
   icon: any;
   label: string;
   variant?: "filled" | "outlined";
   color?: "primary" | "secondary" | "neutral" | "info";
   className?: string;
 }) => {
-  const baseClasses = "flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition";
-  
+  const baseClasses =
+    "flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition";
+
   const variantClasses = {
     filled: {
       primary: "bg-primary-600 hover:bg-primary-700 text-white",
       secondary: "bg-secondary-600 hover:bg-secondary-700 text-white",
       neutral: "bg-neutral-600 hover:bg-neutral-700 text-white",
-      info: "bg-info-600 hover:bg-info-700 text-white"
+      info: "bg-info-600 hover:bg-info-700 text-white",
     },
     outlined: {
-      primary: "border border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white",
-      secondary: "border border-secondary-600 text-secondary-600 hover:bg-secondary-600 hover:text-white",
-      neutral: "border border-neutral-600 text-neutral-600 hover:bg-neutral-600 hover:text-white",
-      info: "border border-info-600 text-info-600 hover:bg-info-600 hover:text-white"
-    }
+      primary:
+        "border border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white",
+      secondary:
+        "border border-secondary-600 text-secondary-600 hover:bg-secondary-600 hover:text-white",
+      neutral:
+        "border border-neutral-600 text-neutral-600 hover:bg-neutral-600 hover:text-white",
+      info: "border border-info-600 text-info-600 hover:bg-info-600 hover:text-white",
+    },
   };
-  
+
   return (
-    <Link 
+    <Link
       href={href}
       className={`${baseClasses} ${variantClasses[variant][color]} ${className}`}
     >
@@ -96,9 +102,21 @@ export default function AdminDashboard() {
   const [activeContests, setActiveContests] = useState(0);
   const [loading, setLoading] = useState(true);
   const [recentActivity, setRecentActivity] = useState([
-    { type: 'entry', message: 'New entry submitted: "Project Alpha"', time: '2 hours ago' },
-    { type: 'judge', message: 'Judge Sarah completed 5 evaluations', time: '3 hours ago' },
-    { type: 'contest', message: 'Spring Challenge now active', time: '1 day ago' }
+    {
+      type: "entry",
+      message: 'New entry submitted: "Project Alpha"',
+      time: "2 hours ago",
+    },
+    {
+      type: "judge",
+      message: "Judge Sarah completed 5 evaluations",
+      time: "3 hours ago",
+    },
+    {
+      type: "contest",
+      message: "Spring Challenge now active",
+      time: "1 day ago",
+    },
   ]);
 
   // Use the client component version of supabase
@@ -110,23 +128,23 @@ export default function AdminDashboard() {
       try {
         // Properly fetch the data using the client component
         const { data: entriesData } = await supabase
-          .from('entries')
-          .select('id', { count: 'exact' });
-        
+          .from("entries")
+          .select("id", { count: "exact" });
+
         const { data: judgesData } = await supabase
-          .from('judges')
-          .select('id', { count: 'exact' });
-        
+          .from("judges")
+          .select("id", { count: "exact" });
+
         const { data: contestsData } = await supabase
-          .from('contests')
-          .select('id')
-          .eq('status', 'active');
-        
+          .from("contests")
+          .select("id")
+          .eq("status", "active");
+
         setEntriesCount(entriesData?.length || 42);
         setJudgesCount(judgesData?.length || 8);
         setActiveContests(contestsData?.length || 3);
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        console.error("Error fetching dashboard data:", error);
         // Fallback to sample data
         setEntriesCount(42);
         setJudgesCount(8);
@@ -141,10 +159,14 @@ export default function AdminDashboard() {
 
   const getActivityIcon = (type) => {
     switch (type) {
-      case 'entry': return <FileSpreadsheet className="text-primary-500" />;
-      case 'judge': return <Users className="text-secondary-500" />;
-      case 'contest': return <Award className="text-info-500" />;
-      default: return <Settings className="text-neutral-500" />;
+      case "entry":
+        return <FileSpreadsheet className="text-primary-500" />;
+      case "judge":
+        return <Users className="text-secondary-500" />;
+      case "contest":
+        return <Award className="text-info-500" />;
+      default:
+        return <Settings className="text-neutral-500" />;
     }
   };
 
@@ -162,7 +184,9 @@ export default function AdminDashboard() {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-4 text-neutral-900 dark:text-neutral-100">Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold mb-4 text-neutral-900 dark:text-neutral-100">
+          Admin Dashboard
+        </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <StatisticCard
@@ -197,13 +221,20 @@ export default function AdminDashboard() {
         <CardContent>
           <div className="space-y-3">
             {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-start p-2 border-b border-neutral-200 dark:border-neutral-700 last:border-0">
+              <div
+                key={index}
+                className="flex items-start p-2 border-b border-neutral-200 dark:border-neutral-700 last:border-0"
+              >
                 <div className="mr-3 mt-1">
                   {getActivityIcon(activity.type)}
                 </div>
                 <div className="flex-1">
-                  <p className="text-neutral-800 dark:text-neutral-200">{activity.message}</p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">{activity.time}</p>
+                  <p className="text-neutral-800 dark:text-neutral-200">
+                    {activity.message}
+                  </p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    {activity.time}
+                  </p>
                 </div>
               </div>
             ))}
@@ -216,7 +247,8 @@ export default function AdminDashboard() {
         <CardHeader title="Manage Contests" bgColor="bg-primary-600" />
         <CardContent>
           <p className="text-neutral-600 dark:text-neutral-400 mb-4">
-            Review and manage the current active contests, entries, and judging progress.
+            Review and manage the current active contests, entries, and judging
+            progress.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ActionButton

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { 
-  Table, 
-  TableHeader, 
-  TableBody, 
-  TableHead, 
-  TableRow, 
-  TableCell 
-} from '@/components/ui/Table';
-import { Badge } from '@/components/ui/Badge';
-import { BaseButton } from '@/components/ui/BaseButton';
-import { Eye } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/Table";
+import { Badge } from "@/components/ui/Badge";
+import { BaseButton } from "@/components/ui/BaseButton";
+import { Eye } from "lucide-react";
 
 interface Entry {
   id: number;
@@ -17,7 +17,7 @@ interface Entry {
   participant: string;
   age: number;
   ageCategory: string;
-  status: 'Pending' | 'In Review' | 'Scored';
+  status: "Pending" | "In Review" | "Scored";
   averageScore: number | null;
 }
 
@@ -28,17 +28,19 @@ interface EntryListProps {
 
 export const EntryList: React.FC<EntryListProps> = ({
   entries = [],
-  onViewEntry
+  onViewEntry,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Filter entries by category if a category is selected
   const filteredEntries = selectedCategory
-    ? entries.filter(entry => entry.ageCategory === selectedCategory)
+    ? entries.filter((entry) => entry.ageCategory === selectedCategory)
     : entries;
 
   // Get unique age categories
-  const ageCategories = Array.from(new Set(entries.map(entry => entry.ageCategory)));
+  const ageCategories = Array.from(
+    new Set(entries.map((entry) => entry.ageCategory)),
+  );
 
   return (
     <div className="space-y-4">
@@ -47,17 +49,17 @@ export const EntryList: React.FC<EntryListProps> = ({
         <div className="flex gap-2 mb-4">
           <BaseButton
             size="sm"
-            variant={selectedCategory === null ? 'default' : 'outline'}
+            variant={selectedCategory === null ? "default" : "outline"}
             onClick={() => setSelectedCategory(null)}
           >
             All
           </BaseButton>
-          
-          {ageCategories.map(category => (
+
+          {ageCategories.map((category) => (
             <BaseButton
               key={category}
               size="sm"
-              variant={selectedCategory === category ? 'default' : 'outline'}
+              variant={selectedCategory === category ? "default" : "outline"}
               onClick={() => setSelectedCategory(category)}
             >
               {category}
@@ -65,7 +67,7 @@ export const EntryList: React.FC<EntryListProps> = ({
           ))}
         </div>
       )}
-      
+
       {/* Entries table */}
       <Table variant="bordered">
         <TableHeader>
@@ -90,7 +92,7 @@ export const EntryList: React.FC<EntryListProps> = ({
                 <StatusBadge status={entry.status} />
               </TableCell>
               <TableCell>
-                {entry.averageScore !== null ? entry.averageScore : '-'}
+                {entry.averageScore !== null ? entry.averageScore : "-"}
               </TableCell>
               <TableCell>
                 <BaseButton
@@ -114,11 +116,11 @@ export const EntryList: React.FC<EntryListProps> = ({
 // Helper component for status badges
 const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
   switch (status) {
-    case 'Scored':
+    case "Scored":
       return <Badge variant="success">Scored</Badge>;
-    case 'Pending':
+    case "Pending":
       return <Badge variant="warning">Pending</Badge>;
-    case 'In Review':
+    case "In Review":
       return <Badge variant="info">In Review</Badge>;
     default:
       return <Badge>{status}</Badge>;

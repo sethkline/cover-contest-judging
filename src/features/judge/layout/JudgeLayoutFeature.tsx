@@ -70,10 +70,7 @@ export const JudgeLayoutFeature = ({ children }: JudgeLayoutFeatureProps) => {
   return (
     <div className="min-h-screen bg-neutral-50">
       {showNavigation && (
-        <JudgeNavigation 
-          pathname={pathname} 
-          onSignOut={handleSignOut} 
-        />
+        <JudgeNavigation pathname={pathname} onSignOut={handleSignOut} />
       )}
 
       <main className="py-6">{children}</main>

@@ -19,12 +19,12 @@ export const StatisticCard: React.FC<StatisticCardProps> = ({
 }) => {
   // Map the old color classes to the new design system
   const colorMap = {
-    'text-rev-red-600': 'text-primary-600',
-    'bg-rev-red-200': 'bg-primary-100',
-    'text-rev-purple': 'text-info-600',
-    'bg-rev-grape': 'bg-info-100',
-    'text-rev-brown': 'text-warning-600',
-    'bg-rev-tan': 'bg-warning-100'
+    "text-rev-red-600": "text-primary-600",
+    "bg-rev-red-200": "bg-primary-100",
+    "text-rev-purple": "text-info-600",
+    "bg-rev-grape": "bg-info-100",
+    "text-rev-brown": "text-warning-600",
+    "bg-rev-tan": "bg-warning-100",
   };
 
   // Get the mapped color or use the original if no mapping exists

@@ -1,50 +1,50 @@
 // src/stories/ProgressLoading.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState, useEffect } from 'react';
-import { 
-  ProgressBar, 
-  Spinner, 
-  LoadingDots, 
-  LoadingOverlay 
-} from '../components/ui/progress-loading';
-import { BaseButton } from '../components/ui/BaseButton';
-import { Card, CardTitle, CardContent } from '../components/ui/Card';
-import '../styles/progress-animations.css';
+import type { Meta, StoryObj } from "@storybook/react";
+import { useState, useEffect } from "react";
+import {
+  ProgressBar,
+  Spinner,
+  LoadingDots,
+  LoadingOverlay,
+} from "../components/ui/progress-loading";
+import { BaseButton } from "../components/ui/BaseButton";
+import { Card, CardTitle, CardContent } from "../components/ui/Card";
+import "../styles/progress-animations.css";
 
 // ProgressBar Meta
 const progressBarMeta: Meta<typeof ProgressBar> = {
-  title: 'Feedback/ProgressBar',
+  title: "Feedback/ProgressBar",
   component: ProgressBar,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     value: {
-      control: { type: 'number', min: 0, max: 100 },
+      control: { type: "number", min: 0, max: 100 },
     },
     max: {
-      control: { type: 'number', min: 1, max: 100 },
+      control: { type: "number", min: 1, max: 100 },
     },
     showValue: {
-      control: 'boolean',
+      control: "boolean",
     },
     variant: {
-      control: 'select',
-      options: ['default', 'success', 'warning', 'error', 'info'],
+      control: "select",
+      options: ["default", "success", "warning", "error", "info"],
     },
     size: {
-      control: 'select',
-      options: ['sm', 'default', 'lg'],
+      control: "select",
+      options: ["sm", "default", "lg"],
     },
     striped: {
-      control: 'boolean',
+      control: "boolean",
     },
     animated: {
-      control: 'boolean',
+      control: "boolean",
     },
     indeterminate: {
-      control: 'boolean',
+      control: "boolean",
     },
   },
 };
@@ -54,23 +54,23 @@ type ProgressBarStory = StoryObj<typeof ProgressBar>;
 
 // Spinner Meta
 export const spinnerMeta: Meta<typeof Spinner> = {
-  title: 'Feedback/Spinner',
+  title: "Feedback/Spinner",
   component: Spinner,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     size: {
-      control: 'select',
-      options: ['xs', 'sm', 'default', 'lg', 'xl'],
+      control: "select",
+      options: ["xs", "sm", "default", "lg", "xl"],
     },
     variant: {
-      control: 'select',
-      options: ['default', 'success', 'warning', 'error', 'info'],
+      control: "select",
+      options: ["default", "success", "warning", "error", "info"],
     },
     label: {
-      control: 'text',
+      control: "text",
     },
   },
 };
@@ -82,7 +82,7 @@ export const BasicProgressBar: ProgressBarStory = {
   args: {
     value: 60,
     showValue: true,
-    className: 'w-80',
+    className: "w-80",
   },
 };
 
@@ -112,7 +112,7 @@ export const StripedProgressBar: ProgressBarStory = {
   args: {
     value: 50,
     striped: true,
-    className: 'w-80',
+    className: "w-80",
   },
 };
 
@@ -121,7 +121,7 @@ export const AnimatedProgressBar: ProgressBarStory = {
     value: 75,
     striped: true,
     animated: true,
-    className: 'w-80',
+    className: "w-80",
   },
 };
 
@@ -129,7 +129,7 @@ export const IndeterminateProgressBar: ProgressBarStory = {
   args: {
     value: 0,
     indeterminate: true,
-    className: 'w-80',
+    className: "w-80",
   },
 };
 
@@ -139,7 +139,7 @@ export const CustomFormattedValue: ProgressBarStory = {
     max: 10,
     showValue: true,
     formatValue: (value, max) => `${value} of ${max} completed`,
-    className: 'w-80',
+    className: "w-80",
   },
 };
 
@@ -147,13 +147,13 @@ export const InteractiveProgressBar: ProgressBarStory = {
   render: function Render() {
     const [progress, setProgress] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
-    
+
     // Reset progress
     const resetProgress = () => {
       setProgress(0);
       setIsRunning(false);
     };
-    
+
     // Start or continue progress
     const startProgress = () => {
       if (progress >= 100) {
@@ -161,16 +161,16 @@ export const InteractiveProgressBar: ProgressBarStory = {
       }
       setIsRunning(true);
     };
-    
+
     // Pause progress
     const pauseProgress = () => {
       setIsRunning(false);
     };
-    
+
     // Increment progress every 200ms if running
     useEffect(() => {
       let timer: ReturnType<typeof setTimeout>;
-      
+
       if (isRunning && progress < 100) {
         timer = setTimeout(() => {
           setProgress((prev) => {
@@ -182,19 +182,19 @@ export const InteractiveProgressBar: ProgressBarStory = {
           });
         }, 100);
       }
-      
+
       return () => {
         if (timer) clearTimeout(timer);
       };
     }, [isRunning, progress]);
-    
+
     // Determine variant based on progress
     const getVariant = () => {
-      if (progress < 30) return 'error';
-      if (progress < 70) return 'warning';
-      return 'success';
+      if (progress < 30) return "error";
+      if (progress < 70) return "warning";
+      return "success";
     };
-    
+
     return (
       <div className="w-80 space-y-4">
         <ProgressBar
@@ -204,31 +204,19 @@ export const InteractiveProgressBar: ProgressBarStory = {
           striped
           animated={isRunning}
         />
-        
+
         <div className="flex space-x-2">
           {!isRunning ? (
-            <BaseButton 
-              onClick={startProgress} 
-              disabled={isRunning}
-              size="sm"
-            >
-              {progress > 0 ? 'Continue' : 'Start'}
+            <BaseButton onClick={startProgress} disabled={isRunning} size="sm">
+              {progress > 0 ? "Continue" : "Start"}
             </BaseButton>
           ) : (
-            <BaseButton 
-              onClick={pauseProgress} 
-              variant="warning"
-              size="sm"
-            >
+            <BaseButton onClick={pauseProgress} variant="warning" size="sm">
               Pause
             </BaseButton>
           )}
-          
-          <BaseButton 
-            onClick={resetProgress} 
-            variant="outline" 
-            size="sm"
-          >
+
+          <BaseButton onClick={resetProgress} variant="outline" size="sm">
             Reset
           </BaseButton>
         </div>
@@ -240,32 +228,34 @@ export const InteractiveProgressBar: ProgressBarStory = {
 export const UploadProgress: ProgressBarStory = {
   render: function Render() {
     const [progress, setProgress] = useState(0);
-    const [status, setStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
-    
+    const [status, setStatus] = useState<
+      "idle" | "uploading" | "success" | "error"
+    >("idle");
+
     const startUpload = () => {
-      setStatus('uploading');
+      setStatus("uploading");
       setProgress(0);
-      
+
       // Simulate upload progress
       const interval = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 100) {
             clearInterval(interval);
-            setStatus('success');
+            setStatus("success");
             return 100;
           }
           return prev + 5;
         });
       }, 300);
     };
-    
+
     return (
       <Card className="w-80">
         <CardHeader>
           <CardTitle>Upload Contest Entry</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {status === 'uploading' && (
+          {status === "uploading" && (
             <ProgressBar
               value={progress}
               showValue
@@ -275,37 +265,37 @@ export const UploadProgress: ProgressBarStory = {
               formatValue={(value) => `${Math.round(value)}% uploaded`}
             />
           )}
-          
-          {status === 'success' && (
+
+          {status === "success" && (
             <ProgressBar
               value={100}
               showValue
               variant="success"
-              formatValue={() => 'Upload complete!'}
+              formatValue={() => "Upload complete!"}
             />
           )}
-          
-          {status === 'error' && (
+
+          {status === "error" && (
             <ProgressBar
               value={progress}
               showValue
               variant="error"
-              formatValue={() => 'Upload failed!'}
+              formatValue={() => "Upload failed!"}
             />
           )}
-          
+
           <div className="flex justify-between">
             <BaseButton
               onClick={startUpload}
-              disabled={status === 'uploading'}
+              disabled={status === "uploading"}
               size="sm"
             >
-              {status === 'idle' ? 'Upload File' : 'Upload Again'}
+              {status === "idle" ? "Upload File" : "Upload Again"}
             </BaseButton>
-            
-            {status === 'uploading' && (
+
+            {status === "uploading" && (
               <BaseButton
-                onClick={() => setStatus('error')}
+                onClick={() => setStatus("error")}
                 variant="error"
                 size="sm"
               >
@@ -322,9 +312,9 @@ export const UploadProgress: ProgressBarStory = {
 // Spinner Stories
 export const BasicSpinner: SpinnerStory = {
   args: {
-    size: 'default',
-    variant: 'default',
-    label: 'Loading',
+    size: "default",
+    variant: "default",
+    label: "Loading",
   },
 };
 
@@ -394,22 +384,22 @@ export const LoadingDotsVariants: StoryObj<typeof LoadingDots> = {
 export const BasicLoadingOverlay: StoryObj<typeof LoadingOverlay> = {
   render: function Render() {
     const [loading, setLoading] = useState(false);
-    
+
     const toggleLoading = () => {
       setLoading(true);
-      
+
       // Auto-hide after 3 seconds
       setTimeout(() => {
         setLoading(false);
       }, 3000);
     };
-    
+
     return (
       <div className="space-y-4">
         <BaseButton onClick={toggleLoading} disabled={loading}>
-          {loading ? 'Loading...' : 'Show Loading Overlay'}
+          {loading ? "Loading..." : "Show Loading Overlay"}
         </BaseButton>
-        
+
         <LoadingOverlay active={loading} text="Loading content...">
           <Card className="w-80 h-64">
             <CardHeader>
@@ -429,32 +419,29 @@ export const BasicLoadingOverlay: StoryObj<typeof LoadingOverlay> = {
 export const LoadingOverlayVariants: StoryObj<typeof LoadingOverlay> = {
   render: function Render() {
     const [loading, setLoading] = useState(true);
-    
+
     return (
       <div className="space-y-4">
         <div className="flex space-x-2 mb-4">
-          <BaseButton 
-            onClick={() => setLoading(!loading)} 
-            variant={loading ? 'error' : 'success'}
+          <BaseButton
+            onClick={() => setLoading(!loading)}
+            variant={loading ? "error" : "success"}
           >
-            {loading ? 'Hide Overlay' : 'Show Overlay'}
+            {loading ? "Hide Overlay" : "Show Overlay"}
           </BaseButton>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-4">
-          <LoadingOverlay 
-            active={loading} 
-            text="With default spinner"
-          >
+          <LoadingOverlay active={loading} text="With default spinner">
             <Card className="h-36 w-48">
               <CardContent className="p-4">
                 <p>Default spinner overlay</p>
               </CardContent>
             </Card>
           </LoadingOverlay>
-          
-          <LoadingOverlay 
-            active={loading} 
+
+          <LoadingOverlay
+            active={loading}
             spinner={<Spinner variant="success" size="lg" />}
             text="Success variant"
           >
@@ -464,9 +451,9 @@ export const LoadingOverlayVariants: StoryObj<typeof LoadingOverlay> = {
               </CardContent>
             </Card>
           </LoadingOverlay>
-          
-          <LoadingOverlay 
-            active={loading} 
+
+          <LoadingOverlay
+            active={loading}
             spinner={<LoadingDots variant="info" size="lg" />}
             text="With loading dots"
           >
@@ -476,9 +463,9 @@ export const LoadingOverlayVariants: StoryObj<typeof LoadingOverlay> = {
               </CardContent>
             </Card>
           </LoadingOverlay>
-          
-          <LoadingOverlay 
-            active={loading} 
+
+          <LoadingOverlay
+            active={loading}
             spinner={<Spinner variant="warning" size="lg" />}
             text="No blur effect"
             blur={false}
@@ -499,16 +486,16 @@ export const LoadingOverlayVariants: StoryObj<typeof LoadingOverlay> = {
 export const ContestJudgingUseCases: StoryObj<typeof ProgressBar> = {
   render: function Render() {
     const [pageLoading, setPageLoading] = useState(true);
-    
+
     // Simulate page load
     useEffect(() => {
       const timer = setTimeout(() => {
         setPageLoading(false);
       }, 1500);
-      
+
       return () => clearTimeout(timer);
     }, []);
-    
+
     return (
       <div className="w-full max-w-3xl">
         <LoadingOverlay active={pageLoading} text="Loading dashboard...">
@@ -522,56 +509,47 @@ export const ContestJudgingUseCases: StoryObj<typeof ProgressBar> = {
                   <span className="text-sm font-medium">Overall Progress</span>
                   <span className="text-sm">68%</span>
                 </div>
-                <ProgressBar 
-                  value={68} 
-                  variant="success" 
-                  striped 
-                />
+                <ProgressBar value={68} variant="success" striped />
               </div>
-              
+
               <div className="space-y-3">
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium">Ages 3-7</span>
                     <span className="text-sm">42/50</span>
                   </div>
-                  <ProgressBar 
-                    value={42} 
+                  <ProgressBar
+                    value={42}
                     max={50}
-                    variant="primary" 
+                    variant="primary"
                     size="sm"
                   />
                 </div>
-                
+
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium">Ages 8-11</span>
                     <span className="text-sm">35/65</span>
                   </div>
-                  <ProgressBar 
-                    value={35} 
-                    max={65}
-                    variant="info" 
-                    size="sm"
-                  />
+                  <ProgressBar value={35} max={65} variant="info" size="sm" />
                 </div>
-                
+
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium">Ages 12+</span>
                     <span className="text-sm">25/32</span>
                   </div>
-                  <ProgressBar 
-                    value={25} 
+                  <ProgressBar
+                    value={25}
                     max={32}
-                    variant="warning" 
+                    variant="warning"
                     size="sm"
                   />
                 </div>
               </div>
             </CardContent>
           </Card>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
@@ -581,31 +559,39 @@ export const ContestJudgingUseCases: StoryObj<typeof ProgressBar> = {
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">Judge 1: Sarah</span>
+                      <span className="text-sm font-medium">
+                        Judge 1: Sarah
+                      </span>
                       <span className="text-sm">30/30</span>
                     </div>
                     <ProgressBar value={100} variant="success" size="sm" />
                   </div>
-                  
+
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">Judge 2: Michael</span>
+                      <span className="text-sm font-medium">
+                        Judge 2: Michael
+                      </span>
                       <span className="text-sm">28/30</span>
                     </div>
                     <ProgressBar value={93} variant="success" size="sm" />
                   </div>
-                  
+
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">Judge 3: David</span>
+                      <span className="text-sm font-medium">
+                        Judge 3: David
+                      </span>
                       <span className="text-sm">22/30</span>
                     </div>
                     <ProgressBar value={73} variant="warning" size="sm" />
                   </div>
-                  
+
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">Judge 4: Emily</span>
+                      <span className="text-sm font-medium">
+                        Judge 4: Emily
+                      </span>
                       <span className="text-sm">15/30</span>
                     </div>
                     <ProgressBar value={50} variant="error" size="sm" />
@@ -613,7 +599,7 @@ export const ContestJudgingUseCases: StoryObj<typeof ProgressBar> = {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Score Distribution</CardTitle>
@@ -622,29 +608,50 @@ export const ContestJudgingUseCases: StoryObj<typeof ProgressBar> = {
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">High Scores (8-10)</span>
+                      <span className="text-sm font-medium">
+                        High Scores (8-10)
+                      </span>
                       <span className="text-sm">42 entries</span>
                     </div>
-                    <ProgressBar value={42} max={102} variant="success" size="sm" />
+                    <ProgressBar
+                      value={42}
+                      max={102}
+                      variant="success"
+                      size="sm"
+                    />
                   </div>
-                  
+
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">Medium Scores (5-7)</span>
+                      <span className="text-sm font-medium">
+                        Medium Scores (5-7)
+                      </span>
                       <span className="text-sm">48 entries</span>
                     </div>
-                    <ProgressBar value={48} max={102} variant="info" size="sm" />
+                    <ProgressBar
+                      value={48}
+                      max={102}
+                      variant="info"
+                      size="sm"
+                    />
                   </div>
-                  
+
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">Low Scores (0-4)</span>
+                      <span className="text-sm font-medium">
+                        Low Scores (0-4)
+                      </span>
                       <span className="text-sm">12 entries</span>
                     </div>
-                    <ProgressBar value={12} max={102} variant="error" size="sm" />
+                    <ProgressBar
+                      value={12}
+                      max={102}
+                      variant="error"
+                      size="sm"
+                    />
                   </div>
                 </div>
-                
+
                 <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
                   <div className="flex justify-between text-sm">
                     <span>Average Score:</span>
@@ -654,7 +661,7 @@ export const ContestJudgingUseCases: StoryObj<typeof ProgressBar> = {
               </CardContent>
             </Card>
           </div>
-          
+
           <BaseButton className="mt-4" variant="primary">
             Generate Final Reports
           </BaseButton>

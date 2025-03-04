@@ -1,6 +1,6 @@
 // src/components/ui/accordion.tsx
-import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 // Simple utility function to merge classNames
 const cn = (...classes: string[]) => {
@@ -35,9 +35,9 @@ export function AccordionItem({
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState<number | undefined>(
-    defaultOpen ? undefined : 0
+    defaultOpen ? undefined : 0,
   );
-  
+
   // Calculate content height on mount and when content changes
   useEffect(() => {
     if (contentRef.current) {
@@ -52,9 +52,9 @@ export function AccordionItem({
           }
         }
       });
-      
+
       resizeObserver.observe(contentRef.current);
-      
+
       return () => {
         if (contentRef.current) {
           resizeObserver.unobserve(contentRef.current);
@@ -62,11 +62,11 @@ export function AccordionItem({
       };
     }
   }, [isOpen]);
-  
+
   // Handle toggle click
   const handleToggle = () => {
     if (disabled) return;
-    
+
     // First measure the content height
     if (contentRef.current && !isOpen) {
       const height = contentRef.current.scrollHeight;
@@ -74,20 +74,20 @@ export function AccordionItem({
     } else {
       setContentHeight(0);
     }
-    
+
     // Then toggle open state (after a tick to ensure height is applied)
     setTimeout(() => {
       setIsOpen(!isOpen);
       onOpenChange && onOpenChange(!isOpen);
     }, 0);
   };
-  
+
   return (
-    <div 
+    <div
       className={cn(
         "border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden",
         disabled && "opacity-60 cursor-not-allowed",
-        className
+        className,
       )}
     >
       <button
@@ -97,7 +97,7 @@ export function AccordionItem({
           "bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
           disabled && "cursor-not-allowed",
-          titleClassName
+          titleClassName,
         )}
         onClick={handleToggle}
         disabled={disabled}
@@ -115,17 +115,17 @@ export function AccordionItem({
           )}
         </span>
       </button>
-      
+
       <div
         className={cn(
           "overflow-hidden transition-all duration-200 ease-in-out",
           isOpen ? "opacity-100" : "opacity-0",
-          contentClassName
+          contentClassName,
         )}
         style={{ height: isOpen ? contentHeight : 0 }}
         aria-hidden={!isOpen}
       >
-        <div 
+        <div
           ref={contentRef}
           className="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300"
         >
@@ -152,18 +152,18 @@ export function Accordion({
   className = "",
 }: AccordionProps) {
   const [openIndexes, setOpenIndexes] = useState<number[]>(() => {
-    if (typeof defaultIndex === 'number') {
+    if (typeof defaultIndex === "number") {
       return [defaultIndex];
     } else if (Array.isArray(defaultIndex)) {
       return defaultIndex;
     }
     return [];
   });
-  
+
   // Clone children with additional props
   const items = React.Children.map(children, (child, index) => {
     if (!React.isValidElement(child)) return null;
-    
+
     return React.cloneElement(child as React.ReactElement<AccordionItemProps>, {
       defaultOpen: openIndexes.includes(index),
       onOpenChange: (isOpen: boolean) => {
@@ -176,9 +176,9 @@ export function Accordion({
           }
         } else {
           // If closing this index
-          setOpenIndexes(openIndexes.filter(i => i !== index));
+          setOpenIndexes(openIndexes.filter((i) => i !== index));
         }
-        
+
         // Call the original onOpenChange if it exists
         if (child.props.onOpenChange) {
           child.props.onOpenChange(isOpen);
@@ -186,12 +186,8 @@ export function Accordion({
       },
     });
   });
-  
-  return (
-    <div className={cn("space-y-2", className)}>
-      {items}
-    </div>
-  );
+
+  return <div className={cn("space-y-2", className)}>{items}</div>;
 }
 
 // Collapsible Component (simplified version for single item)

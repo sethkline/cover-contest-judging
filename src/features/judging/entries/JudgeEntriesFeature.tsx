@@ -345,7 +345,9 @@ export const JudgeEntriesFeature = () => {
   if (entries.length === 0) {
     return (
       <div className="max-w-4xl mx-auto p-4">
-        <NoEntriesCard onReturnToDashboard={() => router.push("/judge/dashboard")} />
+        <NoEntriesCard
+          onReturnToDashboard={() => router.push("/judge/dashboard")}
+        />
       </div>
     );
   }
@@ -364,7 +366,7 @@ export const JudgeEntriesFeature = () => {
       {/* Entry Card */}
       <Card className="mb-6">
         <CardHeader>
-          <EntryHeader 
+          <EntryHeader
             entry={currentEntry}
             currentIndex={currentEntryIndex}
             totalEntries={entries.length}
@@ -373,7 +375,7 @@ export const JudgeEntriesFeature = () => {
           />
         </CardHeader>
         <CardContent>
-          <EntryImage 
+          <EntryImage
             entry={currentEntry}
             isLoading={isLoading}
             isZoomed={isZoomed}
@@ -387,7 +389,7 @@ export const JudgeEntriesFeature = () => {
           <div
             className={`transition-opacity duration-200 ${isZoomed ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           >
-            <ScoringForm 
+            <ScoringForm
               scores={scores}
               onScoreChange={handleScoreChange}
               onSubmit={submitScores}
@@ -398,7 +400,7 @@ export const JudgeEntriesFeature = () => {
         </CardContent>
       </Card>
 
-      <ProgressIndicator 
+      <ProgressIndicator
         currentIndex={currentEntryIndex}
         totalEntries={entries.length}
       />

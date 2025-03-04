@@ -14,40 +14,42 @@ export default function AdminLayout({
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState("");
-  
+
   useEffect(() => {
     const checkAdminAccess = async () => {
       const supabase = createClientComponentClient();
-      
+
       // Check if the user is logged in
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       if (!session) {
         router.push("/login");
         return;
       }
-      
+
       // Check if user is in admin_users table
       const { data: adminData } = await supabase
-        .from('admin_users')
-        .select('id')
-        .eq('id', session.user.id)
+        .from("admin_users")
+        .select("id")
+        .eq("id", session.user.id)
         .maybeSingle();
-      
+
       if (!adminData) {
         // Not an admin user
         router.push("/unauthorized");
         return;
       }
-      
+
       // User is authenticated as admin
       setUserEmail(session.user.email);
       setLoading(false);
     };
-    
+
     checkAdminAccess();
   }, [router]);
-  
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -55,7 +57,7 @@ export default function AdminLayout({
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-sm">

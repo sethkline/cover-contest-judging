@@ -1,5 +1,4 @@
-// services/mailService.js
-import mailgun from 'mailgun-js';
+import mailgun from "mailgun-js";
 
 export async function sendJudgeInvitation(email, inviteUrl) {
   const mg = mailgun({
@@ -10,7 +9,7 @@ export async function sendJudgeInvitation(email, inviteUrl) {
   const data = {
     from: `Contest Admin <noreply@${process.env.MAILGUN_DOMAIN}>`,
     to: email,
-    subject: 'Invitation to Judge Contest',
+    subject: "Invitation to Judge Contest",
     html: `
       <h2>You've been invited to judge our art contest!</h2>
       <p>Hello,</p>
