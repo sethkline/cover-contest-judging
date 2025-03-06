@@ -42,16 +42,28 @@ export async function POST(request: Request) {
       throw judgeError;
     }
 
+    const getBaseURL = () => {
+      let url = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+      // Make sure the URL has a protocol
+      url = url.startsWith('http') ? url : `https://${url}`;
+      // Ensure there's no trailing slash
+      url = url.endsWith('/') ? url.slice(0, -1) : url;
+      return url;
+    };
+    
+    // Then construct the full redirect URL
+    const redirectTo = `${getBaseURL()}/confirm-judge`;
+
+
+    console.log(redirectTo, 'redirectTo');
+
     // Generate password reset token (for initial setup)
     const { data: resetData, error: resetError } =
       await supabase.auth.admin.generateLink({
         type: "recovery",
         email: email,
         options: {
-          redirectTo: new URL(
-            "/judge/setup",
-            process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-          ).toString(),
+          redirectTo
         },
       });
 
@@ -59,6 +71,8 @@ export async function POST(request: Request) {
       console.error("Reset token error:", resetError);
       throw resetError;
     }
+
+    console.log(resetData, 'resetData');
 
     // Get the action link (recovery URL) from the response
     const inviteUrl = resetData?.properties?.action_link;
