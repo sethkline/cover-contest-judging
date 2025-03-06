@@ -3,10 +3,12 @@
 
 import { useState } from "react";
 import EntryViewerModal from "./EntryViewerModal";
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@/components/ui/Tabs";
 
 export default function EntryResultsClient({ entriesByCategory }) {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("simplified");
 
   const openEntryModal = (entry) => {
     setSelectedEntry(entry);
@@ -19,6 +21,22 @@ export default function EntryResultsClient({ entriesByCategory }) {
 
   return (
     <div className="space-y-8">
+      <div className="bg-white p-4 rounded-lg shadow">
+        <Tabs 
+          defaultValue="simplified" 
+          variant="pills" 
+          onChange={(value) => setActiveTab(value)}
+        >
+          <TabList className="mb-4">
+            <Tab value="simplified">Simplified View</Tab>
+            <Tab value="detailed">Detailed Scores</Tab>
+            <Tab value="thematic">Thematic Elements</Tab>
+            <Tab value="design">Design Principles</Tab>
+            <Tab value="additional">Additional Criteria</Tab>
+          </TabList>
+        </Tabs>
+      </div>
+
       {Object.keys(entriesByCategory).map((category) => (
         <div
           key={category}
@@ -44,15 +62,58 @@ export default function EntryResultsClient({ entriesByCategory }) {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Age
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Creativity
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Execution
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Impact
-                  </th>
+                  
+                  {/* Conditionally display score columns based on active tab */}
+                  {(activeTab === "simplified" || activeTab === "detailed") && (
+                    <>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Creativity
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Execution
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Impact
+                      </th>
+                    </>
+                  )}
+                  
+                  {activeTab === "thematic" && (
+                    <>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Theme Interp.
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Movement
+                      </th>
+                    </>
+                  )}
+                  
+                  {activeTab === "design" && (
+                    <>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Composition
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Color Usage
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Visual Focus
+                      </th>
+                    </>
+                  )}
+                  
+                  {activeTab === "additional" && (
+                    <>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Storytelling
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Technique
+                      </th>
+                    </>
+                  )}
+                  
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Total
                   </th>
@@ -96,15 +157,58 @@ export default function EntryResultsClient({ entriesByCategory }) {
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                       {entry.participant_age}
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {entry.scores.creativity}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {entry.scores.execution}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {entry.scores.impact}
-                    </td>
+                    
+                    {/* Conditionally display score cells based on active tab */}
+                    {(activeTab === "simplified" || activeTab === "detailed") && (
+                      <>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.creativity}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.execution}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.impact}
+                        </td>
+                      </>
+                    )}
+                    
+                    {activeTab === "thematic" && (
+                      <>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.themeInterpretation || "N/A"}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.movementRepresentation || "N/A"}
+                        </td>
+                      </>
+                    )}
+                    
+                    {activeTab === "design" && (
+                      <>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.composition || "N/A"}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.colorUsage || "N/A"}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.visualFocus || "N/A"}
+                        </td>
+                      </>
+                    )}
+                    
+                    {activeTab === "additional" && (
+                      <>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.storytelling || "N/A"}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {entry.scores.techniqueMastery || "N/A"}
+                        </td>
+                      </>
+                    )}
+                    
                     <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {entry.scores.total}
                     </td>
@@ -114,7 +218,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-center">
                       <button
                         onClick={() => openEntryModal(entry)}
-                        className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                       >
                         View
                       </button>

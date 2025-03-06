@@ -64,7 +64,7 @@ export function withJudgeAuth(Component: React.ComponentType<any>) {
       return (
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <div className="h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="h-8 w-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-600">Loading...</p>
           </div>
         </div>

@@ -77,7 +77,7 @@ export default async function ResultsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Contest Results</h1>
-        <Link href="/admin" className="text-blue-600 hover:underline">
+        <Link href="/admin" className="text-primary-600 hover:underline">
           Back to Dashboard
         </Link>
       </div>
@@ -174,7 +174,7 @@ export default async function ResultsPage() {
                                 className={`h-2.5 rounded-full ${
                                   judge.isComplete
                                     ? "bg-green-600"
-                                    : "bg-blue-600"
+                                    : "bg-primary-600"
                                 }`}
                                 style={{ width: `${judge.completionRate}%` }}
                               ></div>

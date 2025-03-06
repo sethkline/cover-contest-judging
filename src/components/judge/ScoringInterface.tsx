@@ -50,7 +50,7 @@ const ScoringInterface = () => {
               onClick={() => setSelectedCategory(category.id)}
               className={`px-4 py-2 rounded ${
                 selectedCategory === category.id
-                  ? "bg-blue-600 text-white"
+                  ? "bg-primary-600 text-white"
                   : "bg-gray-100 hover:bg-gray-200"
               }`}
             >

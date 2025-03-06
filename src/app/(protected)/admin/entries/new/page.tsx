@@ -203,7 +203,7 @@ export default function NewEntryPage() {
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, contestType: e.target.value }))
             }
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
           >
             <option value="cover">Cover Design</option>
             <option value="bookmark">Bookmark Design</option>
@@ -224,7 +224,7 @@ export default function NewEntryPage() {
                 participantName: e.target.value,
               }))
             }
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
           />
         </div>
 
@@ -238,7 +238,7 @@ export default function NewEntryPage() {
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, age: e.target.value }))
             }
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
           />
         </div>
 
@@ -255,7 +255,7 @@ export default function NewEntryPage() {
                   ageCategory: e.target.value,
                 }))
               }
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
             >
               <option value="3-7">Ages 3-7</option>
               <option value="8-11">Ages 8-11</option>
@@ -277,7 +277,7 @@ export default function NewEntryPage() {
               }))
             }
             rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
           />
         </div>
 
@@ -331,7 +331,7 @@ export default function NewEntryPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 ${
+            className={`px-4 py-2 text-white bg-primary-600 rounded hover:bg-primary-700 ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >

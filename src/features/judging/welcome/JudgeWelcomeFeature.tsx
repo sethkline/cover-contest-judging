@@ -34,11 +34,11 @@ export default function JudgeWelcomePage() {
           process and criteria.
         </p>
 
-        <div className="bg-blue-50 p-4 rounded border border-blue-200 mb-6">
-          <h3 className="font-medium text-blue-700 mb-2">
+        <div className="bg-primary-50 p-4 rounded border border-primary-200 mb-6">
+          <h3 className="font-medium text-primary-700 mb-2">
             Important Information
           </h3>
-          <p className="text-blue-700">
+          <p className="text-primary-700">
             Once you activate your account, you will have access to all
             submissions and judging tools. Make sure you've reviewed all
             guidelines before proceeding.
@@ -47,7 +47,7 @@ export default function JudgeWelcomePage() {
 
         <Link
           href="/judge/instructions"
-          className="text-blue-600 hover:underline block mb-6"
+          className="text-primary-600 hover:underline block mb-6"
         >
           View Detailed Judging Instructions →
         </Link>
@@ -58,7 +58,7 @@ export default function JudgeWelcomePage() {
           className={`w-full py-2 rounded font-medium ${
             isSubmitting
               ? "bg-gray-400 text-gray-200"
-              : "bg-blue-600 text-white hover:bg-blue-700"
+              : "bg-primary-600 text-white hover:bg-primary-700"
           } transition`}
         >
           {isSubmitting ? (

@@ -125,7 +125,7 @@ const JudgeConfirmation = () => {
             </p>
             <button
               onClick={() => router.push("/login")}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+              className="w-full bg-primary-600 text-white py-2 px-4 rounded hover:bg-primary-700 transition-colors"
             >
               Go to Sign In
             </button>
@@ -163,7 +163,7 @@ const JudgeConfirmation = () => {
                     password: e.target.value,
                   }))
                 }
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
                 required
                 minLength={8}
               />
@@ -180,7 +180,7 @@ const JudgeConfirmation = () => {
                     confirmPassword: e.target.value,
                   }))
                 }
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
                 required
                 minLength={8}
               />
@@ -191,8 +191,8 @@ const JudgeConfirmation = () => {
               disabled={loading}
               className={`w-full py-2 px-4 rounded text-white transition-colors ${
                 loading
-                  ? "bg-blue-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  ? "bg-primary-400 cursor-not-allowed"
+                  : "bg-primary-600 hover:bg-primary-700"
               }`}
             >
               {loading ? "Setting up..." : "Complete Setup"}

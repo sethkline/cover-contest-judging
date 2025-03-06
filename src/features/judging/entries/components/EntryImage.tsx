@@ -20,6 +20,16 @@ export const EntryImage: React.FC<EntryImageProps> = ({
   onViewToggle,
   getImageUrl,
 }) => {
+  // Get current image path
+  const currentImagePath = showBackImage && entry?.back_image_path
+    ? entry.back_image_path
+    : entry?.front_image_path
+    ? entry.front_image_path
+    : "/api/placeholder/400/613";
+  
+  // Determine if we're showing the front or back image
+  const isShowingFrontImage = !(showBackImage && entry?.back_image_path);
+
   return (
     <div className="relative">
       {/* Image Container */}
@@ -35,20 +45,31 @@ export const EntryImage: React.FC<EntryImageProps> = ({
           </div>
         )}
 
-        {/* Use the actual entry image paths */}
-        <img
-          src={
-            showBackImage && entry?.back_image_path
-              ? getImageUrl(entry.back_image_path)
-              : entry?.front_image_path
-                ? getImageUrl(entry.front_image_path)
-                : "/api/placeholder/400/613"
-          }
-          alt={`Contest Entry ${entry?.entry_number}`}
-          className={`w-full rounded-lg shadow-lg mb-4 ${isLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
-          style={{ aspectRatio: "400/613" }}
-          loading="lazy"
-        />
+        {/* Conditionally apply styling based on front/back image */}
+        {isShowingFrontImage ? (
+          // Front image - maintain fixed aspect ratio of 400/613
+          <img
+            src={getImageUrl(currentImagePath)}
+            alt={`Contest Entry ${entry?.entry_number}`}
+            className={`w-full rounded-lg shadow-lg mb-4 ${
+              isLoading ? "opacity-0" : "opacity-100"
+            } transition-opacity duration-300`}
+            style={{ aspectRatio: "400/613" }}
+            loading="lazy"
+          />
+        ) : (
+          // Back image - preserve natural aspect ratio
+          <div className="max-h-[613px] overflow-hidden flex justify-center">
+            <img
+              src={getImageUrl(currentImagePath)}
+              alt={`Contest Entry ${entry?.entry_number} (Back)`}
+              className={`rounded-lg shadow-lg mb-4 ${
+                isLoading ? "opacity-0" : "opacity-100"
+              } transition-opacity duration-300 max-h-[613px] max-w-full object-contain`}
+              loading="lazy"
+            />
+          </div>
+        )}
 
         {/* Zoom indicator */}
         <button

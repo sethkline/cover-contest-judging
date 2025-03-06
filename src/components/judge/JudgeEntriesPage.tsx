@@ -352,7 +352,7 @@ const JudgeEntriesPage = () => {
             </p>
             <button
               onClick={() => router.push("/judge/dashboard")}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700"
             >
               Return to Dashboard
             </button>
@@ -414,7 +414,7 @@ const JudgeEntriesPage = () => {
                   className="relative group"
                   title="This entry has an artist statement"
                 >
-                  <Info size={16} className="text-blue-500 cursor-help" />
+                  <Info size={16} className="text-primary-500 cursor-help" />
                   <div className="absolute right-0 mt-2 p-3 bg-white border rounded-md shadow-lg w-64 hidden group-hover:block z-10">
                     <p className="text-sm font-medium mb-1">
                       Artist Statement:

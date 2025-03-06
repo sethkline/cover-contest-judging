@@ -22,7 +22,7 @@ export default async function EntriesPage() {
         <h1 className="text-3xl font-bold">Contest Entries</h1>
         <Link
           href="/admin/entries/new"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
         >
           Add New Entry
         </Link>
@@ -68,7 +68,7 @@ export default async function EntriesPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Link
                       href={`/admin/entries/${entry.id}`}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-primary-600 hover:text-primary-900"
                     >
                       View
                     </Link>

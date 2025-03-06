@@ -12,7 +12,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/admin/entries"
-          className="text-blue-600 hover:text-blue-800"
+          className="text-primary-600 hover:text-primary-800"
         >
           Return to Entries
         </Link>
