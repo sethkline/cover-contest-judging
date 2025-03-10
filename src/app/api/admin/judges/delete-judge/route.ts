@@ -8,16 +8,62 @@ const supabase = createClient(
 
 export async function POST(request: Request) {
   try {
-    const { id } = await request.json();
+    const { id, email } = await request.json();
+    
+    console.log(`Starting deletion process for judge ${email} (${id})`);
 
-    // Delete the auth user
+    // STEP 1: Delete all scores associated with this judge
+    const { error: scoresError } = await supabase
+      .from("scores")
+      .delete()
+      .eq("judge_id", id);
+
+    if (scoresError) {
+      console.error("Error deleting scores:", scoresError);
+      throw new Error(`Failed to delete judge's scores: ${scoresError.message}`);
+    }
+    
+    console.log(`Deleted scores for judge ${id}`);
+
+    // STEP 2: Delete all detailed_scores associated with this judge
+    const { error: detailedScoresError } = await supabase
+      .from("detailed_scores")
+      .delete()
+      .eq("judge_id", id);
+
+    if (detailedScoresError) {
+      console.error("Error deleting detailed scores:", detailedScoresError);
+      throw new Error(`Failed to delete judge's detailed scores: ${detailedScoresError.message}`);
+    }
+    
+    console.log(`Deleted detailed scores for judge ${id}`);
+
+    // STEP 3: Delete the judge record from the judges table
+    const { error: judgeError } = await supabase
+      .from("judges")
+      .delete()
+      .eq("id", id);
+
+    if (judgeError) {
+      console.error("Error deleting judge record:", judgeError);
+      throw new Error(`Failed to delete judge record: ${judgeError.message}`);
+    }
+    
+    console.log(`Deleted judge record for ${id}`);
+
+    // STEP 4: Finally, delete the auth user
     const { error: deleteError } = await supabase.auth.admin.deleteUser(id);
 
-    if (deleteError) throw deleteError;
+    if (deleteError) {
+      console.error("Error deleting auth user:", deleteError);
+      throw new Error(`Failed to delete auth user: ${deleteError.message}`);
+    }
+    
+    console.log(`Successfully deleted judge ${email} (${id})`);
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error in delete-judge:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "An error occurred" },
       { status: 400 },
