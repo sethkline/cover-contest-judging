@@ -21,12 +21,13 @@ export const EntryImage: React.FC<EntryImageProps> = ({
   getImageUrl,
 }) => {
   // Get current image path
-  const currentImagePath = showBackImage && entry?.back_image_path
-    ? entry.back_image_path
-    : entry?.front_image_path
-    ? entry.front_image_path
-    : "/api/placeholder/400/613";
-  
+  const currentImagePath =
+    showBackImage && entry?.back_image_path
+      ? entry.back_image_path
+      : entry?.front_image_path
+        ? entry.front_image_path
+        : "/api/placeholder/400/613";
+
   // Determine if we're showing the front or back image
   const isShowingFrontImage = !(showBackImage && entry?.back_image_path);
 

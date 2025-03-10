@@ -22,9 +22,9 @@ export default function EntryResultsClient({ entriesByCategory }) {
   return (
     <div className="space-y-8">
       <div className="bg-white p-4 rounded-lg shadow">
-        <Tabs 
-          defaultValue="simplified" 
-          variant="pills" 
+        <Tabs
+          defaultValue="simplified"
+          variant="pills"
           onChange={(value) => setActiveTab(value)}
         >
           <TabList className="mb-4">
@@ -62,7 +62,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Age
                   </th>
-                  
+
                   {/* Conditionally display score columns based on active tab */}
                   {(activeTab === "simplified" || activeTab === "detailed") && (
                     <>
@@ -77,7 +77,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                       </th>
                     </>
                   )}
-                  
+
                   {activeTab === "thematic" && (
                     <>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -88,7 +88,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                       </th>
                     </>
                   )}
-                  
+
                   {activeTab === "design" && (
                     <>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -102,7 +102,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                       </th>
                     </>
                   )}
-                  
+
                   {activeTab === "additional" && (
                     <>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -113,7 +113,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                       </th>
                     </>
                   )}
-                  
+
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Total
                   </th>
@@ -157,9 +157,10 @@ export default function EntryResultsClient({ entriesByCategory }) {
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                       {entry.participant_age}
                     </td>
-                    
+
                     {/* Conditionally display score cells based on active tab */}
-                    {(activeTab === "simplified" || activeTab === "detailed") && (
+                    {(activeTab === "simplified" ||
+                      activeTab === "detailed") && (
                       <>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                           {entry.scores.creativity}
@@ -172,7 +173,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                         </td>
                       </>
                     )}
-                    
+
                     {activeTab === "thematic" && (
                       <>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -183,7 +184,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                         </td>
                       </>
                     )}
-                    
+
                     {activeTab === "design" && (
                       <>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -197,7 +198,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                         </td>
                       </>
                     )}
-                    
+
                     {activeTab === "additional" && (
                       <>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -208,7 +209,7 @@ export default function EntryResultsClient({ entriesByCategory }) {
                         </td>
                       </>
                     )}
-                    
+
                     <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {entry.scores.total}
                     </td>

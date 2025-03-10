@@ -176,19 +176,27 @@ const JudgeWelcome = () => {
         <CardContent>
           <div className="space-y-4">
             <div className="text-center">
-              <h3 className="text-xl font-bold text-purple-800">"Echoes of Grace: Stories in Motion"</h3>
+              <h3 className="text-xl font-bold text-purple-800">
+                "Echoes of Grace: Stories in Motion"
+              </h3>
               <p className="italic mt-2 text-gray-700">
-                "For it is by grace you have been saved, through faith—and this is not from yourselves, it is the gift of God—not by works, so that no one can boast."
+                "For it is by grace you have been saved, through faith—and this
+                is not from yourselves, it is the gift of God—not by works, so
+                that no one can boast."
               </p>
               <p className="text-sm text-gray-600 mt-1">- Ephesians 2:8-9</p>
             </div>
-            
+
             <p className="text-gray-700">
-              This year's recital celebrates how God's grace echoes throughout our lives, transforming our stories and movements. Students' designs should reflect themes of grace, faith, and transformation.
+              This year's recital celebrates how God's grace echoes throughout
+              our lives, transforming our stories and movements. Students'
+              designs should reflect themes of grace, faith, and transformation.
             </p>
-            
+
             <p className="text-gray-700">
-              When judging entries, please consider how well they capture the spiritual meaning behind this year's theme, telling a story through motion.
+              When judging entries, please consider how well they capture the
+              spiritual meaning behind this year's theme, telling a story
+              through motion.
             </p>
           </div>
         </CardContent>
@@ -210,13 +218,17 @@ const JudgeWelcome = () => {
                 <h4 className="font-bold mb-2">Core Criteria</h4>
                 <ul className="space-y-2">
                   <li>
-                    <span className="font-medium">Creativity (0-10):</span> Originality of concept, imagination, and innovative approaches
+                    <span className="font-medium">Creativity (0-10):</span>{" "}
+                    Originality of concept, imagination, and innovative
+                    approaches
                   </li>
                   <li>
-                    <span className="font-medium">Execution (0-10):</span> Technical skill, attention to detail, craftsmanship
+                    <span className="font-medium">Execution (0-10):</span>{" "}
+                    Technical skill, attention to detail, craftsmanship
                   </li>
                   <li>
-                    <span className="font-medium">Impact (0-10):</span> Overall impression, emotional response, memorability
+                    <span className="font-medium">Impact (0-10):</span> Overall
+                    impression, emotional response, memorability
                   </li>
                 </ul>
               </div>
@@ -226,10 +238,16 @@ const JudgeWelcome = () => {
                 <h4 className="font-bold mb-2">Thematic Elements</h4>
                 <ul className="space-y-2">
                   <li>
-                    <span className="font-medium">Theme Interpretation (0-10):</span> How effectively the artwork tells a story through motion
+                    <span className="font-medium">
+                      Theme Interpretation (0-10):
+                    </span>{" "}
+                    How effectively the artwork tells a story through motion
                   </li>
                   <li>
-                    <span className="font-medium">Movement Representation (0-10):</span> Success in capturing energy, rhythm, or flow
+                    <span className="font-medium">
+                      Movement Representation (0-10):
+                    </span>{" "}
+                    Success in capturing energy, rhythm, or flow
                   </li>
                 </ul>
               </div>
@@ -239,13 +257,16 @@ const JudgeWelcome = () => {
                 <h4 className="font-bold mb-2">Design Principles</h4>
                 <ul className="space-y-2">
                   <li>
-                    <span className="font-medium">Composition (0-10):</span> Arrangement of elements, balance, use of space
+                    <span className="font-medium">Composition (0-10):</span>{" "}
+                    Arrangement of elements, balance, use of space
                   </li>
                   <li>
-                    <span className="font-medium">Color Usage (0-10):</span> Harmony, contrast, mood created through color
+                    <span className="font-medium">Color Usage (0-10):</span>{" "}
+                    Harmony, contrast, mood created through color
                   </li>
                   <li>
-                    <span className="font-medium">Visual Focus (0-10):</span> Clarity of subject matter, emphasis on key elements
+                    <span className="font-medium">Visual Focus (0-10):</span>{" "}
+                    Clarity of subject matter, emphasis on key elements
                   </li>
                 </ul>
               </div>
@@ -255,17 +276,30 @@ const JudgeWelcome = () => {
                 <h4 className="font-bold mb-2">Additional Considerations</h4>
                 <ul className="space-y-2">
                   <li>
-                    <span className="font-medium">Storytelling (0-10):</span> How well the piece communicates a narrative
+                    <span className="font-medium">Storytelling (0-10):</span>{" "}
+                    How well the piece communicates a narrative
                   </li>
                   <li>
-                    <span className="font-medium">Technique Mastery (0-10):</span> Appropriate use of chosen medium
+                    <span className="font-medium">
+                      Technique Mastery (0-10):
+                    </span>{" "}
+                    Appropriate use of chosen medium
                   </li>
                 </ul>
               </div>
             </div>
-            
+
             <div className="text-sm text-gray-600 mt-2">
-              <p>For a detailed explanation of each criterion, please visit the <Link href="/judge/instructions" className="text-primary-600 hover:underline">Judging Instructions</Link> page.</p>
+              <p>
+                For a detailed explanation of each criterion, please visit the{" "}
+                <Link
+                  href="/judge/instructions"
+                  className="text-primary-600 hover:underline"
+                >
+                  Judging Instructions
+                </Link>{" "}
+                page.
+              </p>
             </div>
           </div>
 
@@ -301,7 +335,8 @@ const JudgeWelcome = () => {
                 </div>
                 <div>
                   <p>
-                    <strong>Score each entry</strong> on all criteria using the sliders (0-10), organized in tabs.
+                    <strong>Score each entry</strong> on all criteria using the
+                    sliders (0-10), organized in tabs.
                   </p>
                 </div>
               </li>
@@ -341,13 +376,15 @@ const JudgeWelcome = () => {
               <li className="flex items-start gap-2">
                 <Check />
                 <p className="text-sm">
-                  Look for how the artwork tells a story through motion, reflecting this year's theme.
+                  Look for how the artwork tells a story through motion,
+                  reflecting this year's theme.
                 </p>
               </li>
               <li className="flex items-start gap-2">
                 <Check />
                 <p className="text-sm">
-                  Use the full range of scores (0-10) to distinguish between entries.
+                  Use the full range of scores (0-10) to distinguish between
+                  entries.
                 </p>
               </li>
               <li className="flex items-start gap-2">

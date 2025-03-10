@@ -1,15 +1,19 @@
 // src/app/(protected)/admin/results/[contestId]/page.tsx
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import Link from 'next/link';
-import EntryResultsClient from '@/components/EntryResultsClient';
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import Link from "next/link";
+import EntryResultsClient from "@/components/EntryResultsClient";
 
 export default async function ContestResultsPage({ params }) {
   const { contestId } = params;
   const supabase = createServerComponentClient({ cookies });
 
   // Fetch contest details
-  const { data: contest } = await supabase.from('contests').select('*').eq('id', contestId).single();
+  const { data: contest } = await supabase
+    .from("contests")
+    .select("*")
+    .eq("id", contestId)
+    .single();
 
   if (!contest) {
     return <div>Contest not found</div>;
@@ -17,7 +21,7 @@ export default async function ContestResultsPage({ params }) {
 
   // Fetch all entries for this contest
   const { data: entries } = await supabase
-    .from('entries')
+    .from("entries")
     .select(
       `
       id, 
@@ -28,15 +32,15 @@ export default async function ContestResultsPage({ params }) {
       artist_statement,
       front_image_path,
       back_image_path
-    `
+    `,
     )
-    .eq('contest_id', contestId)
-    .order('entry_number');
+    .eq("contest_id", contestId)
+    .order("entry_number");
 
   // Fetch all scores for these entries
   const entryIds = entries?.map((entry) => entry.id) || [];
   const { data: allScores } = await supabase
-    .from('scores')
+    .from("scores")
     .select(
       `
       entry_id, 
@@ -52,14 +56,17 @@ export default async function ContestResultsPage({ params }) {
       storytelling_score,
       technique_mastery_score,
       judge_comments
-      `
+      `,
     )
-    .in('entry_id', entryIds);
+    .in("entry_id", entryIds);
 
-    console.log("Sample Score Object:", allScores?.[0] || "No scores");
+  console.log("Sample Score Object:", allScores?.[0] || "No scores");
 
   // Fetch all age categories
-  const { data: categories } = await supabase.from('age_categories').select('id, name').order('min_age');
+  const { data: categories } = await supabase
+    .from("age_categories")
+    .select("id, name")
+    .order("min_age");
 
   // Create a category map for lookup
   const categoryMap = {};
@@ -71,7 +78,8 @@ export default async function ContestResultsPage({ params }) {
   const entryResults =
     entries?.map((entry) => {
       // Get all scores for this entry
-      const entryScores = allScores?.filter((score) => score.entry_id === entry.id) || [];
+      const entryScores =
+        allScores?.filter((score) => score.entry_id === entry.id) || [];
       const judgeCount = entryScores.length;
 
       // Calculate average scores for all criteria
@@ -87,27 +95,31 @@ export default async function ContestResultsPage({ params }) {
 
       console.log("Entry Scores for Entry #", entry.entry_number, entryScores);
 
-
       // Core criteria
-      const avgCreativity = calcAverage('creativity_score');
-      const avgExecution = calcAverage('execution_score');
-      const avgImpact = calcAverage('impact_score');
+      const avgCreativity = calcAverage("creativity_score");
+      const avgExecution = calcAverage("execution_score");
+      const avgImpact = calcAverage("impact_score");
 
       // Thematic Elements
-      const avgThemeInterpretation = calcAverage('theme_interpretation_score');
-      const avgMovementRepresentation = calcAverage('movement_representation_score');
+      const avgThemeInterpretation = calcAverage("theme_interpretation_score");
+      const avgMovementRepresentation = calcAverage(
+        "movement_representation_score",
+      );
 
       // Design Principles
-      const avgComposition = calcAverage('composition_score');
-      const avgColorUsage = calcAverage('color_usage_score');
-      const avgVisualFocus = calcAverage('visual_focus_score');
+      const avgComposition = calcAverage("composition_score");
+      const avgColorUsage = calcAverage("color_usage_score");
+      const avgVisualFocus = calcAverage("visual_focus_score");
 
       // Additional Considerations
-      const avgStorytelling = calcAverage('storytelling_score');
-      const avgTechniqueMastery = calcAverage('technique_mastery_score');
+      const avgStorytelling = calcAverage("storytelling_score");
+      const avgTechniqueMastery = calcAverage("technique_mastery_score");
 
-      console.log("Average for theme_interpretation_score:", entryScores.map(s => s.theme_interpretation_score), avgThemeInterpretation);
-
+      console.log(
+        "Average for theme_interpretation_score:",
+        entryScores.map((s) => s.theme_interpretation_score),
+        avgThemeInterpretation,
+      );
 
       // Calculate overall score using all available criteria
       // Count how many criteria have values
@@ -137,11 +149,13 @@ export default async function ContestResultsPage({ params }) {
       const totalScore = totalScoreSum / (criteriaCount || 3); // Default to original 3 criteria if none present
 
       // Get all judge comments
-      const comments = entryScores.filter((score) => score.judge_comments).map((score) => score.judge_comments);
+      const comments = entryScores
+        .filter((score) => score.judge_comments)
+        .map((score) => score.judge_comments);
 
       return {
         ...entry,
-        category: categoryMap[entry.age_category_id] || 'Unknown',
+        category: categoryMap[entry.age_category_id] || "Unknown",
         judgeCount,
         comments,
         scores: {
@@ -164,8 +178,8 @@ export default async function ContestResultsPage({ params }) {
           techniqueMastery: avgTechniqueMastery.toFixed(1),
 
           // Total
-          total: totalScore.toFixed(1)
-        }
+          total: totalScore.toFixed(1),
+        },
       };
     }) || [];
 
@@ -181,22 +195,31 @@ export default async function ContestResultsPage({ params }) {
 
   // Sort each category by total score (descending)
   Object.keys(entriesByCategory).forEach((category) => {
-    entriesByCategory[category].sort((a, b) => parseFloat(b.scores.total) - parseFloat(a.scores.total));
+    entriesByCategory[category].sort(
+      (a, b) => parseFloat(b.scores.total) - parseFloat(a.scores.total),
+    );
   });
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{contest.name} Results</h1>
-        <Link href="/admin/results" className="text-primary-600 hover:underline">
+        <Link
+          href="/admin/results"
+          className="text-primary-600 hover:underline"
+        >
           Back to Results
         </Link>
       </div>
 
       {Object.keys(entriesByCategory).length === 0 ? (
         <div className="bg-white p-8 rounded-lg shadow text-center">
-          <h2 className="text-xl font-medium text-gray-700">No entries found</h2>
-          <p className="text-gray-500 mt-2">Add entries to this contest to see results.</p>
+          <h2 className="text-xl font-medium text-gray-700">
+            No entries found
+          </h2>
+          <p className="text-gray-500 mt-2">
+            Add entries to this contest to see results.
+          </p>
         </div>
       ) : (
         <EntryResultsClient entriesByCategory={entriesByCategory} />

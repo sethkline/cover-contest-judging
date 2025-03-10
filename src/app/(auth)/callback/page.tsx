@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 function CallbackHandler() {
   const router = useRouter();
@@ -13,11 +13,11 @@ function CallbackHandler() {
     const handleCallback = async () => {
       try {
         // Get the next destination from query params
-        const next = searchParams.get('next') || '/';
+        const next = searchParams.get("next") || "/";
 
         // First check if we already have a session
         const {
-          data: { session: existingSession }
+          data: { session: existingSession },
         } = await supabase.auth.getSession();
 
         if (existingSession) {
@@ -26,16 +26,18 @@ function CallbackHandler() {
         }
 
         // Get hash parameters
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const hashParams = new URLSearchParams(
+          window.location.hash.substring(1),
+        );
 
         // If we have an access token in the hash, set the session
-        if (hashParams.get('access_token')) {
+        if (hashParams.get("access_token")) {
           const {
             data: { session },
-            error
+            error,
           } = await supabase.auth.setSession({
-            access_token: hashParams.get('access_token')!,
-            refresh_token: hashParams.get('refresh_token')!
+            access_token: hashParams.get("access_token")!,
+            refresh_token: hashParams.get("refresh_token")!,
           });
 
           if (error) throw error;
@@ -50,12 +52,12 @@ function CallbackHandler() {
           // This is useful for recovery links and magic links
           const {
             data: { session },
-            error
+            error,
           } = await supabase.auth.refreshSession();
 
           if (error) {
-            console.error('Auth refresh error:', error);
-            router.push('/login?error=Authentication%20failed');
+            console.error("Auth refresh error:", error);
+            router.push("/login?error=Authentication%20failed");
             return;
           }
 
@@ -66,11 +68,11 @@ function CallbackHandler() {
         }
 
         // If we get here without a session, something went wrong
-        console.error('No session established');
-        router.push('/login?error=Failed%20to%20establish%20session');
+        console.error("No session established");
+        router.push("/login?error=Failed%20to%20establish%20session");
       } catch (error) {
-        console.error('Callback error:', error);
-        router.push('/login?error=Authentication%20error');
+        console.error("Callback error:", error);
+        router.push("/login?error=Authentication%20error");
       }
     };
 

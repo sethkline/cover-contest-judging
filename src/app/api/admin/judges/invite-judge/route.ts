@@ -1,46 +1,46 @@
-import { createClient } from '@supabase/supabase-js';
-import { NextResponse } from 'next/server';
-import { sendJudgeInvitation } from '@/services/mailService';
+import { createClient } from "@supabase/supabase-js";
+import { NextResponse } from "next/server";
+import { sendJudgeInvitation } from "@/services/mailService";
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+);
 
 export async function POST(request: Request) {
   try {
     const { email } = await request.json();
 
-
     // Create user with a random password (they'll reset this later)
     const {
       data: { user },
-      error: createError
+      error: createError,
     } = await supabase.auth.admin.createUser({
       email: email,
       email_confirm: false,
-      user_metadata: { role: 'judge' }
+      user_metadata: { role: "judge" },
     });
 
     if (createError) {
-      console.error('Create user error:', createError);
+      console.error("Create user error:", createError);
       throw createError;
     }
 
-
-    if (!user) throw new Error('Failed to create user');
+    if (!user) throw new Error("Failed to create user");
 
     // Create judge record
-    const { error: judgeError } = await supabase.from('judges').insert([
+    const { error: judgeError } = await supabase.from("judges").insert([
       {
         id: user.id,
         email: email,
-        status: 'pending'
-      }
+        status: "pending",
+      },
     ]);
 
     if (judgeError) {
-      console.error('Judge record error:', judgeError);
+      console.error("Judge record error:", judgeError);
       throw judgeError;
     }
-
 
     // Get the full base URL
     const baseURL = process.env.NEXT_PUBLIC_APP_URL;
@@ -52,33 +52,33 @@ export async function POST(request: Request) {
     // Commenting this out as Supabase likely does this internally
     // const encodedRedirectTo = encodeURIComponent(redirectTo);
 
-
     // Generate password reset token (for initial setup)
-    const { data: resetData, error: resetError } = await supabase.auth.admin.generateLink({
-      type: 'recovery',
-      email: email,
-      options: {
-        redirectTo
-      }
-    });
+    const { data: resetData, error: resetError } =
+      await supabase.auth.admin.generateLink({
+        type: "recovery",
+        email: email,
+        options: {
+          redirectTo,
+        },
+      });
 
     if (resetError) {
-      console.error('Reset token error:', resetError);
+      console.error("Reset token error:", resetError);
       throw resetError;
     }
-
 
     // Get the action link (recovery URL) from the response
     const inviteUrl = resetData?.properties?.action_link;
 
     if (!inviteUrl) {
-      throw new Error('Failed to generate invitation link');
+      throw new Error("Failed to generate invitation link");
     }
 
-
     // Check if the action_link includes our callback path
-    if (!inviteUrl.includes('/auth/callback')) {
-      console.warn("Warning: The generated action_link doesn't contain the expected callback path");
+    if (!inviteUrl.includes("/auth/callback")) {
+      console.warn(
+        "Warning: The generated action_link doesn't contain the expected callback path",
+      );
     }
 
     // Send custom email with Mailgun
@@ -90,7 +90,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in invite-judge:', error);
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'An error occurred' }, { status: 400 });
+    console.error("Error in invite-judge:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "An error occurred" },
+      { status: 400 },
+    );
   }
 }

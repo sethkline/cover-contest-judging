@@ -1,16 +1,23 @@
-'use client';
+"use client";
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useState, useEffect } from 'react';
-import { Mail, Loader2, RefreshCw, Activity, Trash2 } from 'lucide-react';
-import { BaseButton } from '@/components/ui/BaseButton';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { Alert } from '@/components/ui/Alert';
-import { Badge } from '@/components/ui/Badge';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/Table';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/authContext'; // Update path as needed
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useState, useEffect } from "react";
+import { Mail, Loader2, RefreshCw, Activity, Trash2 } from "lucide-react";
+import { BaseButton } from "@/components/ui/BaseButton";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Alert } from "@/components/ui/Alert";
+import { Badge } from "@/components/ui/Badge";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/Table";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/authContext"; // Update path as needed
 
 export default function JudgesPage() {
   const supabase = createClientComponentClient();
@@ -20,7 +27,7 @@ export default function JudgesPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [judges, setJudges] = useState<any[]>([]);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [judgeProgress, setJudgeProgress] = useState({});
   const [resendingEmail, setResendingEmail] = useState<string | null>(null);
 
@@ -28,13 +35,13 @@ export default function JudgesPage() {
 
   // Check if user is authorized
   useEffect(() => {
-    if (!authLoading && userRole !== 'admin') {
-      router.push('/unauthorized');
+    if (!authLoading && userRole !== "admin") {
+      router.push("/unauthorized");
     }
   }, [authLoading, userRole, router]);
 
   useEffect(() => {
-    if (!authLoading && userRole === 'admin') {
+    if (!authLoading && userRole === "admin") {
       fetchJudges();
     }
   }, [authLoading, userRole]);
@@ -45,13 +52,18 @@ export default function JudgesPage() {
       setError(null);
 
       // Then fetch judges - no need to check admin status again
-      const { data, error } = await supabase.from('judges').select('*').order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from("judges")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setJudges(data || []);
     } catch (error) {
-      console.error('Error fetching judges:', error);
-      setError(error instanceof Error ? error.message : 'Failed to fetch judges');
+      console.error("Error fetching judges:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to fetch judges",
+      );
     } finally {
       setLoading(false);
     }
@@ -61,8 +73,8 @@ export default function JudgesPage() {
     try {
       // Get all entries count
       const { count: entriesCount, error: entriesError } = await supabase
-        .from('entries')
-        .select('*', { count: 'exact', head: true });
+        .from("entries")
+        .select("*", { count: "exact", head: true });
 
       if (entriesError) throw entriesError;
 
@@ -71,27 +83,30 @@ export default function JudgesPage() {
 
       for (const judge of judges) {
         const { count: scoresCount, error: scoresError } = await supabase
-          .from('scores')
-          .select('*', { count: 'exact', head: true })
-          .eq('judge_id', judge.id);
+          .from("scores")
+          .select("*", { count: "exact", head: true })
+          .eq("judge_id", judge.id);
 
         if (scoresError) throw scoresError;
 
         // Calculate completion percentage
         const totalEntries = entriesCount || 0;
         const judgedEntries = scoresCount || 0;
-        const completionPercentage = totalEntries > 0 ? Math.round((judgedEntries / totalEntries) * 100) : 0;
+        const completionPercentage =
+          totalEntries > 0
+            ? Math.round((judgedEntries / totalEntries) * 100)
+            : 0;
 
         judgeProgressData[judge.id] = {
           judgedEntries,
           totalEntries,
-          completionPercentage
+          completionPercentage,
         };
       }
 
       setJudgeProgress(judgeProgressData);
     } catch (error) {
-      console.error('Error fetching judge progress:', error);
+      console.error("Error fetching judge progress:", error);
     }
   };
 
@@ -117,33 +132,35 @@ export default function JudgesPage() {
       setSuccess(null);
 
       // Validate email
-      if (!email || !email.includes('@')) {
-        throw new Error('Please enter a valid email address');
+      if (!email || !email.includes("@")) {
+        throw new Error("Please enter a valid email address");
       }
 
-      console.log('Starting invite process for:', email);
+      console.log("Starting invite process for:", email);
 
       // Call our API route
-      const response = await fetch('/api/admin/judges/invite-judge', {
-        method: 'POST',
+      const response = await fetch("/api/admin/judges/invite-judge", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to invite judge');
+        throw new Error(data.error || "Failed to invite judge");
       }
 
-      setSuccess('Judge invitation sent successfully');
-      setEmail('');
+      setSuccess("Judge invitation sent successfully");
+      setEmail("");
       fetchJudges();
     } catch (error) {
-      console.error('Error inviting judge:', error);
-      setError(error instanceof Error ? error.message : 'Failed to invite judge');
+      console.error("Error inviting judge:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to invite judge",
+      );
     } finally {
       setInviting(false);
     }
@@ -158,7 +175,7 @@ export default function JudgesPage() {
 
       // Send recovery link
       const { error } = await supabase.auth.resetPasswordForEmail(judgeEmail, {
-        redirectTo: redirectTo
+        redirectTo: redirectTo,
       });
 
       if (error) throw error;
@@ -171,8 +188,10 @@ export default function JudgesPage() {
         setSuccess(null);
       }, 3000);
     } catch (error) {
-      console.error('Error resending invite:', error);
-      setError(error instanceof Error ? error.message : 'Failed to resend invite');
+      console.error("Error resending invite:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to resend invite",
+      );
       setResendingEmail(null);
     }
   };
@@ -182,32 +201,36 @@ export default function JudgesPage() {
       setError(null);
 
       // Confirm deletion
-      if (!window.confirm(`Are you sure you want to delete judge ${judgeEmail}?`)) {
+      if (
+        !window.confirm(`Are you sure you want to delete judge ${judgeEmail}?`)
+      ) {
         return;
       }
 
       // Start a transaction to handle all deletion operations on the server-side
-      const response = await fetch('/api/admin/judges/delete-judge', {
-        method: 'POST',
+      const response = await fetch("/api/admin/judges/delete-judge", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id: judgeId,
-          email: judgeEmail
-        })
+          email: judgeEmail,
+        }),
       });
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to delete judge');
+        throw new Error(data.error || "Failed to delete judge");
       }
 
       setSuccess(`Judge ${judgeEmail} has been deleted`);
       fetchJudges(); // Refresh the list
     } catch (error) {
-      console.error('Error deleting judge:', error);
-      setError(error instanceof Error ? error.message : 'Failed to delete judge');
+      console.error("Error deleting judge:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to delete judge",
+      );
     }
   };
 
@@ -222,13 +245,15 @@ export default function JudgesPage() {
   }
 
   // Don't render anything if not authorized
-  if (userRole !== 'admin') {
+  if (userRole !== "admin") {
     return null;
   }
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Judges Management</h1>
+      <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+        Judges Management
+      </h1>
 
       {/* Invite Form Card */}
       <Card>
@@ -249,7 +274,11 @@ export default function JudgesPage() {
                   className="w-full"
                 />
               </div>
-              <BaseButton type="submit" disabled={inviting || !email} className="w-full sm:w-auto">
+              <BaseButton
+                type="submit"
+                disabled={inviting || !email}
+                className="w-full sm:w-auto"
+              >
                 {inviting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -303,7 +332,10 @@ export default function JudgesPage() {
               <TableBody>
                 {judges.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                    <TableCell
+                      colSpan={5}
+                      className="text-center py-8 text-gray-500"
+                    >
                       No judges found
                     </TableCell>
                   </TableRow>
@@ -312,7 +344,7 @@ export default function JudgesPage() {
                     const progress = judgeProgress[judge.id] || {
                       judgedEntries: 0,
                       totalEntries: 0,
-                      completionPercentage: 0
+                      completionPercentage: 0,
                     };
 
                     return (
@@ -321,25 +353,25 @@ export default function JudgesPage() {
                         <TableCell>
                           <Badge
                             className={
-                              judge.status === 'active'
-                                ? 'bg-success-50 text-success-700 dark:bg-success-900/20 dark:text-success-300'
-                                : 'bg-warning-50 text-warning-700 dark:bg-warning-900/20 dark:text-warning-300'
+                              judge.status === "active"
+                                ? "bg-success-50 text-success-700 dark:bg-success-900/20 dark:text-success-300"
+                                : "bg-warning-50 text-warning-700 dark:bg-warning-900/20 dark:text-warning-300"
                             }
                           >
-                            {judge.status === 'active' ? 'Active' : 'Pending'}
+                            {judge.status === "active" ? "Active" : "Pending"}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm text-neutral-500">
                           {new Date(judge.created_at).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
-                          {judge.status === 'active' ? (
+                          {judge.status === "active" ? (
                             <div className="flex items-center space-x-2">
                               <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 flex-grow">
                                 <div
                                   className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full"
                                   style={{
-                                    width: `${progress.completionPercentage}%`
+                                    width: `${progress.completionPercentage}%`,
                                   }}
                                 ></div>
                               </div>
@@ -348,12 +380,14 @@ export default function JudgesPage() {
                               </span>
                             </div>
                           ) : (
-                            <span className="text-neutral-400 text-sm">Not started</span>
+                            <span className="text-neutral-400 text-sm">
+                              Not started
+                            </span>
                           )}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">
-                            {judge.status === 'pending' ? (
+                            {judge.status === "pending" ? (
                               <BaseButton
                                 onClick={() => resendInvite(judge.email)}
                                 variant="outline"
@@ -373,7 +407,11 @@ export default function JudgesPage() {
                                 )}
                               </BaseButton>
                             ) : (
-                              <BaseButton onClick={() => viewJudgeProgress(judge.id)} variant="outline" size="sm">
+                              <BaseButton
+                                onClick={() => viewJudgeProgress(judge.id)}
+                                variant="outline"
+                                size="sm"
+                              >
                                 <Activity className="h-4 w-4 mr-1" />
                                 Progress
                               </BaseButton>
