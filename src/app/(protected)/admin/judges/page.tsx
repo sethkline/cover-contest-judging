@@ -154,7 +154,7 @@ export default function JudgesPage() {
       setError(null);
       setResendingEmail(judgeEmail);
 
-      const redirectTo = `${window.location.origin}/auth/callback?next=/confirm-judge`;
+      const redirectTo = `${window.location.origin}/callback?next=/confirm-judge`;
 
       // Send recovery link
       const { error } = await supabase.auth.resetPasswordForEmail(judgeEmail, {

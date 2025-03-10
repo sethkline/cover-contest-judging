@@ -10,8 +10,6 @@ export async function POST(request: Request) {
   try {
     const { id, email } = await request.json();
     
-    console.log(`Starting deletion process for judge ${email} (${id})`);
-
     // STEP 1: Delete all scores associated with this judge
     const { error: scoresError } = await supabase
       .from("scores")
@@ -23,7 +21,6 @@ export async function POST(request: Request) {
       throw new Error(`Failed to delete judge's scores: ${scoresError.message}`);
     }
     
-    console.log(`Deleted scores for judge ${id}`);
 
     // STEP 2: Delete all detailed_scores associated with this judge
     const { error: detailedScoresError } = await supabase
@@ -36,7 +33,6 @@ export async function POST(request: Request) {
       throw new Error(`Failed to delete judge's detailed scores: ${detailedScoresError.message}`);
     }
     
-    console.log(`Deleted detailed scores for judge ${id}`);
 
     // STEP 3: Delete the judge record from the judges table
     const { error: judgeError } = await supabase
@@ -49,7 +45,6 @@ export async function POST(request: Request) {
       throw new Error(`Failed to delete judge record: ${judgeError.message}`);
     }
     
-    console.log(`Deleted judge record for ${id}`);
 
     // STEP 4: Finally, delete the auth user
     const { error: deleteError } = await supabase.auth.admin.deleteUser(id);
@@ -59,7 +54,6 @@ export async function POST(request: Request) {
       throw new Error(`Failed to delete auth user: ${deleteError.message}`);
     }
     
-    console.log(`Successfully deleted judge ${email} (${id})`);
 
     return NextResponse.json({ success: true });
   } catch (error) {
