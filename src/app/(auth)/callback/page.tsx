@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-export default function CallbackPage() {
+function CallbackHandler() {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const searchParams = useSearchParams();
@@ -21,7 +21,6 @@ export default function CallbackPage() {
         } = await supabase.auth.getSession();
 
         if (existingSession) {
-          console.log('Session already exists, redirecting to:', next);
           router.push(next);
           return;
         }
@@ -78,9 +77,15 @@ export default function CallbackPage() {
     handleCallback();
   }, [router, searchParams]);
 
+  return <div className="animate-pulse">Setting up your account...</div>;
+}
+
+export default function CallbackPage() {
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <div className="animate-pulse">Setting up your account...</div>
+      <Suspense fallback={<div className="animate-pulse">Loading...</div>}>
+        <CallbackHandler />
+      </Suspense>
     </div>
   );
 }
