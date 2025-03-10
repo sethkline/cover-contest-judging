@@ -20,7 +20,7 @@ export async function sendJudgeInvitation(email, inviteUrl) {
     
     // Build a new URL with the correct redirect parameters
     const baseAuthUrl = url.origin + url.pathname;
-    const callbackPath = '/auth/callback?next=/confirm-judge';
+    const callbackPath = '/callback?next=/confirm-judge';
     const newRedirectTo = `${appUrl}${callbackPath}`;
     
     fixedInviteUrl = `${baseAuthUrl}?token=${token}&type=${type}&redirect_to=${encodeURIComponent(newRedirectTo)}`;

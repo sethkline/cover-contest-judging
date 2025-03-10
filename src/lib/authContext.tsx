@@ -73,7 +73,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .maybeSingle();
 
         if (adminData) {
-          console.log("User found in admin_users table");
           setUserRole("admin");
           setJudgeStatus(null);
           setLoading(false);
@@ -84,7 +83,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const isAdmin = user.app_metadata?.role === "admin";
 
         if (isAdmin) {
-          console.log("User has admin role in metadata");
           setUserRole("admin");
           setJudgeStatus(null);
           setLoading(false);
@@ -92,7 +90,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         // If we get here, user is not an admin, check if they're a judge
-        console.log("Checking if user is a judge");
         try {
           const { data: judgeData, error } = await supabase
             .from("judges")
@@ -103,7 +100,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (error) {
             if (error.code === "PGRST116") {
               // No judge record found
-              console.log("User not found in judges table");
               setUserRole("unknown");
               setJudgeStatus(null);
             } else {
@@ -113,10 +109,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           } else if (judgeData) {
             // Valid judge found
-            console.log(
-              "User found in judges table with status:",
-              judgeData.status,
-            );
             setUserRole("judge");
             setJudgeStatus(judgeData.status);
           }
@@ -178,7 +170,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (adminData) {
         // Admin user, redirect to admin dashboard
-        console.log("Admin user, redirecting to admin dashboard");
         router.push("/admin");
         return { error: null };
       }
@@ -188,7 +179,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (isAdmin) {
         // Admin user from metadata, redirect to admin dashboard
-        console.log("Admin user from metadata, redirecting to admin dashboard");
         router.push("/admin");
         return { error: null };
       }
