@@ -165,24 +165,29 @@ export default function JudgesPage() {
       setInviting(false);
     }
   };
-
   const resendInvite = async (judgeEmail: string) => {
     try {
       setError(null);
       setResendingEmail(judgeEmail);
-
-      const redirectTo = `${window.location.origin}/callback?next=/confirm-judge`;
-
-      // Send recovery link
-      const { error } = await supabase.auth.resetPasswordForEmail(judgeEmail, {
-        redirectTo: redirectTo,
+  
+      // Call our resend API endpoint instead of directly using supabase
+      const response = await fetch("/api/admin/judges/resend-judge-invitation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: judgeEmail }),
       });
-
-      if (error) throw error;
-
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to resend invitation");
+      }
+  
       setResendingEmail(null);
       setSuccess(`Invitation resent to ${judgeEmail}`);
-
+  
       // Auto-clear success message after 3 seconds
       setTimeout(() => {
         setSuccess(null);

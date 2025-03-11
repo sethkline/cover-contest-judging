@@ -14,6 +14,9 @@ function CallbackHandler() {
       try {
         // Get the next destination from query params
         const next = searchParams.get("next") || "/";
+        
+        // Check if this is a judge invitation
+        const isJudgeInvite = next.includes("/confirm-judge");
 
         // First check if we already have a session
         const {
@@ -40,7 +43,13 @@ function CallbackHandler() {
             refresh_token: hashParams.get("refresh_token")!,
           });
 
-          if (error) throw error;
+          if (error) {
+            if (isJudgeInvite) {
+              router.push(`/judge-invitation-error?error=${encodeURIComponent(error.message)}`);
+              return;
+            }
+            throw error;
+          }
 
           if (session) {
             // Redirect to the next page
@@ -57,7 +66,14 @@ function CallbackHandler() {
 
           if (error) {
             console.error("Auth refresh error:", error);
-            router.push("/login?error=Authentication%20failed");
+            
+            // Handle judge invitation errors differently
+            if (isJudgeInvite) {
+              router.push(`/judge-invitation-error?error=${encodeURIComponent(error.message)}`);
+              return;
+            }
+            
+            router.push(`/login?error=${encodeURIComponent(error.message)}`);
             return;
           }
 
@@ -69,10 +85,25 @@ function CallbackHandler() {
 
         // If we get here without a session, something went wrong
         console.error("No session established");
-        router.push("/login?error=Failed%20to%20establish%20session");
+        
+        if (isJudgeInvite) {
+          router.push("/judge-invitation-error?error=Failed%20to%20establish%20session");
+        } else {
+          router.push("/login?error=Failed%20to%20establish%20session");
+        }
       } catch (error) {
         console.error("Callback error:", error);
-        router.push("/login?error=Authentication%20error");
+        
+        // Check if this is likely a judge invitation
+        const next = searchParams.get("next") || "/";
+        const isJudgeInvite = next.includes("/confirm-judge");
+        
+        if (isJudgeInvite) {
+          const errorMessage = error instanceof Error ? error.message : "Authentication error";
+          router.push(`/judge-invitation-error?error=${encodeURIComponent(errorMessage)}`);
+        } else {
+          router.push("/login?error=Authentication%20error");
+        }
       }
     };
 
