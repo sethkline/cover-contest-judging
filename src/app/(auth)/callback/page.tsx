@@ -17,44 +17,33 @@ function CallbackHandler() {
         // Get the next destination from query params
         const next = searchParams.get('next') || '/';
 
-        // Check if this is a judge invitation
-        const isJudgeInvite = next.includes('/confirm-judge');
-        // Check if this is a password reset
-        const isPasswordReset = next.includes('/reset-password/update');
-
         // First check if we already have a session
         const {
           data: { session: existingSession }
         } = await supabase.auth.getSession();
 
         if (existingSession) {
+          // If we have a session, simply redirect to the next page
           router.push(next);
           return;
         }
 
-        // Check for recovery token in URL parameters
+        // Check for tokens in the URL or hash
         const token = searchParams.get('token');
         const type = searchParams.get('type');
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
 
-        // Specifically handle recovery (password reset) flows
-        if (token && type === 'recovery') {
-          console.log('Found recovery token in URL params');
-
+        // Handle magic link tokens
+        if (token && (type === 'magiclink' || type === 'recovery')) {
           try {
-            // For recovery flows, exchange token for session
             const { error } = await supabase.auth.verifyOtp({
               token_hash: token,
-              type: 'recovery'
+              type: type
             });
 
             if (error) {
-              console.error('Recovery verification error:', error);
-
-              if (isJudgeInvite) {
-                router.push(`/judge-invitation-error?error=${encodeURIComponent(error.message)}`);
-              } else {
-                router.push(`/login?error=${encodeURIComponent(error.message)}`);
-              }
+              console.error('Token verification error:', error);
+              router.push(`/judge-access?error=${encodeURIComponent(error.message)}`);
               return;
             }
 
@@ -64,40 +53,43 @@ function CallbackHandler() {
             } = await supabase.auth.getSession();
 
             if (session) {
-              console.log('Session established after recovery verification');
-
-              // If this was a judge invite with recovery token, send to confirm-judge
-              if (isJudgeInvite) {
-                router.push('/confirm-judge');
-              } else if (isPasswordReset) {
-                // For regular password resets, redirect to update password page
-                router.push('/reset-password/update');
-              } else {
-                router.push(next);
-              }
+              router.push(next);
               return;
             }
           } catch (error) {
-            console.error('Recovery verification error:', error);
-            router.push(`/login?error=${encodeURIComponent(error.message || 'Failed to process recovery token')}`);
+            console.error('Token verification error:', error);
+            router.push(`/judge-access?error=${encodeURIComponent(error.message)}`);
             return;
           }
         }
 
-        // Get hash parameters for other auth flows
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-
-        // If we have an access token in the hash, set the session
+        // Handle access token in hash (for other auth flows)
         if (hashParams.get('access_token')) {
-          // Rest of your existing code for access tokens...
-        } else {
-          // No hash params, try to refresh the session
-          // Rest of your existing code for session refresh...
+          // Your existing access token handling code
         }
 
-        // Rest of your existing code...
+        // Attempt to refresh session as last resort
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.refreshSession();
+
+        if (error) {
+          console.error('Auth refresh error:', error);
+          router.push(`/judge-access?error=${encodeURIComponent(error.message)}`);
+          return;
+        }
+
+        if (session) {
+          router.push(next);
+          return;
+        }
+
+        // If we get here without a session, something went wrong
+        router.push('/judge-access?error=Failed%20to%20establish%20session');
       } catch (error) {
-        // Rest of your existing error handling...
+        console.error('Callback error:', error);
+        router.push('/judge-access?error=Authentication%20error');
       }
     };
 
