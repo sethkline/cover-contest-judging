@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { useRouter, useSearchParams } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { getSupabasePublicUrl } from "@/lib/utils/storage";
-import { Spinner } from "@/components/ui/progress-loading";
-import { EntryImage } from "./components/EntryImage";
-import { ScoringForm } from "./components/ScoringForm";
-import { ProgressIndicator } from "./components/ProgressIndicator";
-import { EntryHeader } from "./components/EntryHeader";
-import { NoEntriesCard } from "./components/NoEntriesCard";
+import React, { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { getSupabasePublicUrl } from '@/lib/utils/storage';
+import { Spinner } from '@/components/ui/progress-loading';
+import { EntryImage } from './components/EntryImage';
+import { ScoringForm } from './components/ScoringForm';
+import { ProgressIndicator } from './components/ProgressIndicator';
+import { EntryHeader } from './components/EntryHeader';
+import { NoEntriesCard } from './components/NoEntriesCard';
 
 export const JudgeEntriesFeature = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const contestId = searchParams.get("contest");
-  const categoryId = searchParams.get("category");
+  const contestId = searchParams.get('contest');
+  const categoryId = searchParams.get('category');
 
   const supabase = createClientComponentClient();
 
@@ -49,37 +49,35 @@ export const JudgeEntriesFeature = () => {
     storytelling: 5,
     techniqueMastery: 5,
 
-    comments: "",
+    comments: ''
   });
 
   // Handle empty or null categoryId
   useEffect(() => {
     if (!contestId) {
-      router.push("/judge/dashboard");
+      router.push('/judge/dashboard');
       return;
     }
 
     async function fetchDefaultCategory() {
       try {
         // If category is null/undefined, fetch the first available category
-        if (!categoryId || categoryId === "null") {
+        if (!categoryId || categoryId === 'null') {
           const { data: categories, error } = await supabase
-            .from("age_categories")
-            .select("*")
-            .order("min_age", { ascending: true })
+            .from('age_categories')
+            .select('*')
+            .order('min_age', { ascending: true })
             .limit(1);
 
           if (error) throw error;
 
           if (categories && categories.length > 0) {
             // Redirect to the same page but with the category parameter
-            router.replace(
-              `/judge/entries?contest=${contestId}&category=${categories[0].id}`,
-            );
+            router.replace(`/judge/entries?contest=${contestId}&category=${categories[0].id}`);
           }
         }
       } catch (error) {
-        console.error("Error fetching default category:", error);
+        console.error('Error fetching default category:', error);
       }
     }
 
@@ -88,7 +86,7 @@ export const JudgeEntriesFeature = () => {
 
   // Fetch contest, category, and entries data
   useEffect(() => {
-    if (!contestId || !categoryId || categoryId === "null") return;
+    if (!contestId || !categoryId || categoryId === 'null') return;
 
     async function fetchData() {
       try {
@@ -96,40 +94,40 @@ export const JudgeEntriesFeature = () => {
 
         // Get current user
         const {
-          data: { user },
+          data: { user }
         } = await supabase.auth.getUser();
 
         // Fetch contest info
         const { data: contestData, error: contestError } = await supabase
-          .from("contests")
-          .select("*")
-          .eq("id", contestId)
+          .from('contests')
+          .select('*')
+          .eq('id', contestId)
           .single();
 
         if (contestError) throw contestError;
 
         // Fetch category info
         const { data: categoryData, error: categoryError } = await supabase
-          .from("age_categories")
-          .select("*")
-          .eq("id", categoryId)
+          .from('age_categories')
+          .select('*')
+          .eq('id', categoryId)
           .single();
 
         if (categoryError) throw categoryError;
 
         // Fetch entries in this contest and category
         const { data: entriesData, error: entriesError } = await supabase
-          .from("entries")
-          .select("*")
-          .eq("contest_id", contestId)
-          .eq("age_category_id", categoryId)
-          .order("entry_number", { ascending: true });
+          .from('entries')
+          .select('*')
+          .eq('contest_id', contestId)
+          .eq('age_category_id', categoryId)
+          .order('entry_number', { ascending: true });
 
         if (entriesError) throw entriesError;
 
         // Get all entries that have already been scored by this judge
         const { data: scoresData, error: scoresError } = await supabase
-          .from("scores")
+          .from('scores')
           .select(
             `
             entry_id, 
@@ -144,9 +142,9 @@ export const JudgeEntriesFeature = () => {
             storytelling_score,
             technique_mastery_score,
             judge_comments
-          `,
+          `
           )
-          .eq("judge_id", user.id);
+          .eq('judge_id', user.id);
 
         if (scoresError) throw scoresError;
 
@@ -163,7 +161,7 @@ export const JudgeEntriesFeature = () => {
             visualFocus: score.visual_focus_score,
             storytelling: score.storytelling_score,
             techniqueMastery: score.technique_mastery_score,
-            comments: score.judge_comments,
+            comments: score.judge_comments
           };
           return map;
         }, {});
@@ -199,11 +197,11 @@ export const JudgeEntriesFeature = () => {
             visualFocus: 5,
             storytelling: 5,
             techniqueMastery: 5,
-            comments: "",
+            comments: ''
           });
         }
       } catch (error) {
-        console.error("Error fetching judging data:", error);
+        console.error('Error fetching judging data:', error);
       } finally {
         setIsLoading(false);
       }
@@ -215,17 +213,17 @@ export const JudgeEntriesFeature = () => {
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (e.key === "ArrowLeft") {
+      if (e.key === 'ArrowLeft') {
         navigateToPreviousEntry();
-      } else if (e.key === "ArrowRight") {
+      } else if (e.key === 'ArrowRight') {
         navigateToNextEntry();
-      } else if (e.key === "Escape") {
+      } else if (e.key === 'Escape') {
         setIsZoomed(false);
       }
     };
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
   }, [currentEntryIndex, entries.length]);
 
   // Simulate image loading
@@ -252,18 +250,18 @@ export const JudgeEntriesFeature = () => {
       checkExistingScores(entries[currentEntryIndex + 1]?.id);
     } else {
       // Handle end of entries
-      router.push("/judge/dashboard");
+      router.push('/judge/dashboard');
     }
   };
 
   const checkExistingScores = async (entryId) => {
     try {
       const {
-        data: { user },
+        data: { user }
       } = await supabase.auth.getUser();
 
       const { data, error } = await supabase
-        .from("scores")
+        .from('scores')
         .select(
           `
           creativity_score, 
@@ -277,14 +275,14 @@ export const JudgeEntriesFeature = () => {
           storytelling_score,
           technique_mastery_score,
           judge_comments
-        `,
+        `
         )
-        .eq("entry_id", entryId)
-        .eq("judge_id", user.id)
+        .eq('entry_id', entryId)
+        .eq('judge_id', user.id)
         .single();
 
-      if (error && error.code !== "PGRST116") {
-        console.error("Error checking scores:", error);
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error checking scores:', error);
         return;
       }
 
@@ -301,7 +299,7 @@ export const JudgeEntriesFeature = () => {
           visualFocus: data.visual_focus_score ?? 5,
           storytelling: data.storytelling_score ?? 5,
           techniqueMastery: data.technique_mastery_score ?? 5,
-          comments: data.judge_comments || "",
+          comments: data.judge_comments || ''
         });
       } else {
         // Reset scores for this new entry
@@ -316,18 +314,18 @@ export const JudgeEntriesFeature = () => {
           visualFocus: 5,
           storytelling: 5,
           techniqueMastery: 5,
-          comments: "",
+          comments: ''
         });
       }
     } catch (error) {
-      console.error("Error checking existing scores:", error);
+      console.error('Error checking existing scores:', error);
     }
   };
 
   const handleScoreChange = (criterion, value) => {
     setScores((prev) => ({
       ...prev,
-      [criterion]: typeof value === "number" ? Number(value) : value,
+      [criterion]: typeof value === 'number' ? Number(value) : value
     }));
   };
 
@@ -340,36 +338,25 @@ export const JudgeEntriesFeature = () => {
 
       const currentEntry = entries[currentEntryIndex];
       const {
-        data: { user },
+        data: { user }
       } = await supabase.auth.getUser();
 
-      console.log("Scores being sent:", {
-        creativity: scores.creativity,
-        execution: scores.execution,
-        impact: scores.impact,
-        themeInterpretation: scores.themeInterpretation,
-        movementRepresentation: scores.movementRepresentation,
-        composition: scores.composition,
-        colorUsage: scores.colorUsage,
-        visualFocus: scores.visualFocus,
-        storytelling: scores.storytelling,
-        techniqueMastery: scores.techniqueMastery,
-      });
 
       // Check if this entry has already been scored
       const { data: existingScore, error: checkError } = await supabase
-        .from("scores")
-        .select("id")
-        .eq("entry_id", currentEntry?.id)
-        .eq("judge_id", user?.id)
+        .from('scores')
+        .select('id')
+        .eq('entry_id', currentEntry?.id)
+        .eq('judge_id', user?.id)
         .single();
 
       let saveError = null;
+      let scoreId = null;
 
       if (existingScore) {
         // Update existing score
         const { error } = await supabase
-          .from("scores")
+          .from('scores')
           .update({
             creativity_score: scores.creativity ?? 5,
             execution_score: scores.execution ?? 5,
@@ -381,14 +368,17 @@ export const JudgeEntriesFeature = () => {
             visual_focus_score: scores.visualFocus ?? 5,
             storytelling_score: scores.storytelling ?? 5,
             technique_mastery_score: scores.techniqueMastery ?? 5,
-            judge_comments: scores.comments,
+            judge_comments: scores.comments
           })
-          .eq("id", existingScore.id);
+          .eq('id', existingScore.id);
 
         saveError = error;
+        scoreId = existingScore.id;
       } else {
         // Insert new score
-        const { error } = await supabase.from("scores").insert({
+        const { data: newScore, error } = await supabase
+        .from('scores')
+        .insert({
           entry_id: currentEntry?.id,
           judge_id: user?.id,
           creativity_score: scores.creativity ?? 5,
@@ -401,39 +391,64 @@ export const JudgeEntriesFeature = () => {
           visual_focus_score: scores.visualFocus ?? 5,
           storytelling_score: scores.storytelling ?? 5,
           technique_mastery_score: scores.techniqueMastery ?? 5,
-          judge_comments: scores.comments,
-        });
+          judge_comments: scores.comments
+        })
+        .select('id')
+        .single();
 
         saveError = error;
+        if (newScore) {
+          scoreId = newScore.id;
+        }
       }
-
-      if (saveError) {
-        setSaveStatus({
-          type: "error",
-          message: "Failed to save scores. Please try again.",
-        });
-      } else {
-        setSaveStatus({
-          type: "success",
-          message: "Scores saved successfully!",
-        });
-
-        // Automatically move to the next entry after a short delay
-        setTimeout(() => {
-          navigateToNextEntry();
-          setSaveStatus(null);
-        }, 1500);
-      }
-    } catch (error) {
-      console.error("Error submitting scores:", error);
+     
+    if (saveError) {
       setSaveStatus({
-        type: "error",
-        message: "An unexpected error occurred. Please try again.",
+        type: 'error',
+        message: 'Failed to save scores. Please try again.'
       });
-    } finally {
-      setIsSaving(false);
+    } else {
+      // Log activity after successful score submission
+      try {
+        // First, get judge email for the activity message
+        const { data: judgeData } = await supabase
+          .from('judges')
+          .select('email')
+          .eq('id', user.id)
+          .single();
+          
+        // Create activity record
+        await supabase.from('activities').insert({
+          type: 'judge',
+          message: `Judge ${judgeData?.email || user.email || 'Unknown'} scored Entry #${currentEntry.entry_number}`,
+          related_id: scoreId
+        });
+      } catch (activityError) {
+        console.error('Error logging activity:', activityError);
+        // Don't fail the submission if activity logging fails
+      }
+
+      setSaveStatus({
+        type: 'success',
+        message: 'Scores saved successfully!'
+      });
+
+      // Automatically move to the next entry after a short delay
+      setTimeout(() => {
+        navigateToNextEntry();
+        setSaveStatus(null);
+      }, 1500);
     }
-  };
+  } catch (error) {
+    console.error('Error submitting scores:', error);
+    setSaveStatus({
+      type: 'error',
+      message: 'An unexpected error occurred. Please try again.'
+    });
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   if (isLoading && entries.length === 0) {
     return (
@@ -449,9 +464,7 @@ export const JudgeEntriesFeature = () => {
   if (entries.length === 0) {
     return (
       <div className="max-w-4xl mx-auto p-4">
-        <NoEntriesCard
-          onReturnToDashboard={() => router.push("/judge/dashboard")}
-        />
+        <NoEntriesCard onReturnToDashboard={() => router.push('/judge/dashboard')} />
       </div>
     );
   }
@@ -463,7 +476,7 @@ export const JudgeEntriesFeature = () => {
       {/* Contest Type Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-2">
-          {contestInfo?.name || "Contest"} - {categoryInfo?.name || "Category"}
+          {contestInfo?.name || 'Contest'} - {categoryInfo?.name || 'Category'}
         </h1>
       </div>
 
@@ -486,12 +499,12 @@ export const JudgeEntriesFeature = () => {
             showBackImage={showBackImage}
             onZoomToggle={() => setIsZoomed(!isZoomed)}
             onViewToggle={() => setShowBackImage(!showBackImage)}
-            getImageUrl={(path) => getSupabasePublicUrl("contest-images", path)}
+            getImageUrl={(path) => getSupabasePublicUrl('contest-images', path)}
           />
 
           {/* Scoring Section - Only visible when not zoomed */}
           <div
-            className={`transition-opacity duration-200 ${isZoomed ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            className={`transition-opacity duration-200 ${isZoomed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
           >
             <ScoringForm
               scores={scores}
@@ -504,10 +517,7 @@ export const JudgeEntriesFeature = () => {
         </CardContent>
       </Card>
 
-      <ProgressIndicator
-        currentIndex={currentEntryIndex}
-        totalEntries={entries.length}
-      />
+      <ProgressIndicator currentIndex={currentEntryIndex} totalEntries={entries.length} />
     </div>
   );
 };
