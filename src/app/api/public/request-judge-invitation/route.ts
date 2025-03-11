@@ -39,6 +39,8 @@ export async function POST(request: Request) {
     
     // Define the redirect URL 
     const redirectTo = `${baseURL}/callback?next=/confirm-judge`;
+
+    console.log(`Generating magic link with redirect to: ${redirectTo}`);
     
     // Generate a magic link instead of recovery link
     const { data, error } = await supabase.auth.admin.generateLink({
@@ -55,6 +57,8 @@ export async function POST(request: Request) {
     }
     
     const inviteUrl = data?.properties?.action_link;
+    console.log(`Generated magic link: ${inviteUrl}`);
+
     
     if (!inviteUrl) {
       throw new Error("Failed to generate invitation link");
