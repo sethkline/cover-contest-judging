@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
 import { BaseButton } from "@/components/ui/BaseButton";
 import { Input } from "@/components/ui/Input";
-import { AlertCircle, Mail, Loader2 } from "lucide-react";
+import { AlertCircle, Mail } from "lucide-react";
 
-// Create a component that uses the useSearchParams hook
-function JudgeInvitationErrorContent() {
+export default function JudgeInvitationErrorPage() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -61,7 +60,7 @@ function JudgeInvitationErrorContent() {
         setMessage("Login link sent! Please check your email.");
       } else {
         // Call our API endpoint to resend the invitation
-        const response = await fetch('/api/admin/judges/resend-judge-invitation', {
+        const response = await fetch('/api/resend-judge-invitation', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -86,96 +85,77 @@ function JudgeInvitationErrorContent() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <AlertCircle className="h-5 w-5 text-error-500" />
-          Judge Invitation Error
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="text-error-600 bg-error-50 p-3 rounded-md text-sm">
-          {error}
-        </div>
-        
-        <p className="text-neutral-600">
-          Your judge invitation link appears to be invalid or has expired. Please enter your email below to request a new invitation.
-        </p>
-        
-        <form onSubmit={handleResendInvitation} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-1">
-              Email Address
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+    <div className="flex justify-center items-center min-h-screen p-4 bg-neutral-50">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-error-500" />
+            Judge Invitation Error
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="text-error-600 bg-error-50 p-3 rounded-md text-sm">
+            {error}
           </div>
           
-          {message && (
-            <div className="bg-success-50 text-success-700 p-3 rounded-md text-sm">
-              {message}
-            </div>
-          )}
+          <p className="text-neutral-600">
+            Your judge invitation link appears to be invalid or has expired. Please enter your email below to request a new invitation.
+          </p>
           
-          {errorMessage && (
-            <div className="bg-error-50 text-error-700 p-3 rounded-md text-sm">
-              {errorMessage}
+          <form onSubmit={handleResendInvitation} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-1">
+                Email Address
+              </label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
-          )}
-        </form>
-      </CardContent>
-      <CardFooter>
-        <div className="flex w-full gap-3">
-          <BaseButton
-            type="button"
-            variant="outline"
-            onClick={() => window.location.href = "/login"}
-            className="flex-1"
-          >
-            Go to Login
-          </BaseButton>
-          <BaseButton
-            type="submit"
-            onClick={handleResendInvitation}
-            disabled={loading}
-            className="flex-1 flex items-center justify-center gap-2"
-          >
-            {loading ? "Sending..." : (
-              <>
-                <Mail size={16} />
-                Resend Invitation
-              </>
+            
+            {message && (
+              <div className="bg-success-50 text-success-700 p-3 rounded-md text-sm">
+                {message}
+              </div>
             )}
-          </BaseButton>
-        </div>
-      </CardFooter>
-    </Card>
-  );
-}
-
-// Create loading fallback for Suspense
-function LoadingFallback() {
-  return (
-    <div className="flex flex-col items-center justify-center p-6">
-      <Loader2 className="h-8 w-8 animate-spin text-primary-600 mb-4" />
-      <p className="text-neutral-600">Loading...</p>
-    </div>
-  );
-}
-
-// Main page component with Suspense
-export default function JudgeInvitationErrorPage() {
-  return (
-    <div className="flex justify-center items-center min-h-screen p-4 bg-neutral-50">
-      <Suspense fallback={<LoadingFallback />}>
-        <JudgeInvitationErrorContent />
-      </Suspense>
+            
+            {errorMessage && (
+              <div className="bg-error-50 text-error-700 p-3 rounded-md text-sm">
+                {errorMessage}
+              </div>
+            )}
+          </form>
+        </CardContent>
+        <CardFooter>
+          <div className="flex w-full gap-3">
+            <BaseButton
+              type="button"
+              variant="outline"
+              onClick={() => window.location.href = "/login"}
+              className="flex-1"
+            >
+              Go to Login
+            </BaseButton>
+            <BaseButton
+              type="submit"
+              onClick={handleResendInvitation}
+              disabled={loading}
+              className="flex-1 flex items-center justify-center gap-2"
+            >
+              {loading ? "Sending..." : (
+                <>
+                  <Mail size={16} />
+                  Resend Invitation
+                </>
+              )}
+            </BaseButton>
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
