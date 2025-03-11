@@ -3,7 +3,9 @@
 import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Loader2 } from "lucide-react";
 
+// Component that uses the useSearchParams hook
 function CallbackHandler() {
   const router = useRouter();
   const supabase = createClientComponentClient();
@@ -113,10 +115,21 @@ function CallbackHandler() {
   return <div className="animate-pulse">Setting up your account...</div>;
 }
 
+// Loading fallback for Suspense
+function LoadingFallback() {
+  return (
+    <div className="flex flex-col items-center justify-center gap-2">
+      <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
+      <p>Preparing your account...</p>
+    </div>
+  );
+}
+
+// Main component with Suspense boundary
 export default function CallbackPage() {
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <Suspense fallback={<div className="animate-pulse">Loading...</div>}>
+      <Suspense fallback={<LoadingFallback />}>
         <CallbackHandler />
       </Suspense>
     </div>

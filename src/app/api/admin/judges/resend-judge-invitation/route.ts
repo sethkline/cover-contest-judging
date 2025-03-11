@@ -14,21 +14,20 @@ export async function POST(request: Request) {
       data: { session },
     } = await authClient.auth.getSession();
     
-    if (!session) {
-      return NextResponse.json(
-        { error: "Not authenticated" },
-        { status: 401 }
-      );
-    }
+    // If no session, this could be the judge requesting their own reinvitation
+    // In that case, we don't need admin privileges but still need to verify the email
+    const isPublicRequest = !session;
     
-    // Get admin status from user metadata
-    const isAdmin = session.user.user_metadata?.role === "admin";
-    
-    if (!isAdmin) {
-      return NextResponse.json(
-        { error: "Not authorized" },
-        { status: 403 }
-      );
+    if (session) {
+      // Get admin status from user metadata
+      const isAdmin = session.user.user_metadata?.role === "admin";
+      
+      if (!isAdmin) {
+        return NextResponse.json(
+          { error: "Not authorized" },
+          { status: 403 }
+        );
+      }
     }
     
     // 2. Get the email from the request body
@@ -89,7 +88,7 @@ export async function POST(request: Request) {
       throw new Error("Failed to generate invitation link");
     }
     
-    // 9. Send custom email with the invitation link
+    // 9. Send custom email with the invitation link using the reinvitation template
     try {
       await sendJudgeReinvitation(email, inviteUrl);
     } catch (emailError) {
