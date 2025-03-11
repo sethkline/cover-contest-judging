@@ -337,7 +337,7 @@ export default function AdminDashboard() {
               color="secondary"
             />
             <ActionButton
-              href="/admin/judges/invite"
+              href="/admin/judges"
               icon={UserPlus}
               label="Invite Judge"
               variant="filled"
@@ -360,7 +360,7 @@ export default function AdminDashboard() {
               color="primary"
             />
             <ActionButton
-              href="/admin/judges/invite"
+              href="/admin/judges"
               icon={Mail}
               label="Invite New Judge"
               variant="filled"
