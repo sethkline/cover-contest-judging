@@ -3,21 +3,24 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/lib/authContext";
+import { updateJudgeStatus } from "@/lib/judgeService";
 
 export default function JudgeWelcomePage() {
-  const { updateJudgeStatus } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleActivate = async () => {
     setIsSubmitting(true);
+    setError(null);
+    
     try {
-      // Assuming updateJudgeStatus is an async function that updates the judge status
+      // Call the standalone function
       await updateJudgeStatus("active");
       router.push("/judge/dashboard");
     } catch (error) {
       console.error("Error activating judge account:", error);
+      setError(error instanceof Error ? error.message : "Failed to activate account");
       setIsSubmitting(false);
     }
   };
@@ -33,6 +36,13 @@ export default function JudgeWelcomePage() {
           begin, please take a moment to familiarize yourself with the judging
           process and criteria.
         </p>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-4">
+            <p className="font-medium">Error: {error}</p>
+            <p className="text-sm mt-1">Please try again or contact support.</p>
+          </div>
+        )}
 
         <div className="bg-primary-50 p-4 rounded border border-primary-200 mb-6">
           <h3 className="font-medium text-primary-700 mb-2">
