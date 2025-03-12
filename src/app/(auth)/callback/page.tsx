@@ -112,28 +112,44 @@ function CallbackHandler() {
 
   if (error) {
     return (
-      <div className="p-4 max-w-md mx-auto bg-red-50 border border-red-200 rounded-md">
-        <div className="flex items-start">
-          <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-2" />
-          <div>
-            <h3 className="text-red-800 font-medium">Authentication Error</h3>
-            <p className="text-red-700 mt-1">{error}</p>
-            <div className="mt-4">
-              <button
-                onClick={() => router.push('/judge-access')}
-                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-              >
-                Return to Sign In
-              </button>
+      <div className="p-6 max-w-md mx-auto bg-white shadow-md rounded-lg border border-neutral-200">
+        <div className="mb-4">
+          <div className="flex items-start">
+            <AlertCircle className="h-6 w-6 text-error-600 mt-0.5 mr-3" />
+            <div>
+              <h3 className="text-lg font-medium text-neutral-900">Authentication Error</h3>
+              <p className="mt-1 text-neutral-600">{error}</p>
             </div>
-            {debugInfo && (
-              <div className="mt-4 text-xs border-t border-red-200 pt-2">
-                <p className="font-medium">Debug Info:</p>
-                <pre className="mt-1 overflow-auto p-2 bg-red-100 rounded">{JSON.stringify(debugInfo, null, 2)}</pre>
-              </div>
-            )}
           </div>
         </div>
+        
+        <div className="border-t border-neutral-200 pt-4 mt-4">
+          <h4 className="font-medium mb-2">Would you like to:</h4>
+          <div className="space-y-3">
+            <button
+              onClick={() => router.push('/judge-access')}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
+            >
+              Try Again with Magic Link
+            </button>
+            
+            <button
+              onClick={() => router.push('/judge-access?tab=otp')}
+              className="w-full flex justify-center py-2 px-4 border border-neutral-300 rounded-md shadow-sm text-sm font-medium text-neutral-700 bg-white hover:bg-neutral-50"
+            >
+              Use One-Time Access Code Instead
+            </button>
+          </div>
+        </div>
+        
+        {debugInfo && (
+          <div className="mt-6 text-xs border-t border-neutral-200 pt-3">
+            <p className="font-medium text-neutral-500 mb-1">Debug Information</p>
+            <div className="overflow-auto p-2 bg-neutral-50 rounded text-neutral-600 max-h-40">
+              <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

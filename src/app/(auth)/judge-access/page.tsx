@@ -3,6 +3,7 @@
 
 import { useState, Suspense } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useSearchParams } from "next/navigation"; 
 
 import {
   Card,
@@ -18,6 +19,9 @@ import { Loader2, Mail, Key } from "lucide-react";
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@/components/ui/Tabs";
 
 function JudgeAccessContent() {
+  const searchParams = useSearchParams();
+  const defaultTab = searchParams.get('tab') === 'otp' ? 'otp' : 'magic-link';
+
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -160,7 +164,7 @@ const handleVerifyOtp = async (e) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="magic-link">
+        <Tabs defaultValue={defaultTab}>
           <TabList className="mb-4">
             <Tab value="magic-link">Email Link</Tab>
             <Tab value="otp">Access Code</Tab>
