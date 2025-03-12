@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Loader2, AlertCircle } from "lucide-react";
+import { useEffect, Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 function CallbackHandler() {
   const router = useRouter();
@@ -11,76 +11,81 @@ function CallbackHandler() {
   const searchParams = useSearchParams();
   const [error, setError] = useState(null);
   const [debugInfo, setDebugInfo] = useState(null);
-  
+
   useEffect(() => {
     const handleCallback = async () => {
       try {
         // Get the next destination from query params
-        const next = searchParams.get("next") || "/";
-        console.log("Next destination:", next);
-        
-        // Log the complete URL for debugging
-        console.log("Full URL:", window.location.href);
-        
-        // Check URL for specific patterns
+        const next = searchParams.get('next') || '/';
+        console.log('Next destination:', next);
+
+        // Log URL params for debugging
+        const urlParams = Object.fromEntries(searchParams.entries());
+        console.log('URL params:', urlParams);
+
+        // Check hash params for tokens
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+
+        console.log('Has access token in hash:', !!accessToken);
+
         setDebugInfo({
-          hasCode: window.location.href.includes("code="),
-          hasToken: window.location.href.includes("token="),
-          hasAccessToken: window.location.href.includes("access_token="),
-          searchParams: Object.fromEntries(searchParams.entries())
+          urlParams,
+          hasAccessTokenInHash: !!accessToken,
+          hasRefreshTokenInHash: !!refreshToken,
+          hash: window.location.hash ? window.location.hash.substring(0, 20) + '...' : 'none'
         });
 
         // First check if we already have a session
         const {
-          data: { session: existingSession },
+          data: { session: existingSession }
         } = await supabase.auth.getSession();
 
         if (existingSession) {
-          console.log("Session already exists, redirecting to:", next);
+          console.log('Session already exists, redirecting to:', next);
           router.push(next);
           return;
         }
 
-        // Try the standard Supabase auth callback method first
-        try {
-          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(
-            window.location.href
-          );
-          
-          if (exchangeError) {
-            console.error("Exchange error:", exchangeError);
-            setError(exchangeError.message);
-            // Don't immediately redirect - continue to try other methods
-          } else if (data?.session) {
-            console.log("Session established via code exchange");
-            router.push(next);
-            return;
+        // If we have tokens in the hash, try setting the session directly
+        if (accessToken && refreshToken) {
+          try {
+            const { data, error: setSessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+
+            if (setSessionError) {
+              console.error('Set session error:', setSessionError);
+              setError(setSessionError.message);
+            } else if (data?.session) {
+              console.log('Session set successfully');
+              router.push(next);
+              return;
+            }
+          } catch (setSessionErr) {
+            console.error('Error setting session:', setSessionErr);
           }
-        } catch (exchangeErr) {
-          console.error("Error in exchangeCodeForSession:", exchangeErr);
         }
 
-        // If we didn't successfully exchange code, try to get a session directly 
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
+        // If we're still here, check if we have a session now
+        const {
+          data: { session },
+          error: sessionError
+        } = await supabase.auth.getSession();
+
         if (session) {
-          console.log("Got session after attempt", session);
+          console.log('Session established');
           router.push(next);
           return;
         }
-        
-        if (sessionError) {
-          console.error("Session error:", sessionError);
-          setError(sessionError.message);
-        }
 
-        // If no redirect happened yet and no error is set, something else went wrong
-        if (!error) {
-          setError("Failed to establish a session");
-        }
+        // If we still don't have a session, show an error
+        setError('Failed to establish a session. Please try logging in again.');
       } catch (err) {
-        console.error("Callback error:", err);
-        setError(err.message || "Authentication error");
+        console.error('Callback error:', err);
+        setError(err.message || 'Authentication error');
       }
     };
 
@@ -97,7 +102,7 @@ function CallbackHandler() {
             <p className="text-red-700 mt-1">{error}</p>
             <div className="mt-4">
               <button
-                onClick={() => router.push("/judge-access")}
+                onClick={() => router.push('/judge-access')}
                 className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
               >
                 Return to Sign In
@@ -106,9 +111,7 @@ function CallbackHandler() {
             {debugInfo && (
               <div className="mt-4 text-xs border-t border-red-200 pt-2">
                 <p className="font-medium">Debug Info:</p>
-                <pre className="mt-1 overflow-auto p-2 bg-red-100 rounded">
-                  {JSON.stringify(debugInfo, null, 2)}
-                </pre>
+                <pre className="mt-1 overflow-auto p-2 bg-red-100 rounded">{JSON.stringify(debugInfo, null, 2)}</pre>
               </div>
             )}
           </div>
