@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { BaseButton } from '@/components/ui/BaseButton';
-import { Home, LogOut, BookOpen, Menu, X } from 'lucide-react';
+import React, { useState } from "react";
+import Link from "next/link";
+import { BaseButton } from "@/components/ui/BaseButton";
+import { Home, LogOut, BookOpen, Menu, X } from "lucide-react";
 
 interface JudgeNavigationProps {
   pathname: string;
   onSignOut: () => void;
 }
 
-export const JudgeNavigation: React.FC<JudgeNavigationProps> = ({ pathname, onSignOut }) => {
+export const JudgeNavigation: React.FC<JudgeNavigationProps> = ({
+  pathname,
+  onSignOut,
+}) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -21,7 +24,9 @@ export const JudgeNavigation: React.FC<JudgeNavigationProps> = ({ pathname, onSi
         <div className="flex justify-between h-16">
           {/* Logo/Brand */}
           <div className="flex-shrink-0 flex items-center">
-            <span className="font-bold text-lg md:text-xl text-primary-600 truncate">Contest Judge Portal</span>
+            <span className="font-bold text-lg md:text-xl text-primary-600 truncate">
+              Contest Judge Portal
+            </span>
           </div>
 
           {/* Desktop Navigation */}
@@ -29,18 +34,23 @@ export const JudgeNavigation: React.FC<JudgeNavigationProps> = ({ pathname, onSi
             <div className="flex space-x-4 mr-4">
               <NavLink
                 href="/judge/dashboard"
-                isActive={pathname === '/judge/dashboard'}
+                isActive={pathname === "/judge/dashboard"}
                 icon={<Home className="mr-1.5 h-4 w-4" />}
                 label="Dashboard"
               />
               <NavLink
                 href="/judge/instructions"
-                isActive={pathname === '/judge/instructions'}
+                isActive={pathname === "/judge/instructions"}
                 icon={<BookOpen className="mr-1.5 h-4 w-4" />}
                 label="Instructions"
               />
             </div>
-            <BaseButton onClick={onSignOut} variant="ghost" size="sm" leftIcon={<LogOut className="h-4 w-4" />}>
+            <BaseButton
+              onClick={onSignOut}
+              variant="ghost"
+              size="sm"
+              leftIcon={<LogOut className="h-4 w-4" />}
+            >
               Sign out
             </BaseButton>
           </div>
@@ -67,18 +77,21 @@ export const JudgeNavigation: React.FC<JudgeNavigationProps> = ({ pathname, onSi
       </div>
 
       {/* Mobile menu */}
-      <div className={`${mobileMenuOpen ? 'block' : 'hidden'} md:hidden`} id="mobile-menu">
+      <div
+        className={`${mobileMenuOpen ? "block" : "hidden"} md:hidden`}
+        id="mobile-menu"
+      >
         <div className="px-2 pt-2 pb-3 space-y-1">
           <MobileNavLink
             href="/judge/dashboard"
-            isActive={pathname === '/judge/dashboard'}
+            isActive={pathname === "/judge/dashboard"}
             icon={<Home className="mr-2 h-5 w-5" />}
             label="Dashboard"
             onClick={() => setMobileMenuOpen(false)}
           />
           <MobileNavLink
             href="/judge/instructions"
-            isActive={pathname === '/judge/instructions'}
+            isActive={pathname === "/judge/instructions"}
             icon={<BookOpen className="mr-2 h-5 w-5" />}
             label="Instructions"
             onClick={() => setMobileMenuOpen(false)}
@@ -116,7 +129,9 @@ const NavLink: React.FC<NavLinkProps> = ({ href, isActive, icon, label }) => {
     <Link
       href={href}
       className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-        isActive ? 'bg-primary-50 text-primary-600' : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
+        isActive
+          ? "bg-primary-50 text-primary-600"
+          : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"
       }`}
     >
       <span className="mr-1">{icon}</span>
@@ -130,12 +145,20 @@ interface MobileNavLinkProps extends NavLinkProps {
   onClick?: () => void;
 }
 
-const MobileNavLink: React.FC<MobileNavLinkProps> = ({ href, isActive, icon, label, onClick }) => {
+const MobileNavLink: React.FC<MobileNavLinkProps> = ({
+  href,
+  isActive,
+  icon,
+  label,
+  onClick,
+}) => {
   return (
     <Link
       href={href}
       className={`block px-3 py-2 rounded-md text-base font-medium flex items-center ${
-        isActive ? 'bg-primary-50 text-primary-600' : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
+        isActive
+          ? "bg-primary-50 text-primary-600"
+          : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"
       }`}
       onClick={onClick}
     >

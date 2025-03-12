@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 
 export default function ResetPasswordPage() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -17,23 +17,23 @@ export default function ResetPasswordPage() {
 
     try {
       // Use your custom API endpoint instead of Supabase client
-      const response = await fetch('/api/reset-password', {
-        method: 'POST',
+      const response = await fetch("/api/reset-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send reset link');
+        throw new Error(data.error || "Failed to send reset link");
       }
 
       setSuccess(true);
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred');
+      setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -42,7 +42,9 @@ export default function ResetPasswordPage() {
   return (
     <>
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-500">Reset your password</h2>
+        <h2 className="text-3xl font-bold text-primary-600 dark:text-primary-500">
+          Reset your password
+        </h2>
         <p className="mt-2 text-neutral-600 dark:text-neutral-400">
           Enter your email and we'll send you a password reset link
         </p>
@@ -69,7 +71,10 @@ export default function ResetPasswordPage() {
       ) : (
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
+            >
               Email address
             </label>
             <input
@@ -92,9 +97,9 @@ export default function ResetPasswordPage() {
               text-sm font-medium text-white 
               bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-neutral-800
-              ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            {loading ? 'Sending...' : 'Send reset link'}
+            {loading ? "Sending..." : "Send reset link"}
           </button>
 
           <div className="text-center">

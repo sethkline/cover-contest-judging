@@ -103,7 +103,11 @@ export async function sendJudgeReinvitation(email, inviteUrl) {
     <p>Thank you,<br>Contest Admin Team</p>
   `;
 
-  return sendEmail(email, "Your Judge Invitation Has Been Renewed", htmlContent);
+  return sendEmail(
+    email,
+    "Your Judge Invitation Has Been Renewed",
+    htmlContent,
+  );
 }
 
 // Send password reset email

@@ -1,9 +1,9 @@
 // src/app/(protected)/admin/entries/new/page.tsx
-'use client';
+"use client";
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function NewEntryPage() {
   const router = useRouter();
@@ -12,25 +12,27 @@ export default function NewEntryPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
-    contestType: 'cover',
-    participantName: '',
-    age: '',
-    ageCategory: '3-7',
-    artistStatement: '',
+    contestType: "cover",
+    participantName: "",
+    age: "",
+    ageCategory: "3-7",
+    artistStatement: "",
     frontImage: null as File | null,
-    backImage: null as File | null
+    backImage: null as File | null,
   });
 
   const [imagePreview, setImagePreview] = useState({
-    front: '',
-    back: ''
+    front: "",
+    back: "",
   });
 
   const [ageCategories, setAgeCategories] = useState([]);
 
   useEffect(() => {
     const fetchAgeCategories = async () => {
-      const { data, error } = await supabase.from('age_categories').select('id, name, min_age, max_age');
+      const { data, error } = await supabase
+        .from("age_categories")
+        .select("id, name, min_age, max_age");
 
       if (data) {
         setAgeCategories(data);
@@ -43,7 +45,9 @@ export default function NewEntryPage() {
   const getAgeCategoryId = (age) => {
     const numAge = parseInt(age);
     const category = ageCategories.find(
-      (cat) => numAge >= cat.min_age && (cat.max_age === null || numAge <= cat.max_age)
+      (cat) =>
+        numAge >= cat.min_age &&
+        (cat.max_age === null || numAge <= cat.max_age),
     );
     return category?.id;
   };
@@ -59,7 +63,10 @@ export default function NewEntryPage() {
 
   useEffect(() => {
     const fetchContests = async () => {
-      const { data, error } = await supabase.from('contests').select('id, name, type, is_active').eq('is_active', true);
+      const { data, error } = await supabase
+        .from("contests")
+        .select("id, name, type, is_active")
+        .eq("is_active", true);
 
       if (data) {
         setContests(data);
@@ -68,19 +75,22 @@ export default function NewEntryPage() {
     fetchContests();
   }, []);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'front' | 'back') => {
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "front" | "back",
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       setFormData((prev) => ({
         ...prev,
-        [type === 'front' ? 'frontImage' : 'backImage']: file
+        [type === "front" ? "frontImage" : "backImage"]: file,
       }));
 
       // Create preview URL
       const url = URL.createObjectURL(file);
       setImagePreview((prev) => ({
         ...prev,
-        [type]: url
+        [type]: url,
       }));
     }
   };
@@ -93,29 +103,29 @@ export default function NewEntryPage() {
     try {
       const {
         data: { session },
-        error: sessionError
+        error: sessionError,
       } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
 
       if (!session) {
-        throw new Error('Not authenticated');
+        throw new Error("Not authenticated");
       }
 
       if (!formData.frontImage) {
-        throw new Error('Front image is required');
+        throw new Error("Front image is required");
       }
 
       // Get contest id
       const contest = contests.find((c) => c.type === formData.contestType);
       if (!contest) {
-        throw new Error('Contest type not found');
+        throw new Error("Contest type not found");
       }
 
       // Get the next entry number
       const { data: maxEntryNumber } = await supabase
-        .from('entries')
-        .select('entry_number')
-        .order('entry_number', { ascending: false })
+        .from("entries")
+        .select("entry_number")
+        .order("entry_number", { ascending: false })
         .limit(1)
         .single();
 
@@ -124,11 +134,11 @@ export default function NewEntryPage() {
       // Upload front image
       const frontFileName = `${Date.now()}_front.jpg`;
       const { error: frontImageError } = await supabase.storage
-        .from('contest-images')
+        .from("contest-images")
         .upload(frontFileName, formData.frontImage, {
           upsert: false,
-          cacheControl: '3600',
-          contentType: formData.frontImage.type
+          cacheControl: "3600",
+          contentType: formData.frontImage.type,
         });
 
       if (frontImageError) throw frontImageError;
@@ -138,11 +148,11 @@ export default function NewEntryPage() {
       if (formData.backImage) {
         backFileName = `${Date.now()}_back.jpg`;
         const { error: backImageError } = await supabase.storage
-          .from('contest-images')
+          .from("contest-images")
           .upload(backFileName, formData.backImage, {
             upsert: false,
-            cacheControl: '3600',
-            contentType: formData.backImage.type
+            cacheControl: "3600",
+            contentType: formData.backImage.type,
           });
 
         if (backImageError) throw backImageError;
@@ -150,7 +160,7 @@ export default function NewEntryPage() {
 
       // Create entry record
       const { data: newEntry, error: entryError } = await supabase
-        .from('entries')
+        .from("entries")
         .insert({
           contest_id: contest.id,
           entry_number: nextEntryNumber,
@@ -159,36 +169,38 @@ export default function NewEntryPage() {
           age_category_id: getAgeCategoryId(formData.age),
           artist_statement: formData.artistStatement || null,
           front_image_path: frontFileName,
-          back_image_path: backFileName
+          back_image_path: backFileName,
         })
-        .select('id, participant_name, entry_number')
+        .select("id, participant_name, entry_number")
         .single();
 
       if (entryError) {
-        console.error('Entry Error:', entryError);
+        console.error("Entry Error:", entryError);
         throw entryError;
       }
 
       // Log the activity in the activities table
       if (newEntry) {
-        const { error: activityError } = await supabase.from('activities').insert({
-          type: 'entry',
-          message: `New entry #${nextEntryNumber} submitted for ${formData.participantName}`,
-          related_id: newEntry.id
-        });
+        const { error: activityError } = await supabase
+          .from("activities")
+          .insert({
+            type: "entry",
+            message: `New entry #${nextEntryNumber} submitted for ${formData.participantName}`,
+            related_id: newEntry.id,
+          });
 
         if (activityError) {
-          console.error('Error logging activity:', activityError);
+          console.error("Error logging activity:", activityError);
           // We don't throw here because the entry was created successfully
           // This is just logging, so we can continue
         }
       }
 
-      router.push('/admin/entries');
+      router.push("/admin/entries");
       router.refresh();
     } catch (error) {
-      console.error('Submission Error:', error);
-      setError(error instanceof Error ? error.message : 'An error occurred');
+      console.error("Submission Error:", error);
+      setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -198,14 +210,20 @@ export default function NewEntryPage() {
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
       <h1 className="text-2xl font-bold mb-6">Add New Entry</h1>
 
-      {error && <div className="mb-4 p-4 bg-red-50 text-red-600 rounded">{error}</div>}
+      {error && (
+        <div className="mb-4 p-4 bg-red-50 text-red-600 rounded">{error}</div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Contest Type</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Contest Type
+          </label>
           <select
             value={formData.contestType}
-            onChange={(e) => setFormData((prev) => ({ ...prev, contestType: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, contestType: e.target.value }))
+            }
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
           >
             <option value="cover">Cover Design</option>
@@ -214,7 +232,9 @@ export default function NewEntryPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Participant Name</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Participant Name
+          </label>
           <input
             type="text"
             required
@@ -222,7 +242,7 @@ export default function NewEntryPage() {
             onChange={(e) =>
               setFormData((prev) => ({
                 ...prev,
-                participantName: e.target.value
+                participantName: e.target.value,
               }))
             }
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
@@ -236,20 +256,24 @@ export default function NewEntryPage() {
             required
             min="3"
             value={formData.age}
-            onChange={(e) => setFormData((prev) => ({ ...prev, age: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, age: e.target.value }))
+            }
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
           />
         </div>
 
-        {formData.contestType === 'cover' && (
+        {formData.contestType === "cover" && (
           <div>
-            <label className="block text-sm font-medium text-gray-700">Age Category</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Age Category
+            </label>
             <select
               value={formData.ageCategory}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
-                  ageCategory: e.target.value
+                  ageCategory: e.target.value,
                 }))
               }
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
@@ -262,13 +286,15 @@ export default function NewEntryPage() {
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Artist Statement (Optional)</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Artist Statement (Optional)
+          </label>
           <textarea
             value={formData.artistStatement}
             onChange={(e) =>
               setFormData((prev) => ({
                 ...prev,
-                artistStatement: e.target.value
+                artistStatement: e.target.value,
               }))
             }
             rows={3}
@@ -277,29 +303,41 @@ export default function NewEntryPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Front Image</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Front Image
+          </label>
           <input
             type="file"
             accept="image/*"
             required
-            onChange={(e) => handleImageChange(e, 'front')}
+            onChange={(e) => handleImageChange(e, "front")}
             className="mt-1 block w-full"
           />
           {imagePreview.front && (
-            <img src={imagePreview.front} alt="Front preview" className="mt-2 max-h-40 object-contain" />
+            <img
+              src={imagePreview.front}
+              alt="Front preview"
+              className="mt-2 max-h-40 object-contain"
+            />
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Back Image (Optional)</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Back Image (Optional)
+          </label>
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => handleImageChange(e, 'back')}
+            onChange={(e) => handleImageChange(e, "back")}
             className="mt-1 block w-full"
           />
           {imagePreview.back && (
-            <img src={imagePreview.back} alt="Back preview" className="mt-2 max-h-40 object-contain" />
+            <img
+              src={imagePreview.back}
+              alt="Back preview"
+              className="mt-2 max-h-40 object-contain"
+            />
           )}
         </div>
 
@@ -315,10 +353,10 @@ export default function NewEntryPage() {
             type="submit"
             disabled={loading}
             className={`px-4 py-2 text-white bg-primary-600 rounded hover:bg-primary-700 ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
+              loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {loading ? 'Submitting...' : 'Add Entry'}
+            {loading ? "Submitting..." : "Add Entry"}
           </button>
         </div>
       </form>
