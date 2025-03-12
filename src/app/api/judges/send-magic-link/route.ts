@@ -1,6 +1,7 @@
 // app/api/judges/send-magic-link/route.js
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { sendMagicLink } from "@/services/mailService"; // Import your mail service function
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -10,6 +11,7 @@ const supabase = createClient(
 export async function POST(request) {
   try {
     const { email } = await request.json();
+    console.log("Received request to send magic link to:", email);
     
     // First check if this email is in the judges table
     const { data: judgeData, error: judgeError } = await supabase
@@ -19,6 +21,7 @@ export async function POST(request) {
       .single();
     
     if (judgeError) {
+      console.log("Judge not found:", email);
       return NextResponse.json(
         { error: "Email not found in judges list" },
         { status: 404 }
@@ -36,8 +39,8 @@ export async function POST(request) {
       ? '/confirm-judge' 
       : '/judge/dashboard';
     
-    // Send the magic link
-    const { error: magicLinkError } = await supabase.auth.admin.generateLink({
+    // GENERATE the magic link (but it doesn't send it automatically)
+    const { data, error: magicLinkError } = await supabase.auth.admin.generateLink({
       type: "magiclink",
       email: email,
       options: {
@@ -46,7 +49,25 @@ export async function POST(request) {
     });
 
     if (magicLinkError) {
+      console.error("Error generating magic link:", magicLinkError);
       throw magicLinkError;
+    }
+    
+    // Get the actual magic link URL from the response
+    const magicLinkUrl = data?.properties?.action_link;
+    
+    if (!magicLinkUrl) {
+      throw new Error("Failed to generate magic link");
+    }
+    
+    console.log("Generated magic link:", magicLinkUrl);
+    
+    try {
+      await sendMagicLink(email, magicLinkUrl);
+      console.log("Magic link email sent successfully to", email);
+    } catch (emailError) {
+      console.error("Failed to send magic link email:", emailError);
+      throw emailError;
     }
 
     return NextResponse.json({ 
