@@ -2,6 +2,8 @@
 "use client";
 
 import { useState, Suspense } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 import {
   Card,
   CardHeader,
@@ -22,6 +24,7 @@ function JudgeAccessContent() {
   const [otpSent, setOtpSent] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const supabase = createClientComponentClient();
 
   // Handle magic link request
   const handleSendMagicLink = async (e) => {
@@ -102,41 +105,51 @@ function JudgeAccessContent() {
   };
 
   // Handle OTP verification
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-
-    if (!email || !otp) {
-      setError("Please enter both your email and the access code");
-      return;
+const handleVerifyOtp = async (e) => {
+  e.preventDefault();
+  
+  if (!email || !otp) {
+    setError("Please enter both your email and the access code");
+    return;
+  }
+  
+  setLoading(true);
+  setError("");
+  
+  try {
+    const response = await fetch("/api/auth/verify-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, otp }),
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error || "Invalid or expired code");
     }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/auth/verify-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, otp }),
+    
+    // If we received a session from the backend, set it client-side as well
+    if (data.session) {
+      const { data: clientSessionData } = await supabase.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Invalid or expired code");
-      }
-
-      // Redirect based on response
-      window.location.href = data.redirectUrl || "/judge/dashboard";
-    } catch (error) {
-      console.error("Error verifying OTP:", error);
-      setError(error.message || "Invalid or expired code");
-    } finally {
-      setLoading(false);
+      
+      console.log("Session set on client:", !!clientSessionData.session);
     }
-  };
+    
+    // Redirect based on response
+    window.location.href = data.redirectUrl || "/judge/dashboard";
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    setError(error.message || "Invalid or expired code");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <Card className="w-full max-w-md">
