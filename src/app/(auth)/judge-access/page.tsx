@@ -114,7 +114,7 @@ function JudgeAccessContent() {
     setError("");
 
     try {
-      const response = await fetch("/api/judges/verify-otp", {
+      const response = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
