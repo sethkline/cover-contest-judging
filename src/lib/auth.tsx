@@ -21,7 +21,7 @@ export function withJudgeAuth(Component: React.ComponentType<any>) {
           } = await supabase.auth.getSession();
 
           if (!session) {
-            router.push("/login");
+            router.push("/");
             return;
           }
 
@@ -51,7 +51,7 @@ export function withJudgeAuth(Component: React.ComponentType<any>) {
           setIsAuthorized(true);
         } catch (error) {
           console.error("Authentication error:", error);
-          router.push("/login");
+          router.push("/");
         } finally {
           setLoading(false);
         }

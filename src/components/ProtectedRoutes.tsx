@@ -16,7 +16,7 @@ export function AdminRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push("/login");
+        router.push("/");
       } else if (userRole !== "admin") {
         router.push("/unauthorized");
       }
@@ -50,7 +50,7 @@ export function JudgeRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push("/login");
+        router.push("/");
       } else if (userRole !== "judge") {
         router.push("/unauthorized");
       } else if (
@@ -98,7 +98,7 @@ export function JudgeWelcomeRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push("/login");
+        router.push("/");
       } else if (userRole !== "judge") {
         router.push("/unauthorized");
       } else if (judgeStatus === "active") {
@@ -134,7 +134,7 @@ export function JudgeInstructionsRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push("/login");
+        router.push("/");
       } else if (userRole !== "judge") {
         router.push("/unauthorized");
       }
