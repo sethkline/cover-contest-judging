@@ -56,7 +56,7 @@ export async function sendJudgeInvitation(email, inviteUrl) {
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
   ).replace(/\/$/, "");
 
-  const callbackPath = "/callback?next=/confirm-judge";
+  const callbackPath = "/callback?next=/judge/dashboard";
   const fixedInviteUrl = fixRedirectUrl(inviteUrl, appUrl, callbackPath);
 
   const htmlContent = `
