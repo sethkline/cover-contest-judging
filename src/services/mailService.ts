@@ -49,7 +49,7 @@ async function sendEmail(email, subject, htmlContent) {
   });
 }
 
-// Original judge invitation
+//judge invitation
 export async function sendJudgeInvitation(email, inviteUrl) {
   // Get the app URL from environment variable
   const appUrl = (
@@ -71,6 +71,7 @@ export async function sendJudgeInvitation(email, inviteUrl) {
     </p>
     <p>If you're unable to click the button, copy and paste this URL into your browser:</p>
     <p>${fixedInviteUrl}</p>
+    <p><strong>Having issues with the link?</strong> If your email security system blocks the link, you can go to <a href="${appUrl}/judge-access">${appUrl}/judge-access</a> and request an access code instead.</p>
     <p>Thank you,<br>Contest Admin Team</p>
   `;
 
@@ -167,4 +168,44 @@ export async function sendMagicLink(email, magicUrl) {
   `;
 
   return sendEmail(email, "Your Login Link", htmlContent);
+}
+
+// Add this to your existing mailService file
+
+export async function sendOtpEmail(email: string, otp: string) {
+  const mg = mailgun({
+    apiKey: process.env.MAILGUN_API_KEY,
+    domain: process.env.MAILGUN_DOMAIN,
+  });
+
+  const htmlContent = `
+    <h2>Your Access Code</h2>
+    <p>Hello,</p>
+    <p>Here is your one-time access code for the judging platform:</p>
+    <div style="margin: 20px 0; padding: 15px; background-color: #f5f5f5; border-radius: 5px; text-align: center; font-size: 24px; letter-spacing: 5px; font-weight: bold;">
+      ${otp}
+    </div>
+    <p>This code will expire in 10 minutes for security reasons.</p>
+    <p>If you didn't request this code, you can safely ignore this email.</p>
+    <p>Thank you,<br>Contest Admin Team</p>
+  `;
+
+  const data = {
+    from: `Contest Admin <noreply@${process.env.MAILGUN_DOMAIN}>`,
+    to: email,
+    subject: "Your Access Code for the Judging Platform",
+    html: htmlContent,
+  };
+
+  return new Promise((resolve, reject) => {
+    mg.messages().send(data, (error, body) => {
+      if (error) {
+        console.error("Failed to send OTP email:", error);
+        reject(error);
+      } else {
+        console.log("OTP email sent successfully:", body);
+        resolve(body);
+      }
+    });
+  });
 }

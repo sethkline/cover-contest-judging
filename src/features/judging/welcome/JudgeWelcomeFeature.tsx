@@ -13,14 +13,16 @@ export default function JudgeWelcomePage() {
   const handleActivate = async () => {
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       // Call the standalone function
       await updateJudgeStatus("active");
       router.push("/judge/dashboard");
     } catch (error) {
       console.error("Error activating judge account:", error);
-      setError(error instanceof Error ? error.message : "Failed to activate account");
+      setError(
+        error instanceof Error ? error.message : "Failed to activate account",
+      );
       setIsSubmitting(false);
     }
   };

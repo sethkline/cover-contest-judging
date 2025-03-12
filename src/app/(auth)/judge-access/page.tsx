@@ -8,17 +8,22 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
+  CardDescription,
 } from "@/components/ui/Card";
 import { BaseButton } from "@/components/ui/BaseButton";
 import { Input } from "@/components/ui/Input";
-import { Loader2, Mail } from "lucide-react";
+import { Loader2, Mail, Key } from "lucide-react";
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@/components/ui/Tabs";
 
 function JudgeAccessContent() {
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
+  // Handle magic link request
   const handleSendMagicLink = async (e) => {
     e.preventDefault();
 
@@ -58,74 +63,295 @@ function JudgeAccessContent() {
     }
   };
 
+  // Handle OTP request
+  const handleRequestOtp = async (e) => {
+    e.preventDefault();
+
+    if (!email) {
+      setError("Please enter your email address");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch("/api/judges/generate-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send access code");
+      }
+
+      setOtpSent(true);
+      setSuccess("Access code sent! Please check your email.");
+    } catch (error) {
+      console.error("Error requesting OTP:", error);
+      setError(error.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle OTP verification
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+
+    if (!email || !otp) {
+      setError("Please enter both your email and the access code");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/judges/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, otp }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Invalid or expired code");
+      }
+
+      // Redirect based on response
+      window.location.href = data.redirectUrl || "/judge/dashboard";
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      setError(error.message || "Invalid or expired code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Judge Access</CardTitle>
+        <CardDescription>
+          Choose your preferred method to access the judging platform
+        </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-neutral-600">
-          Enter your email address below to receive a secure login link. This
-          link will give you immediate access to the judging interface.
-        </p>
+      <CardContent>
+        <Tabs defaultValue="magic-link">
+          <TabList className="mb-4">
+            <Tab value="magic-link">Email Link</Tab>
+            <Tab value="otp">Access Code</Tab>
+          </TabList>
+          <TabPanels>
+            {/* Magic Link Tab */}
+            <TabPanel value="magic-link">
+              <div className="space-y-4">
+                <p className="text-neutral-600">
+                  Enter your email address below to receive a secure login link.
+                  This link will give you immediate access to the judging
+                  interface.
+                </p>
 
-        <form onSubmit={handleSendMagicLink} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email Address
-            </label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your judge email"
-              required
-            />
-          </div>
+                <form onSubmit={handleSendMagicLink} className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium mb-1"
+                    >
+                      Email Address
+                    </label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your judge email"
+                      required
+                    />
+                  </div>
 
-          {success && (
-            <div className="bg-success-50 text-success-700 p-3 rounded-md text-sm">
-              {success}
-            </div>
-          )}
+                  {success && (
+                    <div className="bg-success-50 text-success-700 p-3 rounded-md text-sm">
+                      {success}
+                    </div>
+                  )}
 
-          {error && (
-            <div className="bg-error-50 text-error-700 p-3 rounded-md text-sm">
-              {error}
-            </div>
-          )}
-        </form>
+                  {error && (
+                    <div className="bg-error-50 text-error-700 p-3 rounded-md text-sm">
+                      {error}
+                    </div>
+                  )}
+
+                  <BaseButton
+                    type="submit"
+                    onClick={handleSendMagicLink}
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="h-4 w-4" />
+                        Send Login Link
+                      </>
+                    )}
+                  </BaseButton>
+                </form>
+              </div>
+            </TabPanel>
+
+            {/* OTP Tab */}
+            <TabPanel value="otp">
+              <div className="space-y-4">
+                <p className="text-neutral-600">
+                  {!otpSent
+                    ? "Request a 6-digit code to be sent to your email address. This option is helpful if you have issues with email links."
+                    : "Enter the 6-digit code sent to your email address."}
+                </p>
+
+                {!otpSent ? (
+                  <form onSubmit={handleRequestOtp} className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="email-otp"
+                        className="block text-sm font-medium mb-1"
+                      >
+                        Email Address
+                      </label>
+                      <Input
+                        id="email-otp"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your judge email"
+                        required
+                      />
+                    </div>
+
+                    {success && (
+                      <div className="bg-success-50 text-success-700 p-3 rounded-md text-sm">
+                        {success}
+                      </div>
+                    )}
+
+                    {error && (
+                      <div className="bg-error-50 text-error-700 p-3 rounded-md text-sm">
+                        {error}
+                      </div>
+                    )}
+
+                    <BaseButton
+                      type="submit"
+                      disabled={loading}
+                      className="w-full flex items-center justify-center gap-2"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Key className="h-4 w-4" />
+                          Send Access Code
+                        </>
+                      )}
+                    </BaseButton>
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerifyOtp} className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="otp"
+                        className="block text-sm font-medium mb-1"
+                      >
+                        Access Code
+                      </label>
+                      <Input
+                        id="otp"
+                        type="text"
+                        value={otp}
+                        onChange={(e) =>
+                          setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+                        }
+                        placeholder="Enter 6-digit code"
+                        className="text-center text-lg tracking-widest"
+                        maxLength={6}
+                        required
+                      />
+                    </div>
+
+                    {error && (
+                      <div className="bg-error-50 text-error-700 p-3 rounded-md text-sm">
+                        {error}
+                      </div>
+                    )}
+
+                    <div className="flex gap-3">
+                      <BaseButton
+                        type="button"
+                        variant="outline"
+                        onClick={() => setOtpSent(false)}
+                        className="flex-1"
+                      >
+                        Back
+                      </BaseButton>
+                      <BaseButton
+                        type="submit"
+                        disabled={loading || otp.length !== 6}
+                        className="flex-1 flex items-center justify-center"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            Verifying...
+                          </>
+                        ) : (
+                          "Verify Code"
+                        )}
+                      </BaseButton>
+                    </div>
+
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={handleRequestOtp}
+                        disabled={loading}
+                        className="text-primary-600 hover:underline text-sm"
+                      >
+                        Didn't receive a code? Send again
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </CardContent>
       <CardFooter>
-        <div className="flex w-full gap-3">
-          <BaseButton
-            type="button"
-            variant="outline"
-            onClick={() => (window.location.href = "/login")}
-            className="flex-1"
-          >
-            Regular Login
-          </BaseButton>
-          <BaseButton
-            type="submit"
-            onClick={handleSendMagicLink}
-            disabled={loading}
-            className="flex-1 flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Sending...
-              </>
-            ) : (
-              <>
-                <Mail className="h-4 w-4" />
-                Send Login Link
-              </>
-            )}
-          </BaseButton>
-        </div>
+        <BaseButton
+          type="button"
+          variant="outline"
+          onClick={() => (window.location.href = "/login")}
+          className="w-full"
+        >
+          Return to Regular Login
+        </BaseButton>
       </CardFooter>
     </Card>
   );
