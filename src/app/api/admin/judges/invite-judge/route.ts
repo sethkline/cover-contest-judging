@@ -48,27 +48,21 @@ export async function POST(request: Request) {
     // IMPORTANT: Make sure the entire URL is properly formed
     const redirectTo = `${baseURL}/callback?next=/confirm-judge`;
 
-    // URL encode the redirect URL to ensure it's properly passed in the query
-    // Commenting this out as Supabase likely does this internally
-    // const encodedRedirectTo = encodeURIComponent(redirectTo);
+    const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+      type: "magiclink", // Change this from "recovery" to "magiclink"
+      email: email,
+      options: {
+        redirectTo,
+      },
+    });
 
-    // Generate password reset token (for initial setup)
-    const { data: resetData, error: resetError } =
-      await supabase.auth.admin.generateLink({
-        type: "recovery",
-        email: email,
-        options: {
-          redirectTo,
-        },
-      });
-
-    if (resetError) {
-      console.error("Reset token error:", resetError);
-      throw resetError;
+    if (linkError) {
+      console.error("Magic link error:", linkError);
+      throw linkError;
     }
 
     // Get the action link (recovery URL) from the response
-    const inviteUrl = resetData?.properties?.action_link;
+    const inviteUrl = linkData?.properties?.action_link;
 
     if (!inviteUrl) {
       throw new Error("Failed to generate invitation link");

@@ -11,7 +11,7 @@ interface JudgeAccessProps {
 export const JudgeAccess: React.FC<JudgeAccessProps> = ({
   buttonText = "Judge Login",
   subText = "Access for judges and administrators only",
-  loginPath = "/login",
+  loginPath = "/judge-access",
 }) => {
   return (
     <div className="text-center">

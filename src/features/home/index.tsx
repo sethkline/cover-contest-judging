@@ -5,7 +5,6 @@ import { ContestTheme } from "./components/ContestTheme";
 import { ContestCategories } from "./components/ContestCategories";
 import { JudgeAccess } from "./components/JudgeAccess";
 
-// Sample data - In a real app, this might come from an API or CMS
 const contests = [
   {
     title: "Program Cover Design Contest",
