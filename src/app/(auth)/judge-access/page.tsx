@@ -360,16 +360,6 @@ const handleVerifyOtp = async (e) => {
           </TabPanels>
         </Tabs>
       </CardContent>
-      <CardFooter>
-        <BaseButton
-          type="button"
-          variant="outline"
-          onClick={() => (window.location.href = "/login")}
-          className="w-full"
-        >
-          Return to Regular Login
-        </BaseButton>
-      </CardFooter>
     </Card>
   );
 }
