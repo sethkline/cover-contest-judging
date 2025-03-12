@@ -77,7 +77,7 @@ function JudgeAccessContent() {
     setSuccess("");
 
     try {
-      const response = await fetch("/api/judges/generate-otp", {
+      const response = await fetch("/api/auth/generate-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
