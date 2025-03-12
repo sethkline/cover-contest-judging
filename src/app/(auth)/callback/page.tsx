@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Loader2 } from "lucide-react";
 
-// Component that uses the useSearchParams hook
 function CallbackHandler() {
   const router = useRouter();
   const supabase = createClientComponentClient();
@@ -16,6 +15,7 @@ function CallbackHandler() {
       try {
         // Get the next destination from query params
         const next = searchParams.get("next") || "/";
+        console.log("Next destination:", next);
 
         // First check if we already have a session
         const {
@@ -23,77 +23,38 @@ function CallbackHandler() {
         } = await supabase.auth.getSession();
 
         if (existingSession) {
-          // If we have a session, simply redirect to the next page
+          console.log("Session already exists, redirecting to:", next);
           router.push(next);
           return;
         }
 
-        // Check for tokens in the URL or hash
-        const token = searchParams.get("token");
-        const type = searchParams.get("type");
-        const hashParams = new URLSearchParams(
-          window.location.hash.substring(1),
+        // For magic links, Supabase handles most of the flow automatically
+        // We just need to exchange the URL parameters for a session
+        const { error } = await supabase.auth.exchangeCodeForSession(
+          window.location.href
         );
 
-        // Handle magic link tokens
-        if (token && (type === "magiclink" || type === "recovery")) {
-          try {
-            const { error } = await supabase.auth.verifyOtp({
-              token_hash: token,
-              type: type,
-            });
-
-            if (error) {
-              console.error("Token verification error:", error);
-              router.push(
-                `/judge-access?error=${encodeURIComponent(error.message)}`,
-              );
-              return;
-            }
-
-            // Check if we have a session after verification
-            const {
-              data: { session },
-            } = await supabase.auth.getSession();
-
-            if (session) {
-              router.push(next);
-              return;
-            }
-          } catch (error) {
-            console.error("Token verification error:", error);
-            router.push(
-              `/judge-access?error=${encodeURIComponent(error.message)}`,
-            );
-            return;
-          }
-        }
-
-        // Handle access token in hash (for other auth flows)
-        if (hashParams.get("access_token")) {
-          // Your existing access token handling code
-        }
-
-        // Attempt to refresh session as last resort
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.refreshSession();
-
         if (error) {
-          console.error("Auth refresh error:", error);
+          console.error("Auth error:", error);
           router.push(
-            `/judge-access?error=${encodeURIComponent(error.message)}`,
+            `/judge-access?error=${encodeURIComponent(error.message)}`
           );
           return;
         }
 
+        // After exchanging code for session, check if we have a session
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
         if (session) {
+          console.log("Session established, redirecting to:", next);
           router.push(next);
           return;
         }
 
         // If we get here without a session, something went wrong
+        console.error("No session after code exchange");
         router.push("/judge-access?error=Failed%20to%20establish%20session");
       } catch (error) {
         console.error("Callback error:", error);
